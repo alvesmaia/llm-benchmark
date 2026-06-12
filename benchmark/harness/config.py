@@ -26,7 +26,8 @@ class Candidate:
     model_slug: str
     context: str | None = None  # janela de contexto declarada (ex.: "1M", "200K")
     display: str | None = None  # nome limpo de exibição (ex.: "Opus 4.8")
-    thinking: str | None = None  # modo/esforço de raciocínio (ex.: "adaptive", "medium")
+    thinking: str | None = None  # rótulo exibido no ranking (ex.: "xhigh", "medium")
+    effort: str | None = None  # flag --effort passada ao CLI (Claude Code): low..max
 
     @property
     def slug(self) -> str:

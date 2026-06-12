@@ -33,10 +33,14 @@ def _parse_json_output(stdout: str) -> dict:
 class ClaudeCodeAdapter(Adapter):
     name = "claude_code"
 
+    def _effort_args(self) -> list[str]:
+        return ["--effort", self.effort] if self.effort else []
+
     def _base_cmd(self) -> list[str]:
         return [
             CLAUDE_BIN,
             "--model", self.model,
+            *self._effort_args(),
             "--output-format", "json",
             "--dangerously-skip-permissions",
             "-p",
@@ -47,7 +51,8 @@ class ClaudeCodeAdapter(Adapter):
         cmd = self._base_cmd()
         if resume:
             # continua a sessão pelo id capturado na fase anterior
-            cmd = [CLAUDE_BIN, "--model", self.model, "--output-format", "json",
+            cmd = [CLAUDE_BIN, "--model", self.model, *self._effort_args(),
+                   "--output-format", "json",
                    "--dangerously-skip-permissions", "--resume", resume, "-p"]
         # prompt via stdin (evita o limite de tamanho de linha de comando do Windows)
         rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=5400, stdin_text=prompt)
@@ -72,7 +77,8 @@ class ClaudeCodeAdapter(Adapter):
         # Preferimos --resume <session_id>; se ausente, caímos para --continue.
         if prev.session_id:
             return self._run(phase, prompt, workdir, env, resume=prev.session_id)
-        cmd = [CLAUDE_BIN, "--model", self.model, "--output-format", "json",
+        cmd = [CLAUDE_BIN, "--model", self.model, *self._effort_args(),
+               "--output-format", "json",
                "--dangerously-skip-permissions", "--continue", "-p"]
         rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=5400, stdin_text=prompt)
         data = _parse_json_output(out)

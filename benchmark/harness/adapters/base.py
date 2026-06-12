@@ -71,8 +71,9 @@ class Adapter:
 
     name: str = "base"
 
-    def __init__(self, model: str):
+    def __init__(self, model: str, effort: str | None = None):
         self.model = model
+        self.effort = effort  # nível de esforço de raciocínio (quando o CLI suporta)
 
     def build(self, prompt: str, workdir: Path, env: dict) -> PhaseResult:
         """Fase 1: construir o projeto a partir do prompt, dentro de workdir."""
@@ -84,7 +85,7 @@ class Adapter:
         raise NotImplementedError
 
 
-def get_adapter(agent: str, model: str) -> Adapter:
+def get_adapter(agent: str, model: str, effort: str | None = None) -> Adapter:
     # import tardio para evitar ciclos
     from benchmark.harness.adapters.claude_code import ClaudeCodeAdapter
     from benchmark.harness.adapters.codex_cli import CodexCliAdapter
@@ -97,4 +98,4 @@ def get_adapter(agent: str, model: str) -> Adapter:
     }
     if agent not in mapping:
         raise ValueError(f"agente desconhecido: {agent} (conhecidos: {list(mapping)})")
-    return mapping[agent](model)
+    return mapping[agent](model, effort=effort)

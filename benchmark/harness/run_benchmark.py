@@ -54,7 +54,7 @@ def run_candidate(cfg: Config, candidate: Candidate, *, skip_agent: bool = False
         git_info = gitsetup.init_nested_repo(app_dir, slug, cfg.git)
         (logs_dir / "gitsetup.json").write_text(json.dumps(git_info, indent=2), encoding="utf-8")
 
-        adapter = get_adapter(candidate.agent, candidate.model)
+        adapter = get_adapter(candidate.agent, candidate.model, effort=candidate.effort)
         env = _agent_env(cfg, app_dir)
 
         p1 = adapter.build(_build_phase1_prompt(), app_dir, env)
