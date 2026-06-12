@@ -6,38 +6,53 @@ from benchmark.harness.config import Config
 from benchmark.harness.rubric import COMBINATION, DIMENSIONS, WEIGHTS, tier_for
 
 
-def _dimension_note(dim: str, objective: float | None, judge: float | None) -> tuple[float, str]:
-    """Combina objetivo×juiz para uma dimensão, com fallback quando uma fonte falta."""
+def _dimension_note(dim: str, objective: float | None,
+                    judge: float | None) -> tuple[float, bool, str]:
+    """Combina objetivo×juiz para uma dimensão. Retorna (nota, tem_fonte, origem).
+
+    tem_fonte=False quando não há nenhuma fonte (objetivo nem juiz) — nesse caso a dimensão é
+    excluída do score e os pesos são renormalizados, em vez de penalizar com 0.
+    """
     w_obj, w_judge = COMBINATION[dim]
     has_obj = objective is not None and w_obj > 0
     has_judge = judge is not None and w_judge > 0
 
     if has_obj and has_judge:
-        return w_obj * objective + w_judge * judge, "obj+juiz"
+        return w_obj * objective + w_judge * judge, True, "obj+juiz"
     if has_obj:
-        return float(objective), "só obj (sem juiz)"
+        return float(objective), True, "só obj (sem juiz)"
     if has_judge:
-        return float(judge), "só juiz (sem obj)"
-    # nenhuma fonte: se há objetivo mesmo com peso 0, usa; senão 0
+        return float(judge), True, "só juiz (sem obj)"
+    # nenhuma fonte ponderada: usa o que existir (peso 0), senão marca sem-fonte
     if objective is not None:
-        return float(objective), "obj (fallback)"
+        return float(objective), True, "obj (fallback)"
     if judge is not None:
-        return float(judge), "juiz (fallback)"
-    return 0.0, "sem fonte"
+        return float(judge), True, "juiz (fallback)"
+    return 0.0, False, "sem fonte (excluída do score)"
 
 
 def compute_score(objective_by_dimension: dict, judge_avg: dict, flags: dict,
                   cfg: Config) -> dict:
     mods_cfg = cfg.modifiers or {}
     dim_notes = {}
-    weighted_sum = 0.0
+    weighted_acc = 0.0
+    scored_weight = 0
+    excluded = []
     for dim in DIMENSIONS:
         obj = objective_by_dimension.get(dim)
         jud = judge_avg.get(dim)
-        note, source = _dimension_note(dim, obj, jud)
+        note, has_source, source = _dimension_note(dim, obj, jud)
         note = max(0.0, min(100.0, note))
-        dim_notes[dim] = {"note": round(note, 1), "objective": obj, "judge": jud, "source": source}
-        weighted_sum += WEIGHTS[dim] * note / 100.0
+        dim_notes[dim] = {"note": round(note, 1), "objective": obj, "judge": jud,
+                          "source": source, "counted": has_source}
+        if has_source:
+            weighted_acc += WEIGHTS[dim] * note / 100.0
+            scored_weight += WEIGHTS[dim]
+        else:
+            excluded.append(dim)
+
+    # renormaliza para 0-100 sobre as dimensões com fonte (não penaliza dimensão sem juiz)
+    weighted_sum = (weighted_acc * 100.0 / scored_weight) if scored_weight else 0.0
 
     # modificadores
     applied = []
@@ -67,6 +82,8 @@ def compute_score(objective_by_dimension: dict, judge_avg: dict, flags: dict,
     return {
         "dimensions": dim_notes,
         "weighted_subtotal": round(weighted_sum, 1),
+        "excluded_dimensions": excluded,
+        "scored_weight": scored_weight,
         "modifiers_applied": applied,
         "final_score": final,
         "tier": tier.name,

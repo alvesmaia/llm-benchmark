@@ -16,8 +16,9 @@ def test_load_config():
 def test_candidate_slug():
     cfg = load_config()
     slugs = [c.slug for c in cfg.candidates]
-    # ranking é por harness+modelo: claude e copilot com opus são distintos
-    assert "claude_code-opus" in slugs
+    # ranking é por harness+modelo: claude e copilot são distintos
+    assert "claude_code-opus-4-8" in slugs
+    assert "claude_code-sonnet" in slugs
     assert any(s.startswith("copilot_cli-") for s in slugs)
     assert len(slugs) == len(set(slugs)), "slugs devem ser únicos"
 

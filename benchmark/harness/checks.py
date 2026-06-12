@@ -104,27 +104,58 @@ def _norm_cep(cep: str) -> str:
     return re.sub(r"\D", "", str(cep))
 
 
+def _count_results(body) -> int:
+    """Conta itens numa resposta de lote, tolerante a vários formatos:
+    lista direta, dict com uma lista interna ({"results": [...]}), ou dict keyed por CEP."""
+    if isinstance(body, list):
+        return len(body)
+    if isinstance(body, dict):
+        inner_lists = [v for v in body.values() if isinstance(v, list)]
+        if inner_lists:
+            return len(inner_lists[0])
+        return len(body)  # dict keyed por CEP, ex.: {"01001000": {...}, ...}
+    return 0
+
+
+def _flatten_fields(obj, acc: dict | None = None) -> dict:
+    """Coleta recursivamente todos os campos escalares de um objeto JSON (em qualquer nível
+    de aninhamento), mapeando chave (minúscula) -> lista de valores. Assim o matcher funciona
+    tanto para resultados planos quanto aninhados (ex.: {"endereco": {...}})."""
+    if acc is None:
+        acc = {}
+    if isinstance(obj, dict):
+        for k, v in obj.items():
+            if isinstance(v, (dict, list)):
+                _flatten_fields(v, acc)
+            else:
+                acc.setdefault(k.lower(), []).append(v)
+    elif isinstance(obj, list):
+        for item in obj:
+            _flatten_fields(item, acc)
+    return acc
+
+
 def _address_matches(expected: dict, got: dict) -> bool:
-    """Compara os campos esperados (subset) com o resultado, de forma tolerante."""
-    if not isinstance(got, dict):
+    """Compara os campos esperados (subset) com o resultado, tolerante a aninhamento e sinônimos."""
+    if not isinstance(got, (dict, list)):
         return False
-    # achata possíveis variações de nomes de chave
-    flat = {k.lower(): v for k, v in got.items()}
+    flat = _flatten_fields(got)  # chave -> lista de valores (qualquer nível)
+    synonyms = {
+        "logradouro": ["logradouro", "street", "log_no"],
+        "tipo_logradouro": ["tipo_logradouro", "tipo", "tlo", "tipo_log"],
+        "bairro": ["bairro", "neighborhood"],
+        "localidade": ["localidade", "cidade", "municipio", "city"],
+        "uf": ["uf", "estado", "state"],
+    }
     for key, exp_val in expected.items():
         if key == "cep":
-            if _norm_cep(flat.get("cep", "")) != _norm_cep(exp_val):
+            ceps = flat.get("cep", [])
+            if not any(_norm_cep(c) == _norm_cep(exp_val) for c in ceps):
                 return False
             continue
-        # aceita sinônimos comuns
-        candidates = {
-            "logradouro": ["logradouro", "street", "log_no"],
-            "tipo_logradouro": ["tipo_logradouro", "tipo", "tlo", "tipo_log"],
-            "bairro": ["bairro", "neighborhood"],
-            "localidade": ["localidade", "cidade", "municipio", "city"],
-            "uf": ["uf", "estado", "state"],
-        }.get(key, [key])
-        got_val = next((flat[c] for c in candidates if c in flat and flat[c] not in (None, "")), "")
-        if _norm(got_val) != _norm(exp_val):
+        keys = synonyms.get(key, [key])
+        values = [v for k in keys for v in flat.get(k, []) if v not in (None, "")]
+        if not any(_norm(v) == _norm(exp_val) for v in values):
             return False
     return True
 
@@ -298,13 +329,17 @@ def check_pytest(app_dir: Path, env: dict) -> CheckResult:
     f = re.search(r"(\d+) failed", blob)
     passed = int(m.group(1)) if m else 0
     failed = int(f.group(1)) if f else 0
+    # decisão pelo exit code do pytest (robusto a variações de formato de saída):
+    # 0 = todos passaram, 1 = houve falhas, 5 = nenhum teste coletado.
+    if rc == 0:
+        detail = f"{passed} passed" if m else "todos passaram (rc=0)"
+        return CheckResult("pytest", "tests", 100.0, detail=detail)
+    if rc == 5:
+        return CheckResult("pytest", "tests", 0, detail="nenhum teste coletado")
     total = passed + failed
-    if total == 0:
-        note = 0 if rc != 0 else 50  # rodou mas sem testes detectados
-        return CheckResult("pytest", "tests", note, detail=f"rc={rc}, sem contagem de testes")
-    note = 100 * passed / total
+    note = (100 * passed / total) if total else 0
     return CheckResult("pytest", "tests", round(note, 1),
-                       detail=f"{passed} passed / {failed} failed")
+                       detail=f"{passed} passed / {failed} failed (rc={rc})")
 
 
 def check_uvx_run(app_dir: Path, env: dict) -> CheckResult:
@@ -410,8 +445,7 @@ def _server_checks(app_dir: Path, env: dict, expected: dict) -> list[CheckResult
         try:
             r = httpx.post(f"{base}/ceps", json={"ceps": ceps}, timeout=5)
             body = r.json()
-            count = len(body) if isinstance(body, list) else len(body.get("results", body)) \
-                if isinstance(body, dict) else 0
+            count = _count_results(body)
             ok = r.status_code == 200 and count >= len(ceps)
             results.append(CheckResult("api_post_batch", "interfaces", 100 if ok else 0,
                                        detail=f"POST /ceps -> {r.status_code}, {count} itens"))

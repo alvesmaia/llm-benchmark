@@ -1,74 +1,74 @@
 {
-  "slug": "claude_code-sonnet",
+  "slug": "claude_code-opus-4-7",
   "agent": "claude_code",
-  "model": "sonnet",
+  "model": "claude-opus-4-7",
   "score": {
     "dimensions": {
       "etl_parsing": {
-        "note": 97.6,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 92.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "completeness": {
         "note": 100.0,
         "objective": 100.0,
-        "judge": 95.0,
+        "judge": 100.0,
         "source": "só obj (sem juiz)",
         "counted": true
       },
       "interfaces": {
-        "note": 98.0,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 95.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "persistence": {
-        "note": 95.0,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 90.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "tests": {
-        "note": 97.2,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 93.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "error_handling": {
-        "note": 97.6,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 92.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "architecture": {
-        "note": 88.0,
+        "note": 95.0,
         "objective": null,
-        "judge": 88.0,
+        "judge": 95.0,
         "source": "só juiz (sem obj)",
         "counted": true
       },
       "production": {
-        "note": 94.0,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 85.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "git": {
-        "note": 96.4,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 88.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       }
     },
-    "weighted_subtotal": 96.5,
+    "weighted_subtotal": 99.6,
     "excluded_dimensions": [],
     "scored_weight": 100,
     "modifiers_applied": [
@@ -77,7 +77,7 @@
         "value": 3
       }
     ],
-    "final_score": 99.5,
+    "final_score": 100.0,
     "tier": "A",
     "tier_note": "Pronto para produção (patch < 30 min)"
   },
@@ -143,7 +143,7 @@
         "id": "pytest",
         "dimension": "tests",
         "note": 100.0,
-        "detail": "40 passed",
+        "detail": "todos passaram (rc=0)",
         "data": {}
       },
       {
@@ -222,7 +222,7 @@
     },
     "flags": {
       "no_boot": false,
-      "load_time_s": 0.2
+      "load_time_s": 0.25
     },
     "git_detail": {
       "note": 100.0,
@@ -231,9 +231,8 @@
         "msg_quality": 100,
         "semver_tag": 100
       },
-      "n_commits": 8,
+      "n_commits": 7,
       "tags": [
-        "claude_code-sonnet/v1.0.1",
         "v0.1.0"
       ],
       "semver_tags": [
@@ -244,33 +243,33 @@
   },
   "judges": {
     "claude_opus": {
-      "scores": {
-        "etl_parsing": 92,
-        "completeness": 95,
-        "interfaces": 95,
-        "persistence": 90,
-        "tests": 93,
-        "error_handling": 92,
-        "architecture": 88,
-        "production": 85,
-        "git": 88
-      },
-      "rationale": {
-        "etl_parsing": "Lê os 3 tipos de arquivo com encoding Latin-1 e separador @, mapeia campos corretamente e implementa fallback logradouro→localidade; 6/6 queries esperadas corretas, com ressalva menor de que o CEP é casado por igualdade exata e não por faixas de bairro.",
-        "completeness": "Todos os 11 entregáveis presentes e reais (não stubs), com 6/6 artefatos confirmados objetivamente.",
-        "interfaces": "CLI com query multi-CEP e --json, API GET/POST corretas (200/404/422), Web com formulário+tabela e execução via uv/uvx — todas as checagens objetivas passaram.",
-        "persistence": "Schema em 3 tabelas normalizadas com FKs, índices por CEP em logradouro e localidade, e idempotência via ON CONFLICT confirmada (12→12 linhas).",
-        "tests": "40 testes passam cobrindo ETL, consulta, fallback, lote com erro e casos de validação, com asserts relevantes e não triviais.",
-        "error_handling": "CEP inválido, não encontrado e DNE_PATH ausente tratados com mensagens acionáveis e sem stack trace cru; lote não quebra com item inválido.",
-        "architecture": "Camadas bem separadas (db/etl/query/cli/api) com baixo acoplamento e nomes claros, usando dataclasses para resultados tipados.",
-        "production": "ruff e CI (lint+testes) configurados e README com instruções de carga/uso, porém arquivos de banco (_bench_check.db, _probe.db, cep.db) e um templates/index.html duplicado foram commitados indevidamente.",
-        "git": "Conventional Commits significativos e tag semver válida (v0.1.0), com ressalva de inconsistência de versão (pyproject/__init__ 1.0.1 vs tag v0.1.0)."
-      },
-      "hallucinated_dependency": false,
-      "summary": "Projeto sólido e pronto para produção: todas as 17 checagens objetivas passaram (ETL correto, 3 interfaces funcionais, 40 testes verdes, idempotência, lint e CI). As ressalvas são menores — arquivos .db e template duplicado versionados por engano, casamento de CEP por igualdade exata e leve inconsistência de versão entre tag e pyproject. Tier A, com patch trivial necessário."
+      "skipped": "anti-viés (mesmo agente/família de modelo do avaliado)"
     },
     "claude_sonnet": {
-      "skipped": "anti-viés (mesmo agente/família de modelo do avaliado)"
+      "scores": {
+        "etl_parsing": 100,
+        "completeness": 100,
+        "interfaces": 100,
+        "persistence": 100,
+        "tests": 100,
+        "error_handling": 100,
+        "architecture": 95,
+        "production": 100,
+        "git": 100
+      },
+      "rationale": {
+        "etl_parsing": "Todos os 6 casos de consulta objetivos passaram; o código lê corretamente os 3 tipos de arquivo com encoding Latin-1 e separador '@', mapeia campos exatamente conforme o spec e implementa o fallback para CEP de localidade.",
+        "completeness": "Todos os 6 artefatos objetivos estão presentes e são implementações reais: pyproject.toml, README, ruff config, testes, código Python e CI — nada é stub vazio.",
+        "interfaces": "CLI aceita múltiplos CEPs (com e sem --json), API REST implementa GET /cep/{cep} e POST /ceps corretamente, Web tem formulário + tabela com Jinja2, e uvx executa sem problemas.",
+        "persistence": "Schema normalizado com 3 tabelas, índices por CEP em logradouro e localidade, idempotência garantida via INSERT OR REPLACE confirmada pelo harness (12 linhas antes e depois).",
+        "tests": "Todos os testes passaram (rc=0); a suíte cobre caminhos felizes, fallback de localidade, CEP inválido, CEP não encontrado, consulta em lote, idempotência, encoding, ausência de DNE — assertions são substantivas e não triviais.",
+        "error_handling": "InvalidCepError retorna mensagem clara sem stack trace, CEP não encontrado é relatado individualmente sem quebrar o lote, e DNE ausente/incorreto gera DneSourceError com mensagem acionável indicando o caminho e a variável de ambiente.",
+        "architecture": "Separação exemplar em camadas (config → errors → db → etl → query → cli/web), acoplamento baixo entre módulos, uso de dataclasses para tipos de retorno e context managers para sessões DB; pequena ressalva: web.py mistura API REST e renderização HTML em um único módulo, o que é pragmaticamente razoável mas ligeiramente viola separação de responsabilidades.",
+        "production": "ruff sem erros, CI no GitHub Actions rodando lint e testes, README com instruções de carga e uso das 3 interfaces, uvx executa — empacotamento via hatchling correto.",
+        "git": "7 commits com Conventional Commits (chore, feat, test, docs+ci), mensagens descritivas e granularidade adequada, tag semver v0.1.0 presente."
+      },
+      "hallucinated_dependency": false,
+      "summary": "Projeto exemplar em todas as 9 dimensões: ETL correto com encoding Latin-1 e fallback de localidade, três interfaces funcionais (CLI/API/Web), persistência idempotente com índices, suíte de testes abrangente e bem estruturada, tratamento de erros robusto e arquitetura limpa em camadas coesas. A única ressalva menor é a colocação de lógica de API REST e renderização Web no mesmo módulo web.py, o que reduz levemente a nota de arquitetura de 100 para 95."
     }
   },
   "divergences": {}

@@ -56,3 +56,16 @@ def test_judge_missing_falls_back_to_objective():
     # arquitetura (0% obj) cai para fallback objetivo = 80
     assert out["dimensions"]["architecture"]["note"] == 80
     assert out["final_score"] > 0
+
+
+def test_architecture_excluded_when_no_source():
+    cfg = _cfg()
+    # todas as dimensões 100 no objetivo, MENOS architecture (sem objetivo) e sem juiz
+    obj = {d: 100 for d in DIMENSIONS if d != "architecture"}
+    jud = {d: None for d in DIMENSIONS}
+    out = compute_score(obj, jud, {}, cfg)
+    # architecture é excluída e os pesos renormalizam -> demais 100 => score 100 (não penaliza)
+    assert "architecture" in out["excluded_dimensions"]
+    assert out["dimensions"]["architecture"]["counted"] is False
+    assert out["final_score"] == 100
+    assert out["scored_weight"] == 92  # 100 - peso(8) da architecture

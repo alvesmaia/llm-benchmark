@@ -30,28 +30,51 @@ def _load_scores(cfg: Config) -> list[dict]:
             row = json.loads(scores_file.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             continue
-        # custo total das fases vem do result.json irmão (quando o agente expõe)
-        result_file = scores_file.parent / "result.json"
-        if result_file.exists():
-            try:
-                phases = json.loads(result_file.read_text(encoding="utf-8")).get("phases", {})
-                costs = [p.get("cost_usd") for p in phases.values() if p.get("cost_usd")]
-                row["_total_cost"] = round(sum(costs), 3) if costs else None
-            except json.JSONDecodeError:
-                row["_total_cost"] = None
+        row["_total_cost"] = _read_cost(cfg, scores_file.parent)
         rows.append(row)
     return rows
 
 
+def _read_cost(cfg: Config, results_slug_dir) -> float | None:
+    """Custo total das fases. Prefere o result.json; cai para os logs das fases (que sobrevivem
+    a re-avaliações com --skip-agent, que esvaziam as fases do result.json)."""
+    costs = []
+    result_file = results_slug_dir / "result.json"
+    if result_file.exists():
+        try:
+            phases = json.loads(result_file.read_text(encoding="utf-8")).get("phases", {})
+            costs = [p.get("cost_usd") for p in phases.values() if p.get("cost_usd")]
+        except json.JSONDecodeError:
+            costs = []
+    if not costs:
+        logs_dir = cfg.runs_dir / results_slug_dir.name / "logs"
+        for pf in sorted(logs_dir.glob("phase*.json")) if logs_dir.exists() else []:
+            try:
+                c = json.loads(pf.read_text(encoding="utf-8")).get("cost_usd")
+                if c:
+                    costs.append(c)
+            except json.JSONDecodeError:
+                continue
+    return round(sum(costs), 3) if costs else None
+
+
 def build_leaderboard(cfg: Config) -> str:
     rows = _load_scores(cfg)
-    rows.sort(key=lambda r: r.get("score", {}).get("final_score", 0), reverse=True)
+    # ordena por subtotal (pré-modificadores) — discrimina melhor que o final (satura no teto 100)
+    def _key(r):
+        sc = r.get("score", {})
+        return (sc.get("weighted_subtotal", 0), sc.get("final_score", 0))
+
+    rows.sort(key=_key, reverse=True)
 
     lines = [
         "# Leaderboard — Benchmark ETL CEP",
         "",
         "Ranking por **candidato = harness (agent) + modelo**. O mesmo modelo aparece como",
         "entradas distintas conforme o harness (o harness influencia o resultado).",
+        "",
+        "Ordenado por **Subtotal** (soma ponderada 0–100 pré-modificadores), que diferencia melhor",
+        "que o Score final — este satura no teto 100 e inclui bônus/penalidades.",
         "",
     ]
 
@@ -60,9 +83,9 @@ def build_leaderboard(cfg: Config) -> str:
                      "`uv run bench report`._")
         return "\n".join(lines) + "\n"
 
-    header = "| # | Harness | Modelo | Score | Tier | " + \
+    header = "| # | Harness | Modelo | Subtotal | Score | Tier | " + \
         " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Diverg. |"
-    sep = "|" + "---|" * (5 + len(DIMENSIONS) + 2)
+    sep = "|" + "---|" * (6 + len(DIMENSIONS) + 2)
     lines += [header, sep]
 
     for i, r in enumerate(rows, 1):
@@ -76,8 +99,8 @@ def build_leaderboard(cfg: Config) -> str:
         diverg = ", ".join(r.get("divergences", {}).keys()) or "—"
         lines.append(
             f"| {i} | {r.get('agent','?')} | {r.get('model','?')} | "
-            f"**{sc.get('final_score','?')}** | {sc.get('tier','?')} | {dim_cells} | "
-            f"{cost} | {diverg} |"
+            f"**{sc.get('weighted_subtotal','?')}** | {sc.get('final_score','?')} | "
+            f"{sc.get('tier','?')} | {dim_cells} | {cost} | {diverg} |"
         )
 
     lines += [

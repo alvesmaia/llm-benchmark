@@ -137,12 +137,15 @@ def run_panel(app_dir: Path, candidate_slug: str, objective: dict, cfg: Config) 
     template = (REPO_ROOT / "benchmark" / "rubric" / "judge_prompt.md").read_text(encoding="utf-8")
     prompt = build_prompt(template, app_dir=app_dir, objective=objective)
 
+    candidate = cfg.candidate_by_slug(candidate_slug)
     per_judge = {}
     for judge in cfg.judges:
-        judge_candidate_slug = f"{judge.agent}-{_judge_model_slug(judge, cfg)}"
-        if judge_candidate_slug == candidate_slug:
+        # anti-viés: não deixa um modelo julgar a si mesmo nem à sua própria família
+        # (ex.: juiz Claude-Opus não avalia candidato Claude-Opus).
+        if candidate and judge.agent == candidate.agent \
+                and _model_family(judge.model) == _model_family(candidate.model):
             per_judge[judge.id] = {
-                "skipped": "anti-auto-favorecimento (mesmo agente/modelo do avaliado)"}
+                "skipped": "anti-viés (mesmo agente/família de modelo do avaliado)"}
             continue
         per_judge[judge.id] = _invoke_judge(judge, prompt, cwd=app_dir)
 
@@ -172,9 +175,10 @@ def run_panel(app_dir: Path, candidate_slug: str, objective: dict, cfg: Config) 
     }
 
 
-def _judge_model_slug(judge: Judge, cfg: Config) -> str:
-    """Mapeia o juiz para o model_slug do candidato correspondente, se existir na matriz."""
-    for c in cfg.candidates:
-        if c.agent == judge.agent and c.model == judge.model:
-            return c.model_slug
-    return judge.model
+def _model_family(model: str) -> str:
+    """Família do modelo para o anti-viés (opus/sonnet/haiku/gpt/gemini)."""
+    m = (model or "").lower()
+    for fam in ("opus", "sonnet", "haiku", "gpt", "gemini"):
+        if fam in m:
+            return fam
+    return m

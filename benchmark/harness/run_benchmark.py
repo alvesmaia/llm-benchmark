@@ -115,13 +115,14 @@ def run_candidate(cfg: Config, candidate: Candidate, *, skip_agent: bool = False
     return result
 
 
-def run_matrix(cfg: Config, only: list[str] | None = None) -> list[dict]:
+def run_matrix(cfg: Config, only: list[str] | None = None, *,
+               skip_agent: bool = False) -> list[dict]:
     candidates = cfg.candidates
     if only:
         candidates = [c for c in candidates if c.slug in only]
     results = []
     for c in candidates:
-        results.append(run_candidate(cfg, c))
+        results.append(run_candidate(cfg, c, skip_agent=skip_agent))
     return results
 
 

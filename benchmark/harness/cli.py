@@ -20,13 +20,16 @@ console = Console()
 
 @app.command()
 def run(
-    only: str = typer.Option(None, help="slug(s) separados por vírgula (ex.: claude_code-opus)"),
+    only: str = typer.Option(None, help="slug(s) separados por vírgula (ex.: claude_code-sonnet)"),
     config: str = typer.Option(None, help="caminho do config.yaml"),
+    skip_agent: bool = typer.Option(
+        False, "--skip-agent",
+        help="não rebuilda: re-roda checagens + juízes no app já construído"),
 ):
     """Roda a matriz de candidatos (3 fases) e pontua cada um."""
     cfg = load_config(config)
     only_list = [s.strip() for s in only.split(",")] if only else None
-    results = run_benchmark.run_matrix(cfg, only=only_list)
+    results = run_benchmark.run_matrix(cfg, only=only_list, skip_agent=skip_agent)
     for r in results:
         sc = r["score"]
         console.print(f"[bold]{r['slug']}[/bold]: {sc['final_score']} (Tier {sc['tier']})")

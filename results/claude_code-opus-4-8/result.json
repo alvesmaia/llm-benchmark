@@ -1,16 +1,16 @@
 {
-  "slug": "claude_code-sonnet",
+  "slug": "claude_code-opus-4-8",
   "agent": "claude_code",
-  "model": "sonnet",
-  "started_utc": "2026-06-12T15:30:50.477673+00:00",
-  "finished_utc": "2026-06-12T15:31:21.112003+00:00",
+  "model": "claude-opus-4-8",
+  "started_utc": "2026-06-12T15:29:29.745285+00:00",
+  "finished_utc": "2026-06-12T15:30:00.657286+00:00",
   "phases": {},
   "score": {
     "dimensions": {
       "etl_parsing": {
-        "note": 97.6,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 92.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
@@ -22,56 +22,56 @@
         "counted": true
       },
       "interfaces": {
-        "note": 98.0,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 95.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "persistence": {
-        "note": 95.0,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 90.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "tests": {
-        "note": 97.2,
+        "note": 99.2,
         "objective": 100.0,
-        "judge": 93.0,
+        "judge": 98.0,
         "source": "obj+juiz",
         "counted": true
       },
       "error_handling": {
-        "note": 97.6,
+        "note": 100.0,
         "objective": 100.0,
-        "judge": 92.0,
+        "judge": 100.0,
         "source": "obj+juiz",
         "counted": true
       },
       "architecture": {
-        "note": 88.0,
+        "note": 95.0,
         "objective": null,
-        "judge": 88.0,
+        "judge": 95.0,
         "source": "só juiz (sem obj)",
         "counted": true
       },
       "production": {
-        "note": 94.0,
+        "note": 99.2,
         "objective": 100.0,
-        "judge": 85.0,
+        "judge": 98.0,
         "source": "obj+juiz",
         "counted": true
       },
       "git": {
-        "note": 96.4,
+        "note": 97.0,
         "objective": 100.0,
-        "judge": 88.0,
+        "judge": 90.0,
         "source": "obj+juiz",
         "counted": true
       }
     },
-    "weighted_subtotal": 96.5,
+    "weighted_subtotal": 99.2,
     "excluded_dimensions": [],
     "scored_weight": 100,
     "modifiers_applied": [
@@ -80,7 +80,7 @@
         "value": 3
       }
     ],
-    "final_score": 99.5,
+    "final_score": 100.0,
     "tier": "A",
     "tier_note": "Pronto para produção (patch < 30 min)"
   },

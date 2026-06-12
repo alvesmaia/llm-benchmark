@@ -31,20 +31,25 @@ modifiers:
   load_time_threshold_seconds: 60
 divergence_flag_threshold: 25   # diferença entre juízes (por dimensão) que dispara revisão manual
 
-# Painel de juízes (média das notas reduz viés).
+# Painel de juízes (média das notas reduz viés). O juiz da MESMA família do candidato é pulado
+# (anti-viés). Nota: o ideal seria um juiz de outro fornecedor (GPT/Gemini via Copilot), mas a cota
+# de premium requests do Copilot estava esgotada; usamos dois Claude (Opus + Sonnet) por confiabilidade.
 judges:
   - id: claude_opus
     agent: claude_code
     model: opus
-  - id: copilot_gpt
-    agent: copilot_cli
-    model: gpt-5.1-codex
+  - id: claude_sonnet
+    agent: claude_code
+    model: sonnet
 
 # Matriz de candidatos avaliados. slug = <agent>-<model_slug>.
 candidates:
   - agent: claude_code
-    model: opus
-    model_slug: opus
+    model: claude-opus-4-8
+    model_slug: opus-4-8
+  - agent: claude_code
+    model: claude-opus-4-7
+    model_slug: opus-4-7
   - agent: claude_code
     model: sonnet
     model_slug: sonnet
