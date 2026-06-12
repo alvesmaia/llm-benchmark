@@ -79,6 +79,41 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 - **claude_code-sonnet**: load_performance_bonus (+3)
 <!-- LEADERBOARD:END -->
 
+## Como o custo (US$) é calculado
+
+A coluna **Custo (US$)** do ranking é o **custo-equivalente em API** reportado pelo próprio CLI do
+agente (campo `total_cost_usd` do Claude Code), **somado pelas 3 fases** (build + validação + git):
+
+```
+custo_fase = (input_tokens        × preço_input)
+           + (output_tokens       × preço_output)
+           + (cache_write_tokens  × preço_cache_write)
+           + (cache_read_tokens   × preço_cache_read)      # preços por token = US$/1M ÷ 1.000.000
+
+custo_total = Σ custo_fase  (build, validação, git)
+```
+
+> ⚠️ **Não é cobrança real.** O benchmark roda na **assinatura Claude Max (5x)** — o consumo conta
+> contra os limites do plano, **não** é faturado por token. Esse valor é só uma **estimativa de
+> referência** (o que custaria via API) para comparar a eficiência dos candidatos.
+
+### Preços por token (US$ por 1M tokens)
+
+| Modelo | Input | Output | Cache write | Cache read |
+|--------|------:|-------:|------------:|-----------:|
+| Opus 4.8 (`claude-opus-4-8`) | 5,00 | 25,00 | 10,00 | 0,50 |
+| Opus 4.7 (`claude-opus-4-7`) | 5,00 | 25,00 | 10,00 | 0,50 |
+| Sonnet 4.6 (`claude-sonnet-4-6`) | 3,00 | 15,00 | 6,00 | 0,30 |
+| GPT-5.4 (Codex, conta ChatGPT) | — | — | — | — |
+
+- **Cache write/read** seguem os multiplicadores do prompt caching da Anthropic sobre o preço de input:
+  **write = 1,25×** (TTL 5 min) ou **2× (TTL 1 h)**; **read = 0,1×**. O Claude Code usa cache de **1 h**,
+  então `cache write = 2× input` (Opus 10,00; Sonnet 6,00) e `cache read = 0,1× input` (Opus 0,50; Sonnet 0,30).
+- O **Codex (GPT-5.4)** roda via **conta ChatGPT** e **não reporta** `total_cost_usd` — por isso o custo
+  aparece como `—` no ranking (o consumo conta no plano ChatGPT).
+- Preços de referência da Anthropic (jun/2026); o cache de cada fase reduz muito o custo das fases
+  seguintes (a fase 1 escreve o cache; as fases 2 e 3 leem a 0,1×).
+
 ## Como funciona
 
 1. **Fase 1 (build):** o agente recebe o brief e constrói a aplicação, headless, num diretório isolado.
