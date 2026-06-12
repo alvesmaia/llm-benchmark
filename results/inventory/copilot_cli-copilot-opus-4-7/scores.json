@@ -1,0 +1,345 @@
+{
+  "slug": "copilot_cli-copilot-opus-4-7",
+  "agent": "copilot_cli",
+  "model": "claude-opus-4.7",
+  "scenario": "inventory",
+  "score": {
+    "dimensions": {
+      "inventory_logic": {
+        "note": 99.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "auth": {
+        "note": 98.4,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 99.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_rest": {
+        "note": 99.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 99.7,
+        "objective": 100.0,
+        "judge": 99.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "persistence": {
+        "note": 98.0,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 98.0,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "error_handling": {
+        "note": 97.5,
+        "objective": 100.0,
+        "judge": 91.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "architecture": {
+        "note": 92.5,
+        "objective": null,
+        "judge": 92.5,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "production": {
+        "note": 99.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "git": {
+        "note": 99.2,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 98.4,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 100.0,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "objective": {
+    "checks": [
+      {
+        "id": "files_present",
+        "dimension": "production",
+        "note": 100.0,
+        "detail": "6/6 artefatos",
+        "data": {
+          "pyproject": true,
+          "readme": true,
+          "ruff_config": true,
+          "tests": true,
+          "python_code": true,
+          "ci": true
+        }
+      },
+      {
+        "id": "dataset_load",
+        "dimension": "ingestao",
+        "note": 100,
+        "detail": "produtos=9, movimentações=14",
+        "data": {}
+      },
+      {
+        "id": "idempotent",
+        "dimension": "persistence",
+        "note": 100,
+        "detail": "movimentações antes=14 depois=14",
+        "data": {}
+      },
+      {
+        "id": "has_index",
+        "dimension": "persistence",
+        "note": 100,
+        "detail": "índice/uniqueness presente",
+        "data": {}
+      },
+      {
+        "id": "pytest",
+        "dimension": "tests",
+        "note": 100.0,
+        "detail": "16 passed",
+        "data": {}
+      },
+      {
+        "id": "uvx_run",
+        "dimension": "api_rest",
+        "note": 100,
+        "detail": "uvx executa",
+        "data": {}
+      },
+      {
+        "id": "err_missing_dataset",
+        "dimension": "error_handling",
+        "note": 100,
+        "detail": "mensagem acionável",
+        "data": {}
+      },
+      {
+        "id": "ruff_ok",
+        "dimension": "production",
+        "note": 100,
+        "detail": "sem erros de lint",
+        "data": {}
+      },
+      {
+        "id": "ci_present",
+        "dimension": "production",
+        "note": 100,
+        "detail": "CI roda lint+testes",
+        "data": {}
+      },
+      {
+        "id": "readme_quality",
+        "dimension": "production",
+        "note": 100,
+        "detail": "load=True, uso=True",
+        "data": {}
+      },
+      {
+        "id": "web_form",
+        "dimension": "auth",
+        "note": 100,
+        "detail": "form de login presente",
+        "data": {}
+      },
+      {
+        "id": "auth_login",
+        "dimension": "auth",
+        "note": 100,
+        "detail": "login válido=ok, inválido->401",
+        "data": {}
+      },
+      {
+        "id": "auth_required",
+        "dimension": "auth",
+        "note": 100,
+        "detail": "POST sem token -> 401",
+        "data": {}
+      },
+      {
+        "id": "crud_product",
+        "dimension": "inventory_logic",
+        "note": 100,
+        "detail": "produto criado e listado (id=10)",
+        "data": {}
+      },
+      {
+        "id": "stock_in_out",
+        "dimension": "inventory_logic",
+        "note": 100,
+        "detail": "stock após in10/out3 = 7 (esperado 7); out100 -> 400 (esperado 400)",
+        "data": {}
+      },
+      {
+        "id": "dashboard_endpoint",
+        "dimension": "dashboard",
+        "note": 100,
+        "detail": "GET /api/dashboard -> 200, chaves=ok",
+        "data": {}
+      },
+      {
+        "id": "expected_metrics",
+        "dimension": "dashboard",
+        "note": 100.0,
+        "detail": "revenue=491500/491500, units=14/14, by_company=ok, by_region=ok",
+        "data": {}
+      },
+      {
+        "id": "password_hashed",
+        "dimension": "auth",
+        "note": 100,
+        "detail": "senha em hash",
+        "data": {}
+      },
+      {
+        "id": "api_products_list",
+        "dimension": "api_rest",
+        "note": 100,
+        "detail": "espelha crud_product (lista de produtos via API)",
+        "data": {}
+      },
+      {
+        "id": "api_dashboard",
+        "dimension": "api_rest",
+        "note": 100,
+        "detail": "espelha dashboard_endpoint (endpoint REST)",
+        "data": {}
+      }
+    ],
+    "objective_by_dimension": {
+      "production": 100.0,
+      "ingestao": 100.0,
+      "persistence": 100.0,
+      "tests": 100.0,
+      "api_rest": 100.0,
+      "error_handling": 100.0,
+      "auth": 100.0,
+      "inventory_logic": 100.0,
+      "dashboard": 100.0,
+      "git": 100.0
+    },
+    "flags": {
+      "no_boot": false,
+      "load_time_s": 0.34
+    },
+    "git_detail": {
+      "note": 100.0,
+      "sub": {
+        "commit_count": 100,
+        "msg_quality": 100,
+        "semver_tag": 100
+      },
+      "n_commits": 9,
+      "tags": [
+        "v0.1.0"
+      ],
+      "semver_tags": [
+        "v0.1.0"
+      ],
+      "push_evaluated": false
+    }
+  },
+  "judges": {
+    "claude_opus": {
+      "scores": {
+        "inventory_logic": 95,
+        "auth": 92,
+        "dashboard": 95,
+        "api_rest": 95,
+        "ingestao": 98,
+        "persistence": 92,
+        "tests": 90,
+        "error_handling": 88,
+        "architecture": 90,
+        "production": 95,
+        "git": 95
+      },
+      "rationale": {
+        "inventory_logic": "in soma e out subtrai, saída além do saldo levanta ValueError→400, produto por (Company,Model) e CRUD funcionando, todos os checks objetivos passam.",
+        "auth": "senha em pbkdf2_sha256 com hmac.compare_digest, login 200/401, rotas de escrita exigem Bearer e há form de login; tokens sem expiração é a única lacuna menor.",
+        "dashboard": "métricas batem exatamente (revenue=491500, units=14, by_company/by_region ok) e custo segue floor(0.8*price) de forma coerente.",
+        "api_rest": "endpoints completos com status codes corretos, validação via Pydantic e execução confirmada por uvx.",
+        "ingestao": "upsert por (Company,Model), 1 OUT por venda com car_id UNIQUE garantindo idempotência verificada (14→14).",
+        "persistence": "schema normalizado com UNIQUE(company,model) e car_id UNIQUE, FKs e idempotência comprovada; falta índice explícito extra mas o uniqueness cobre.",
+        "tests": "16 testes passam cobrindo import, idempotência, auth/hash, estoque in/out, saldo e dashboard com asserts relevantes.",
+        "error_handling": "DATASET_PATH ausente/inexistente com mensagem acionável e rc≠0, payloads inválidos via Pydantic/422 e saída>saldo→400; handler genérico cobre o resto.",
+        "architecture": "camadas bem separadas (db/auth/inventory/etl/api/cli) com baixo acoplamento e nomes claros.",
+        "production": "README com carga e uso, ruff configurado (line-length=100), CI rodando lint+testes e empacotamento uv/uvx funcional.",
+        "git": "commits Conventional Commits significativos por camada e tag semver v0.1.0 válida."
+      },
+      "hallucinated_dependency": false,
+      "summary": "Projeto sólido e pronto para produção: todas as 20 checagens objetivas passaram, arquitetura em camadas coesas e testes verdes. Pequenas lacunas (tokens sem expiração, ausência de índices adicionais além do uniqueness) não comprometem a qualidade. Tier A."
+    },
+    "claude_sonnet": {
+      "scores": {
+        "inventory_logic": 100,
+        "auth": 100,
+        "dashboard": 100,
+        "api_rest": 100,
+        "ingestao": 100,
+        "persistence": 100,
+        "tests": 100,
+        "error_handling": 95,
+        "architecture": 95,
+        "production": 100,
+        "git": 100
+      },
+      "rationale": {
+        "inventory_logic": "Entradas somam e saídas subtraem o saldo corretamente; saída além do estoque levanta ValueError mapeada para HTTP 400; CRUD de produto via upsert por (Company, Model) funcional e confirmado pelos testes objetivos.",
+        "auth": "Senha armazenada com pbkdf2_sha256 + salt aleatório + hmac.compare_digest; login retorna token opaco ou 401; rotas de escrita protegidas por Bearer token com 401 em ausência; formulário HTML de login presente — todos os checks objetivos passaram com nota 100.",
+        "dashboard": "Revenue, cost (floor(0.8*price) para importações), profit, units_sold, movements, by_company e by_region calculados corretamente via SQL; métricas batem exatamente com o dataset de teste (revenue=491500, units=14) conforme check objetivo.",
+        "api_rest": "Todos os endpoints exigidos (GET/POST /api/products, POST /api/movements, GET /api/dashboard, POST /auth/login, GET /) implementados com status codes corretos; execução via uvx e uv run confirmada objetivamente.",
+        "ingestao": "Lê o schema car-sales corretamente, faz upsert de produtos por (Company, Model), insere 1 movimento OUT por venda com idempotência garantida via coluna UNIQUE car_id; import rodado 2x mantém 14 movimentações.",
+        "persistence": "Schema normalizado com tabelas users/products/movements/tokens; foreign keys habilitadas; UNIQUE(company, model) em products e UNIQUE car_id em movements garantem idempotência; índices implícitos nas colunas UNIQUE.",
+        "tests": "16 testes passando cobrindo import básico, idempotência, path ausente/inexistente, hash/verify, seed+login, senha não plaintext, in/out de estoque, saldo insuficiente, qty inválido, dashboard, fluxo completo API, proteção de rotas e formulário de login.",
+        "error_handling": "DATASET_PATH ausente e arquivo inexistente geram ETLError com mensagem acionável (sem stack trace); payloads inválidos tratados via Pydantic (422) e ValueError→400; saída além do saldo retorna 400 — pequena lacuna: payloads com unit_price negativo não são explicitamente validados.",
+        "architecture": "Separação clara em camadas: db (persistência), etl (ingestão), auth (autenticação), inventory (domínio), api (transporte HTTP), cli (entrada); baixo acoplamento entre módulos; nomes de módulos e funções autoexplicativos — estrutura exemplar para o tamanho do projeto.",
+        "production": "Todos os 6 artefatos presentes; ruff configurado (line-length=100, select E/F/W/I) sem erros; CI roda lint+testes; README com instruções de import e uso; empacotamento via hatchling com console script inv-etl; uvx executado com sucesso.",
+        "git": "9 commits com mensagens significativas seguindo Conventional Commits (feat/docs+ci/test/chore); tag semver v0.1.0 presente; histórico conta a evolução incremental do projeto de forma clara."
+      },
+      "hallucinated_dependency": false,
+      "summary": "Projeto exemplar com 100% de aprovação em todas as checagens objetivas do harness: ETL idempotente, autenticação por hash pbkdf2, dashboard com métricas exatas, API REST completa, 16 testes passando e infraestrutura de produção (lint, CI, README, uvx) intacta. A arquitetura em camadas é coesa e bem nomeada, sem dependências alucinadas. A única ressalva menor é a ausência de validação explícita de valores negativos em unit_price, que não foi testada pelo harness mas representa uma lacuna de robustez."
+    }
+  },
+  "divergences": {}
+}

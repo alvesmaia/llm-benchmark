@@ -14,12 +14,17 @@ COPILOT_BIN = shutil.which("copilot") or "copilot"
 class CopilotCliAdapter(Adapter):
     name = "copilot_cli"
 
+    def _effort_args(self) -> list[str]:
+        # o Copilot CLI aceita --effort none|low|medium|high|xhigh|max
+        return ["--effort", self.effort] if self.effort else []
+
     def _cmd(self, prompt: str, resume: bool = False) -> list[str]:
-        cmd = [COPILOT_BIN, "-p", prompt, "--model", self.model, "--allow-all-tools"]
+        base = [COPILOT_BIN, "-p", prompt, "--model", self.model, *self._effort_args(),
+                "--allow-all-tools"]
         if resume:
-            cmd = [COPILOT_BIN, "--continue", "-p", prompt, "--model", self.model,
-                   "--allow-all-tools"]
-        return cmd
+            base = [COPILOT_BIN, "--continue", "-p", prompt, "--model", self.model,
+                    *self._effort_args(), "--allow-all-tools"]
+        return base
 
     def _run(self, phase: str, prompt: str, workdir: Path, env: dict,
              resume: bool = False) -> PhaseResult:

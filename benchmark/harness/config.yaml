@@ -69,7 +69,9 @@ candidates:
     model_slug: opus-4-7
     context: "1M"
     display: "Opus 4.7"
-    thinking: "xhigh"
+    thinking: "medium"
+    effort: "medium"
+    scenarios: ["cep_etl", "inventory"]
   - agent: claude_code
     model: sonnet
     model_slug: sonnet
@@ -87,6 +89,14 @@ candidates:
     model_slug: copilot-opus
     display: "Opus 4.6 (Copilot)"
     thinking: "xhigh"
+  - agent: copilot_cli
+    model: claude-opus-4.7
+    model_slug: copilot-opus-4-7
+    context: "1M"
+    display: "Opus 4.7"
+    thinking: "medium"
+    effort: "medium"
+    scenarios: ["inventory"]
   - agent: copilot_cli
     model: claude-sonnet-4.6
     model_slug: copilot-sonnet
