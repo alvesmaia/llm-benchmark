@@ -47,12 +47,15 @@ candidates:
   - agent: claude_code
     model: claude-opus-4-8
     model_slug: opus-4-8
+    context: "1M"
   - agent: claude_code
     model: claude-opus-4-7
     model_slug: opus-4-7
+    context: "1M"
   - agent: claude_code
     model: sonnet
     model_slug: sonnet
+    context: "200K"
   - agent: copilot_cli
     model: claude-opus-4.6
     model_slug: copilot-opus

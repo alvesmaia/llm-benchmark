@@ -24,6 +24,7 @@ class Candidate:
     agent: str
     model: str
     model_slug: str
+    context: str | None = None  # janela de contexto declarada (ex.: "1M", "200K")
 
     @property
     def slug(self) -> str:

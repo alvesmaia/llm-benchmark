@@ -97,8 +97,14 @@ def build_leaderboard(cfg: Config) -> str:
         )
         cost = f"{r['_total_cost']:.3f}" if r.get("_total_cost") else "—"
         diverg = ", ".join(r.get("divergences", {}).keys()) or "—"
+        # tag de contexto: marca modelos 1M com um badge ao lado do nome
+        cand = cfg.candidate_by_slug(r.get("slug", ""))
+        model_label = r.get("model", "?")
+        if cand and cand.context:
+            badge = "`🧠 1M`" if cand.context.upper() == "1M" else f"`{cand.context}`"
+            model_label = f"{model_label} {badge}"
         lines.append(
-            f"| {i} | {r.get('agent','?')} | {r.get('model','?')} | "
+            f"| {i} | {r.get('agent','?')} | {model_label} | "
             f"**{sc.get('weighted_subtotal','?')}** | {sc.get('final_score','?')} | "
             f"{sc.get('tier','?')} | {dim_cells} | {cost} | {diverg} |"
         )
