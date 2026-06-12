@@ -1,18 +1,24 @@
-# LLM Coding Benchmark — ETL CEP Correios
+# LLM Coding Benchmark
 
 Benchmark próprio para avaliar **LLMs operando como code agents**, inspirado na metodologia do
 [Fábio Akita](https://akitaonrails.com/2026/04/24/llm-benchmarks-parte-3-deepseek-kimi-mimo/)
 (repo de referência: [`akitaonrails/llm-coding-benchmark`](https://github.com/akitaonrails/llm-coding-benchmark)).
 
-Cada agente recebe **o mesmo brief**, constrói o projeto sozinho via harness automatizado em **3 fases**
-(build → validação → git), e é pontuado por uma **rubrica de 0–100 sobre 9 dimensões**, classificando em
-tiers **A/B/C/D**.
+Cada candidato (**harness + modelo**) recebe o **brief de um cenário**, constrói o projeto sozinho via
+harness automatizado em **3 fases** (build → validação → git), e é pontuado por uma **rubrica 0–100 por
+dimensões** com **painel de 2 juízes**, classificando em tiers **A/B/C/D**. O repositório suporta
+**múltiplos cenários de teste** — atualmente **2**, cada um com desafio, rubrica e ranking próprios.
 
-## O desafio
+## Cenários de teste
 
-Implementar um **ETL da base de CEP dos Correios** em Python, com **três interfaces de consulta**
-(CLI + API REST + Web) que permitem consultar **um ou mais CEPs**. Spec completa em
-[`benchmark/brief/challenge.md`](benchmark/brief/challenge.md).
+| # | Cenário (`id`) | Desafio | Dimensões | Spec |
+|---|---|---|---|---|
+| 1 | **ETL CEP Correios** (`cep_etl`) | ETL da base de CEP dos Correios + **3 interfaces** (CLI + API REST + Web) para consultar 1+ CEPs | 9 | [`challenge.md`](benchmark/brief/challenge.md) |
+| 2 | **Gestão de Estoque** (`inventory`) | Login + **API REST** + entrada/saída de produtos (cadastro) + **dashboard** de custos/movimentações/revenue, sobre o dataset [`car-sales-report`](https://www.kaggle.com/datasets/missionjee/car-sales-report) | 11 | [`challenge.md`](benchmark/inventory/brief/challenge.md) |
+
+Cada cenário tem **dimensões e ranking próprios**. Selecione com `uv run bench run --scenario <id>`
+(`cep_etl` é o default). O 2º cenário foi adicionado porque o ranking do 1º **saturou** (vários
+candidatos 96–99/Tier A); dimensões de auth/estoque/dashboard diferenciam melhor os candidatos.
 
 ## Ranking: harness + modelo
 
@@ -32,9 +38,9 @@ Matriz inicial (em [`benchmark/harness/config.yaml`](benchmark/harness/config.ya
 | GitHub Copilot CLI | GPT (codex) |
 | opencode | Claude Sonnet |
 
-## Ranking atual
+## Ranking — Cenário 1: ETL CEP Correios
 
-> Esta seção é **gerada automaticamente** ao final de cada `uv run bench run` (ou `uv run bench report`).
+> Seção **gerada** ao final de `uv run bench run` (ou `uv run bench report`).
 > Ver também [`results/leaderboard.md`](results/leaderboard.md).
 
 <!-- LEADERBOARD:START -->
@@ -94,17 +100,12 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 - **claude_code-claude-haiku-4-5-20251001**: load_performance_bonus (+3)
 <!-- LEADERBOARD:END -->
 
-## Cenário 2 — Gestão de Estoque (car-sales)
+## Ranking — Cenário 2: Gestão de Estoque (car-sales)
 
-Segundo desafio, com **dimensões próprias** que diferenciam melhor os candidatos: um sistema de
-**Gestão de Estoque** (login com usuário/senha, **API REST**, entrada/saída de produtos com cadastro,
-e **dashboard** de custos/movimentações/revenue) a partir do dataset
-[`car-sales-report`](https://www.kaggle.com/datasets/missionjee/car-sales-report). Spec em
-[`benchmark/inventory/brief/challenge.md`](benchmark/inventory/brief/challenge.md).
+> Seção **gerada** por `uv run bench run --scenario inventory` (ou `bench report --scenario inventory`).
+> Ver também [`results/inventory/leaderboard.md`](results/inventory/leaderboard.md).
 
-Rubrica de **11 dimensões** com maior peso em **Lógica de Estoque, Autenticação, Dashboard e API REST**.
-Rode com `uv run bench run --scenario inventory` (e `--scenario inventory` em `report`/`selftest`).
-O ranking abaixo é **gerado** (`results/inventory/leaderboard.md`).
+Rubrica de **11 dimensões**, com maior peso em **Lógica de Estoque, Autenticação, Dashboard e API REST**.
 
 <!-- LEADERBOARD-INVENTORY:START -->
 
@@ -157,11 +158,13 @@ custo_total = Σ custo_fase  (build, validação, git)
 1. **Fase 1 (build):** o agente recebe o brief e constrói a aplicação, headless, num diretório isolado.
 2. **Fase 2 (validação):** continua a mesma sessão para dar boot, rodar testes e lint, e corrigir falhas.
 3. **Fase 3 (git):** o agente commita, cria **tag semver** e faz **push** para o branch do modelo.
-4. **Checagens objetivas:** o harness roda `pytest`, `ruff`, carga da fixture, execução via
-   `uvx`/`uv run` e a bateria de `expected_queries.json`.
+4. **Checagens objetivas (por cenário):** o harness roda `pytest`, `ruff`, carga da fixture, execução via
+   `uvx`/`uv run` e a bateria de verdades do cenário (`expected_queries.json` no CEP;
+   `expected_metrics.json`, auth e regras de estoque no Estoque).
 5. **Painel de 2 juízes:** Claude Opus + Copilot GPT pontuam a rubrica de forma independente; a nota de cada
    dimensão é a **média** das duas (reduz viés; divergências grandes são sinalizadas).
 6. **Score + leaderboard:** combina objetivo + juízes ponderado pela rubrica, aplica modificadores e tier.
+   Opcionalmente, **exporta um ZIP por candidato** (app + prompt do juiz) para reavaliação por juiz externo.
 
 ## Isolamento Git
 
@@ -184,9 +187,16 @@ uv run bench run
 # rodar um candidato específico
 uv run bench run --only claude_code-sonnet
 
-# pontuar e gerar o leaderboard
-uv run bench score
-uv run bench report
+# rodar o 2º cenário (Gestão de Estoque) — vale --scenario em run/report/selftest/rescore
+uv run bench selftest --scenario inventory
+uv run bench run --scenario inventory
+
+# pontuar e gerar o leaderboard (do cenário escolhido)
+uv run bench report                      # cep_etl (default)
+uv run bench report --scenario inventory
+
+# exportar, por candidato, um ZIP (app + prompt do juiz) p/ reavaliação por juiz externo
+uv run bench export <slug> --scenario inventory
 
 # avaliar manualmente um resultado em um único comando (sobe Web + API)
 uv run bench serve claude_code-opus
@@ -194,11 +204,17 @@ uv run bench serve claude_code-opus
 uvx --from runs/claude_code-opus/app cep-etl serve
 ```
 
-## Base DNE
+## Datasets (por cenário)
 
-A base DNE oficial dos Correios é **proprietária** e nunca é versionada. Configure `dne_path` em
-`config.yaml` apontando para a pasta com os arquivos `LOG_*.TXT`. Para CI/auto-teste, o padrão aponta para
-`benchmark/fixtures/dne_sample/` (fixture sintética no mesmo formato `@`/Latin-1).
+Os datasets reais ficam **offline** (gitignored); cada cenário usa uma **fixture sintética** versionada para
+CI/auto-teste, e o caminho do dataset real é servido aos agentes via env.
+
+- **Cenário 1 — DNE Correios** (`cep_etl`): base oficial é **proprietária**, nunca versionada. Configure
+  `dne_path` em `config.yaml` apontando para a pasta com os `LOG_*.TXT`; o padrão aponta para a fixture
+  `benchmark/fixtures/dne_sample/` (formato `@`/Latin-1). Servido via `DNE_PATH`.
+- **Cenário 2 — car-sales** (`inventory`): mantenha o CSV do Kaggle offline; aponte
+  `scenarios.inventory.dataset` no `config.yaml` (padrão: fixture `benchmark/inventory/fixtures/`).
+  Servido via `DATASET_PATH`.
 
 ## Estrutura
 
