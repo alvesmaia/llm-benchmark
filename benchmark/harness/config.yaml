@@ -48,17 +48,22 @@ candidates:
     model: claude-opus-4-8
     model_slug: opus-4-8
     context: "1M"
+    display: "Opus 4.8"
   - agent: claude_code
     model: claude-opus-4-7
     model_slug: opus-4-7
     context: "1M"
+    display: "Opus 4.7"
   - agent: claude_code
     model: sonnet
     model_slug: sonnet
     context: "200K"
+    display: "Sonnet 4.6"
   - agent: copilot_cli
     model: claude-opus-4.6
     model_slug: copilot-opus
+    display: "Opus 4.6 (Copilot)"
   - agent: copilot_cli
     model: gpt-5.1-codex
     model_slug: copilot-gpt
+    display: "GPT-5.1 Codex (Copilot)"
