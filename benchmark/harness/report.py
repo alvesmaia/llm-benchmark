@@ -48,6 +48,7 @@ META_COLUMNS = [
     ("Score", "Subtotal + modificadores (bônus de performance, penalidades), com teto 100"),
     ("Tier", "faixa do Score: A (80+), B (60–79), C (40–59), D (<40)"),
     ("Custo (US$)", "custo-equivalente estimado das fases (referência; o consumo conta no plano)"),
+    ("Tempo", "tempo total de conclusão (soma das 3 fases: build + validação + git)"),
     ("Diverg.", "dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)"),
 ]
 
@@ -78,6 +79,7 @@ def _load_scores(cfg: Config) -> list[dict]:
         except json.JSONDecodeError:
             continue
         row["_total_cost"] = _read_cost(cfg, scores_file.parent)
+        row["_total_duration"] = _read_duration(cfg, scores_file.parent)
         rows.append(row)
     return rows
 
@@ -103,6 +105,36 @@ def _read_cost(cfg: Config, results_slug_dir) -> float | None:
             except json.JSONDecodeError:
                 continue
     return round(sum(costs), 3) if costs else None
+
+
+def _read_duration(cfg: Config, results_slug_dir) -> float | None:
+    """Tempo total (s) das fases (result.json; fallback nos logs locais)."""
+    durs = []
+    result_file = results_slug_dir / "result.json"
+    if result_file.exists():
+        try:
+            phases = json.loads(result_file.read_text(encoding="utf-8")).get("phases", {})
+            durs = [p.get("duration_s") for p in phases.values() if p.get("duration_s")]
+        except json.JSONDecodeError:
+            durs = []
+    if not durs:
+        logs_dir = cfg.runs_dir / results_slug_dir.name / "logs"
+        for pf in sorted(logs_dir.glob("phase*.json")) if logs_dir.exists() else []:
+            try:
+                v = json.loads(pf.read_text(encoding="utf-8")).get("duration_s")
+                if v:
+                    durs.append(v)
+            except json.JSONDecodeError:
+                continue
+    return round(sum(durs), 1) if durs else None
+
+
+def _fmt_duration(seconds: float | None) -> str:
+    """Formata segundos como 'Xm Ys' (ex.: 592.8 -> '9m 53s'); None -> '—'."""
+    if not seconds:
+        return "—"
+    m, s = divmod(int(round(seconds)), 60)
+    return f"{m}m {s}s" if m else f"{s}s"
 
 
 def build_leaderboard(cfg: Config) -> str:
@@ -133,8 +165,8 @@ def build_leaderboard(cfg: Config) -> str:
     lines += _legend_lines()
 
     header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | " + \
-        " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Diverg. |"
-    sep = "|" + "---|" * (7 + len(DIMENSIONS) + 2)
+        " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Tempo | Diverg. |"
+    sep = "|" + "---|" * (7 + len(DIMENSIONS) + 3)
     lines += [header, sep]
 
     for i, r in enumerate(rows, 1):
@@ -145,6 +177,7 @@ def build_leaderboard(cfg: Config) -> str:
             for d in DIMENSIONS
         )
         cost = f"{r['_total_cost']:.3f}" if r.get("_total_cost") else "—"
+        tempo = _fmt_duration(r.get("_total_duration"))
         diverg = ", ".join(r.get("divergences", {}).keys()) or "—"
         # nome limpo de exibição; tag de contexto SÓ para modelos 1M
         cand = cfg.candidate_by_slug(r.get("slug", ""))
@@ -155,7 +188,7 @@ def build_leaderboard(cfg: Config) -> str:
         lines.append(
             f"| {i} | {r.get('agent','?')} | {model_label} | {thinking} | "
             f"**{sc.get('weighted_subtotal','?')}** | {sc.get('final_score','?')} | "
-            f"{sc.get('tier','?')} | {dim_cells} | {cost} | {diverg} |"
+            f"{sc.get('tier','?')} | {dim_cells} | {cost} | {tempo} | {diverg} |"
         )
 
     lines += [
