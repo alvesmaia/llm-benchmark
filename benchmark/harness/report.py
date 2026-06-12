@@ -10,13 +10,13 @@ from benchmark.harness.rubric import DIMENSIONS, WEIGHTS
 
 DIM_LABELS = {
     "etl_parsing": "ETL",
-    "completeness": "Compl.",
-    "interfaces": "Interf.",
-    "persistence": "Persist.",
+    "completeness": "Completude",
+    "interfaces": "Interfaces",
+    "persistence": "Persistência",
     "tests": "Testes",
-    "error_handling": "Erros",
-    "architecture": "Arquit.",
-    "production": "Prod.",
+    "error_handling": "Tratamento de Erros",
+    "architecture": "Arquitetura",
+    "production": "Produção",
     "git": "Git",
 }
 
