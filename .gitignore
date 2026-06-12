@@ -11,21 +11,59 @@ eDNE*/
 # Python / uv
 __pycache__/
 *.py[cod]
-.venv/
-.uv/
+*.pyo
+*.pyd
+.Python
+*.egg
 *.egg-info/
-.pytest_cache/
-.ruff_cache/
-build/
 dist/
+build/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
 
-# Bancos gerados localmente
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# uv
+.uv/
+
+# Bancos gerados pelo ETL
 *.db
 *.sqlite
 *.sqlite3
 
-# SO / editor
-.DS_Store
-Thumbs.db
+# Testes / cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+
+# Lint / type checkers
+.ruff_cache/
+.mypy_cache/
+.pytype/
+
+# IDEs / SO / editor
 .idea/
 .vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Segredos / env
+.env
+.env.*
+!.env.example
+secrets/
