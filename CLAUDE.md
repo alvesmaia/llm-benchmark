@@ -98,6 +98,10 @@ uv run bench selftest
    reescrito por `bench run`/`report`/`rescore` a partir de `results/*/scores.json`. **Não edite à mão** —
    rode `bench report`. Conteúdo fora dos marcadores (ex.: a seção de custo) é estático e seguro de editar.
 7. **Lint:** ruff com `line-length = 100`. Typer dispara B008 (ignorado só em `cli.py` via per-file-ignore).
+8. **Nunca instrua o agente a rodar um servidor bloqueante.** `cep-etl serve` não retorna; um agente cujo
+   shell bloqueia nele (ex.: Codex/GPT-5.4) trava a sessão inteira por horas. Os prompts de fase pedem boot
+   em **background/timeout + encerrar** — a avaliação automatizada (`checks._server_checks`) já sobe e mata
+   o servidor por conta própria. Não reintroduza "rode `serve` e confirme" sem essa ressalva.
 
 ## Como adicionar um candidato
 
