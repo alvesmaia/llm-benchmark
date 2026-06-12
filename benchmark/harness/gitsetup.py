@@ -21,11 +21,11 @@ def init_nested_repo(app_dir: Path, slug: str, git: GitConfig) -> dict:
 
     steps = [
         ["git", "init", "-q"],
-        # branch local "main" (o agente trabalha aqui); o push mapeia para run/<slug>
-        ["git", "checkout", "-q", "-B", "main"],
+        # O agente trabalha já na branch run/<slug> — assim um `git push origin HEAD` dele
+        # vai para run/<slug>, NUNCA para o main do repo do benchmark.
+        ["git", "checkout", "-q", "-B", branch],
         ["git", "config", "user.name", f"benchmark-{slug}"],
         ["git", "config", "user.email", f"{slug}@benchmark.local"],
-        # guarda o branch de destino e o slug para o gitsetup/gitcheck
         ["git", "config", "benchmark.slug", slug],
         ["git", "config", "benchmark.targetBranch", branch],
     ]
@@ -35,7 +35,9 @@ def init_nested_repo(app_dir: Path, slug: str, git: GitConfig) -> dict:
             info["error"] = f"{' '.join(cmd)} -> {err.strip()}"
             return info
 
-    if git.github_remote:
+    # O origin real só é configurado quando o push está habilitado. Com push desabilitado,
+    # o `git push` do agente falha de forma inofensiva (não toca o repo compartilhado).
+    if git.push_enabled and git.github_remote:
         rc, _o, _e, _ = run_command(["git", "remote", "add", "origin", git.github_remote],
                                     cwd=app_dir, timeout=60)
         info["remote_configured"] = rc == 0
