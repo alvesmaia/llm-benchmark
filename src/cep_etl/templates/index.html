@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de CEP — eDNE Básico</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #1a202c;
+            margin: 0;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.25rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.1), 0 1px 2px rgba(0,0,0,.06);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4a5568;
+            font-size: 0.9rem;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: "Courier New", monospace;
+            resize: vertical;
+            min-height: 80px;
+            transition: border-color .2s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #4299e1;
+            box-shadow: 0 0 0 3px rgba(66,153,225,.15);
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: #a0aec0;
+            margin-top: 0.35rem;
+        }
+
+        button[type="submit"] {
+            margin-top: 1rem;
+            padding: 0.65rem 1.75rem;
+            background: #4299e1;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background .2s;
+        }
+
+        button[type="submit"]:hover {
+            background: #3182ce;
+        }
+
+        .error {
+            background: #fff5f5;
+            border-left: 4px solid #fc8181;
+            padding: 0.75rem 1rem;
+            border-radius: 4px;
+            color: #c53030;
+            margin-top: 1rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        thead tr {
+            background: #edf2f7;
+        }
+
+        th, td {
+            padding: 0.6rem 0.9rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            font-weight: 600;
+            color: #4a5568;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .found-yes td:first-child {
+            border-left: 3px solid #48bb78;
+        }
+
+        .found-no td:first-child {
+            border-left: 3px solid #fc8181;
+        }
+
+        .not-found {
+            color: #e53e3e;
+            font-style: italic;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: .15rem .45rem;
+            border-radius: 99px;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+        .badge-log { background: #bee3f8; color: #2b6cb0; }
+        .badge-loc { background: #fefcbf; color: #744210; }
+
+        .results-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Consulta de CEP</h1>
+    <p class="subtitle">Base eDNE Básico dos Correios — consulte um ou mais CEPs de uma vez.</p>
+
+    <div class="card">
+        <form method="POST" action="/">
+            <label for="ceps">CEPs para consultar</label>
+            <textarea
+                id="ceps"
+                name="ceps"
+                placeholder="01001-000&#10;20040-002&#10;13012100"
+                autocomplete="off"
+                spellcheck="false"
+            >{% if request.method == 'POST' %}{{ request.query_params.get('ceps', '') }}{% endif %}</textarea>
+            <p class="hint">Separe múltiplos CEPs por vírgula, ponto-e-vírgula, espaço ou quebra de linha.</p>
+
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+
+            <button type="submit">Consultar</button>
+        </form>
+    </div>
+
+    {% if results is not none %}
+    <div class="card">
+        <p class="results-title">Resultados ({{ results | length }} CEP{{ 's' if results | length != 1 else '' }})</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>CEP</th>
+                    <th>Tipo</th>
+                    <th>Logradouro</th>
+                    <th>Bairro</th>
+                    <th>Localidade</th>
+                    <th>UF</th>
+                    <th>Fonte</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr class="{{ 'found-yes' if r.found else 'found-no' }}">
+                    <td><strong>{{ r.cep }}</strong></td>
+                    {% if r.found %}
+                    <td>{{ r.tipo_logradouro or '—' }}</td>
+                    <td>{{ r.logradouro or '—' }}</td>
+                    <td>{{ r.bairro or '—' }}</td>
+                    <td>{{ r.localidade }}</td>
+                    <td>{{ r.uf }}</td>
+                    <td>
+                        {% if r.source == 'logradouro' %}
+                        <span class="badge badge-log">logradouro</span>
+                        {% else %}
+                        <span class="badge badge-loc">localidade</span>
+                        {% endif %}
+                    </td>
+                    {% else %}
+                    <td colspan="6" class="not-found">{{ r.error }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+</div>
+</body>
+</html>
