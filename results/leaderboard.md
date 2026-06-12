@@ -11,7 +11,7 @@ que o Score final — este satura no teto 100 e inclui bônus/penalidades.
 - **#** — posição no ranking (ordenado pelo Subtotal)
 - **Harness** — o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)
 - **Modelo** — modelo avaliado; tag `· 1M` quando rodou em contexto de 1M
-- **Thinking** — esforço de raciocínio usado (Claude Code: `xhigh`, o default do harness; Codex/Copilot GPT: `medium`)
+- **Thinking** — esforço de raciocínio declarado (default predefinido `medium`; candidatos podem sobrescrever, ex.: `xhigh`/`high`)
 - **Subtotal** — soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — critério de ordenação
 - **Score** — Subtotal + modificadores (bônus de performance, penalidades), com teto 100
 - **Tier** — faixa do Score: A (80+), B (60–79), C (40–59), D (<40)

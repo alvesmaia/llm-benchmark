@@ -26,7 +26,7 @@ class Candidate:
     model_slug: str
     context: str | None = None  # janela de contexto declarada (ex.: "1M", "200K")
     display: str | None = None  # nome limpo de exibição (ex.: "Opus 4.8")
-    thinking: str | None = None  # rótulo exibido no ranking (ex.: "xhigh", "medium")
+    thinking: str | None = "medium"  # rótulo exibido no ranking; default predefinido "medium"
     effort: str | None = None  # flag --effort passada ao CLI (Claude Code): low..max
     scenarios: list[str] | None = None  # cenários que este candidato roda (None => só "cep_etl")
 

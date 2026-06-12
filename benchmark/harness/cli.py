@@ -8,6 +8,7 @@ import typer
 from rich.console import Console
 from rich.table import Table
 
+from benchmark.harness import export as export_mod
 from benchmark.harness import report as report_mod
 from benchmark.harness import run_benchmark
 from benchmark.harness import serve as serve_mod
@@ -27,6 +28,9 @@ def run(
     skip_agent: bool = typer.Option(
         False, "--skip-agent",
         help="não rebuilda: re-roda checagens + juízes no app já construído"),
+    export: bool = typer.Option(
+        True, "--export/--no-export",
+        help="gera um ZIP (app + prompt do juiz + resultados) por candidato ao final"),
 ):
     """Roda a matriz de candidatos (3 fases) e pontua cada um."""
     cfg = load_config(config)
@@ -36,6 +40,9 @@ def run(
     for r in results:
         score = r["score"]
         console.print(f"[bold]{r['slug']}[/bold]: {score['final_score']} (Tier {score['tier']})")
+        if export:
+            zip_path = export_mod.export_candidate(cfg, r["slug"], sc)
+            console.print(f"  [dim]ZIP:[/dim] {zip_path}")
     out = report_mod.write_leaderboard(cfg, sc)
     console.print(f"[green]Leaderboard atualizado:[/green] {out}")
 
@@ -96,6 +103,24 @@ def report(
     cfg = load_config(config)
     out = report_mod.write_leaderboard(cfg, get_scenario(scenario))
     console.print(out.read_text(encoding="utf-8"))
+
+
+@app.command()
+def export(
+    slug: str = typer.Argument(..., help="slug do candidato (ex.: opencode-sonnet)"),
+    config: str = typer.Option(None, help="caminho do config.yaml"),
+    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+    output: str = typer.Option(None, help="diretório de saída (default: exports/<scenario>/)"),
+):
+    """Gera um ZIP com o projeto gerado + o prompt do juiz + os resultados, para reavaliação
+    por um juiz externo (reaproveita o mesmo prompt usado pelo painel interno)."""
+    from pathlib import Path
+
+    cfg = load_config(config)
+    sc = get_scenario(scenario)
+    out_dir = Path(output) if output else None
+    zip_path = export_mod.export_candidate(cfg, slug, sc, out_dir=out_dir)
+    console.print(f"[green]Exportado:[/green] {zip_path}")
 
 
 @app.command()

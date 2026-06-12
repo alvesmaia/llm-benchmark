@@ -66,19 +66,30 @@ config: benchmark/harness/config.yaml
   pelo juiz Sonnet-via-Claude-Code, pois o agente difere).
 - **Ranking por Subtotal** (soma ponderada pré-modificadores) — diferencia melhor que o Score final,
   que satura no teto 100.
+- **Cenários (multi-desafio).** O harness é parametrizado por `Scenario` (`harness/scenarios/`): cada
+  cenário define dimensões/pesos/combinação, brief, rubrica, checks, dataset, sample_app e layout próprios.
+  `cep_etl` é o default (ETL CEP); `inventory` é o 2º desafio (Gestão de Estoque, car-sales). Cada candidato
+  declara em `config.yaml` quais cenários roda (campo `scenarios:`; ausente ⇒ só `cep_etl`). Resultados e
+  leaderboard são namespaced por cenário (cep usa a raiz; novos usam subpasta, ex.: `results/inventory/`).
+- **Thinking default = `medium`.** O campo `thinking` (rótulo do ranking) tem default `medium`; candidatos
+  podem sobrescrever (ex.: `xhigh`). `effort` (flag `--effort` do Claude Code) é separado e opt-in.
 
 ## Comandos do harness (`bench`)
 
 ```bash
-uv run bench run [--only slug1,slug2] [--skip-agent]   # roda candidatos (3 fases) e pontua
-uv run bench rescore <slug>      # re-roda só as checagens objetivas + reaproveita juízes (sem rebuild)
-uv run bench score | report      # regenera results/leaderboard.md e injeta no README
+uv run bench run [--only slug1,slug2] [--skip-agent] [--scenario cep_etl|inventory] [--no-export]
+uv run bench rescore <slug> [--scenario ...]   # re-roda checagens objetivas + reaproveita juízes
+uv run bench score | report [--scenario ...]    # regenera o leaderboard do cenário e injeta no README
+uv run bench export <slug> [--scenario ...]     # ZIP do app + prompt do juiz + resultados (juiz externo)
 uv run bench serve <slug>        # sobe Web+API do projeto gerado (um comando)
 uv run bench query <slug> <ceps...>
-uv run bench selftest
+uv run bench selftest [--scenario cep_etl|inventory]
 ```
 
-`--skip-agent` re-avalia um app já construído (re-roda checagens + juízes, sem rebuildar).
+`--skip-agent` re-avalia um app já construído (re-roda checagens + juízes, sem rebuildar). `--scenario`
+default é `cep_etl` (comportamento histórico). `bench run` gera, por candidato, um **ZIP** em
+`exports/<cenário>/<slug>.zip` (app + `judge_prompt.md` + scores/result) para reavaliação por um juiz
+externo — desligue com `--no-export`. O `judge_prompt.md` é o **mesmo** prompt do painel interno.
 
 ## Regras críticas (não regredir)
 
@@ -104,6 +115,11 @@ uv run bench selftest
    shell bloqueia nele (ex.: Codex/GPT-5.4) trava a sessão inteira por horas. Os prompts de fase pedem boot
    em **background/timeout + encerrar** — a avaliação automatizada (`checks._server_checks`) já sobe e mata
    o servidor por conta própria. Não reintroduza "rode `serve` e confirme" sem essa ressalva.
+9. **Cenários são ADITIVOS — nunca quebre o `cep_etl`.** Toda parametrização por `Scenario` tem default
+   `cep_etl` (resultados/leaderboard/brief do CEP intocados). Ao adicionar um cenário, crie
+   `harness/scenarios/<id>.py` (instância `SCENARIO`), registre em `scenarios/registry.py`, e ponha brief/
+   rubric/checks/fixture/sample_app sob `benchmark/<id>/`. O sample_app DEVE fechar
+   `bench selftest --scenario <id>` em **Tier A** e o `bench selftest` (cep) NÃO pode regredir.
 
 ## Como adicionar um candidato
 

@@ -2,6 +2,9 @@
 # logs brutos do CLI e snapshots de sessão. Mantidos apenas localmente.
 runs/
 
+# ZIPs exportados (app + prompt do juiz + resultados) para reavaliação por juiz externo.
+exports/
+
 # Base DNE oficial dos Correios (proprietária — nunca versionar)
 dne/
 *.DNE

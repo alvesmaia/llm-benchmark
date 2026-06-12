@@ -12,8 +12,8 @@ META_COLUMNS = [
     ("#", "posição no ranking (ordenado pelo Subtotal)"),
     ("Harness", "o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)"),
     ("Modelo", "modelo avaliado; tag `· 1M` quando rodou em contexto de 1M"),
-    ("Thinking", "esforço de raciocínio usado (Claude Code: `xhigh`, o default do harness; "
-                 "Codex/Copilot GPT: `medium`)"),
+    ("Thinking", "esforço de raciocínio declarado (default predefinido `medium`; candidatos "
+                 "podem sobrescrever, ex.: `xhigh`/`high`)"),
     ("Subtotal", "soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — "
                  "critério de ordenação"),
     ("Score", "Subtotal + modificadores (bônus de performance, penalidades), com teto 100"),

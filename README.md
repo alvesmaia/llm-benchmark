@@ -50,7 +50,7 @@ que o Score final — este satura no teto 100 e inclui bônus/penalidades.
 - **#** — posição no ranking (ordenado pelo Subtotal)
 - **Harness** — o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)
 - **Modelo** — modelo avaliado; tag `· 1M` quando rodou em contexto de 1M
-- **Thinking** — esforço de raciocínio usado (Claude Code: `xhigh`, o default do harness; Codex/Copilot GPT: `medium`)
+- **Thinking** — esforço de raciocínio declarado (default predefinido `medium`; candidatos podem sobrescrever, ex.: `xhigh`/`high`)
 - **Subtotal** — soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — critério de ordenação
 - **Score** — Subtotal + modificadores (bônus de performance, penalidades), com teto 100
 - **Tier** — faixa do Score: A (80+), B (60–79), C (40–59), D (<40)
@@ -93,6 +93,29 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 - **claude_code-sonnet**: load_performance_bonus (+3)
 - **claude_code-claude-haiku-4-5-20251001**: load_performance_bonus (+3)
 <!-- LEADERBOARD:END -->
+
+## Cenário 2 — Gestão de Estoque (car-sales)
+
+Segundo desafio, com **dimensões próprias** que diferenciam melhor os candidatos: um sistema de
+**Gestão de Estoque** (login com usuário/senha, **API REST**, entrada/saída de produtos com cadastro,
+e **dashboard** de custos/movimentações/revenue) a partir do dataset
+[`car-sales-report`](https://www.kaggle.com/datasets/missionjee/car-sales-report). Spec em
+[`benchmark/inventory/brief/challenge.md`](benchmark/inventory/brief/challenge.md).
+
+Rubrica de **11 dimensões** com maior peso em **Lógica de Estoque, Autenticação, Dashboard e API REST**.
+Rode com `uv run bench run --scenario inventory` (e `--scenario inventory` em `report`/`selftest`).
+O ranking abaixo é **gerado** (`results/inventory/leaderboard.md`).
+
+<!-- LEADERBOARD-INVENTORY:START -->
+
+Ranking por **candidato = harness (agent) + modelo**. O mesmo modelo aparece como
+entradas distintas conforme o harness (o harness influencia o resultado).
+
+Ordenado por **Subtotal** (soma ponderada 0–100 pré-modificadores), que diferencia melhor
+que o Score final — este satura no teto 100 e inclui bônus/penalidades.
+
+_Nenhum resultado ainda. Rode `uv run bench run` e depois `uv run bench report`._
+<!-- LEADERBOARD-INVENTORY:END -->
 
 ## Como o custo (US$) é calculado
 
