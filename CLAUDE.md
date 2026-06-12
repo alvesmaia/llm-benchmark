@@ -61,7 +61,9 @@ config: benchmark/harness/config.yaml
 - **Rubrica:** 9 dimensões com pesos que somam 100 — definidos em `harness/rubric.py` (a fonte da verdade;
   `rubric.md` é a versão humana). Combinação objetivo×juiz em `objective_checks.md`.
 - **Painel de 2 juízes** (config: `judges`): cada um pontua de forma independente; tira-se a média.
-  O juiz da **mesma família de modelo** do candidato é pulado (anti-viés).
+  O juiz do **mesmo agente E mesma família de modelo** do candidato é pulado (anti-viés) — ver
+  `judge.py`. Atenção: harness diferente NÃO é pulado (ex.: o candidato Sonnet-via-Copilot é julgado
+  pelo juiz Sonnet-via-Claude-Code, pois o agente difere).
 - **Ranking por Subtotal** (soma ponderada pré-modificadores) — diferencia melhor que o Score final,
   que satura no teto 100.
 

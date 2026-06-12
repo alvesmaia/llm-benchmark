@@ -62,10 +62,22 @@ candidates:
     context: "200K"
     display: "Sonnet 4.6"
     thinking: "xhigh"
+  - agent: claude_code
+    model: claude-haiku-4-5-20251001
+    model_slug: haiku-4-5
+    context: "200K"
+    display: "Haiku 4.5"
+    thinking: "xhigh"
   - agent: copilot_cli
     model: claude-opus-4.6
     model_slug: copilot-opus
     display: "Opus 4.6 (Copilot)"
+    thinking: "xhigh"
+  - agent: copilot_cli
+    model: claude-sonnet-4.6
+    model_slug: copilot-sonnet
+    context: "1M"
+    display: "Sonnet 4.6 (Copilot)"
     thinking: "xhigh"
   - agent: copilot_cli
     model: gpt-5.1-codex

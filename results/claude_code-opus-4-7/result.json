@@ -4,7 +4,12 @@
   "model": "claude-opus-4-7",
   "started_utc": "2026-06-12T15:30:00.657286+00:00",
   "finished_utc": "2026-06-12T15:30:50.476027+00:00",
-  "phases": {},
+  "phases": {
+    "_preserved_total": {
+      "cost_usd": 4.412,
+      "note": "custo total preservado; breakdown por fase perdido nos artefatos da maquina original"
+    }
+  },
   "score": {
     "dimensions": {
       "etl_parsing": {

@@ -4,7 +4,12 @@
   "model": "sonnet",
   "started_utc": "2026-06-12T15:30:50.477673+00:00",
   "finished_utc": "2026-06-12T15:31:21.112003+00:00",
-  "phases": {},
+  "phases": {
+    "_preserved_total": {
+      "cost_usd": 3.1,
+      "note": "custo total preservado; breakdown por fase perdido nos artefatos da maquina original"
+    }
+  },
   "score": {
     "dimensions": {
       "etl_parsing": {

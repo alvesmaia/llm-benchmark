@@ -26,7 +26,9 @@ Matriz inicial (em [`benchmark/harness/config.yaml`](benchmark/harness/config.ya
 |-----------------|--------|
 | Claude Code     | Opus |
 | Claude Code     | Sonnet |
+| Claude Code     | Haiku |
 | GitHub Copilot CLI | Claude Opus |
+| GitHub Copilot CLI | Claude Sonnet |
 | GitHub Copilot CLI | GPT (codex) |
 
 ## Ranking atual
@@ -71,13 +73,17 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | claude_code | Opus 4.7 · 1M | xhigh | **99.6** | 100.0 | A | 100 | 100 | 100 | 100 | 100 | 100 | 95 | 100 | 100 | 4.412 | — |
 | 2 | claude_code | Opus 4.8 · 1M | xhigh | **99.2** | 100.0 | A | 100 | 100 | 100 | 100 | 99 | 100 | 95 | 99 | 97 | 3.956 | — |
-| 3 | claude_code | Sonnet 4.6 | xhigh | **96.5** | 99.5 | A | 98 | 100 | 98 | 95 | 97 | 98 | 88 | 94 | 96 | 3.100 | — |
+| 3 | copilot_cli | Sonnet 4.6 (Copilot) · 1M | xhigh | **96.7** | 99.7 | A | 98 | 100 | 98 | 96 | 96 | 98 | 88 | 96 | 96 | — | — |
+| 4 | claude_code | Sonnet 4.6 | xhigh | **96.5** | 99.5 | A | 98 | 100 | 98 | 95 | 97 | 98 | 88 | 94 | 96 | 3.100 | — |
+| 5 | claude_code | Haiku 4.5 | xhigh | **75.2** | 78.2 | B | 52 | 100 | 57 | 97 | 91 | 32 | 73 | 95 | 97 | 1.440 | — |
 
 ## Modificadores aplicados
 
 - **claude_code-claude-opus-4-7**: load_performance_bonus (+3)
 - **claude_code-claude-opus-4-8**: load_performance_bonus (+3)
+- **copilot_cli-claude-sonnet-4.6**: load_performance_bonus (+3)
 - **claude_code-sonnet**: load_performance_bonus (+3)
+- **claude_code-claude-haiku-4-5-20251001**: load_performance_bonus (+3)
 <!-- LEADERBOARD:END -->
 
 ## Como o custo (US$) é calculado
