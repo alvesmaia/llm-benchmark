@@ -47,15 +47,15 @@ META_COLUMNS = [
                  "critério de ordenação"),
     ("Score", "Subtotal + modificadores (bônus de performance, penalidades), com teto 100"),
     ("Tier", "faixa do Score: A (80+), B (60–79), C (40–59), D (<40)"),
-    ("Custo (US$)", "custo-equivalente estimado das fases (referência; o consumo conta no plano)"),
     ("Tempo", "tempo total de conclusão (soma das 3 fases: build + validação + git)"),
+    ("Custo (US$)", "custo-equivalente estimado das fases (referência; o consumo conta no plano)"),
     ("Diverg.", "dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)"),
 ]
 
 
 def _legend_lines() -> list[str]:
     lines = ["### Legenda das colunas", ""]
-    for name, desc in META_COLUMNS[:7]:  # # .. Tier
+    for name, desc in META_COLUMNS[:8]:  # # .. Tempo
         lines.append(f"- **{name}** — {desc}")
     lines.append("")
     lines.append("Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):")
@@ -63,7 +63,7 @@ def _legend_lines() -> list[str]:
     for dim in DIMENSIONS:
         lines.append(f"- **{DIM_LABELS[dim]}** (peso {WEIGHTS[dim]}) — {DIM_DESCRIPTIONS[dim]}")
     lines.append("")
-    for name, desc in META_COLUMNS[7:]:  # Custo, Diverg.
+    for name, desc in META_COLUMNS[8:]:  # Custo, Diverg.
         lines.append(f"- **{name}** — {desc}")
     lines.append("")
     return lines
@@ -164,9 +164,9 @@ def build_leaderboard(cfg: Config) -> str:
 
     lines += _legend_lines()
 
-    header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | " + \
-        " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Tempo | Diverg. |"
-    sep = "|" + "---|" * (7 + len(DIMENSIONS) + 3)
+    header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | " + \
+        " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Diverg. |"
+    sep = "|" + "---|" * (8 + len(DIMENSIONS) + 2)
     lines += [header, sep]
 
     for i, r in enumerate(rows, 1):
@@ -188,7 +188,7 @@ def build_leaderboard(cfg: Config) -> str:
         lines.append(
             f"| {i} | {r.get('agent','?')} | {model_label} | {thinking} | "
             f"**{sc.get('weighted_subtotal','?')}** | {sc.get('final_score','?')} | "
-            f"{sc.get('tier','?')} | {dim_cells} | {cost} | {tempo} | {diverg} |"
+            f"{sc.get('tier','?')} | {tempo} | {dim_cells} | {cost} | {diverg} |"
         )
 
     lines += [
