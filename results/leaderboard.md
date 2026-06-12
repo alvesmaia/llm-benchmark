@@ -11,7 +11,7 @@ que o Score final — este satura no teto 100 e inclui bônus/penalidades.
 - **#** — posição no ranking (ordenado pelo Subtotal)
 - **Harness** — o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)
 - **Modelo** — modelo avaliado; tag `· 1M` quando rodou em contexto de 1M
-- **Thinking** — modo/esforço de raciocínio do modelo na execução (ex.: `adaptive` no Claude Code, `medium` no Codex)
+- **Thinking** — esforço de raciocínio usado (Claude Code: `xhigh`, o default do harness; Codex/Copilot GPT: `medium`)
 - **Subtotal** — soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — critério de ordenação
 - **Score** — Subtotal + modificadores (bônus de performance, penalidades), com teto 100
 - **Tier** — faixa do Score: A (80+), B (60–79), C (40–59), D (<40)
@@ -33,9 +33,9 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 
 | # | Harness | Modelo | Thinking | Subtotal | Score | Tier | ETL | Completude | Interfaces | Persistência | Testes | Tratamento de Erros | Arquitetura | Produção | Git | Custo (US$) | Diverg. |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 | claude_code | Opus 4.7 · 1M | adaptive | **99.6** | 100.0 | A | 100 | 100 | 100 | 100 | 100 | 100 | 95 | 100 | 100 | 4.412 | — |
-| 2 | claude_code | Opus 4.8 · 1M | adaptive | **99.2** | 100.0 | A | 100 | 100 | 100 | 100 | 99 | 100 | 95 | 99 | 97 | 3.956 | — |
-| 3 | claude_code | Sonnet 4.6 | adaptive | **96.5** | 99.5 | A | 98 | 100 | 98 | 95 | 97 | 98 | 88 | 94 | 96 | 3.100 | — |
+| 1 | claude_code | Opus 4.7 · 1M | xhigh | **99.6** | 100.0 | A | 100 | 100 | 100 | 100 | 100 | 100 | 95 | 100 | 100 | 4.412 | — |
+| 2 | claude_code | Opus 4.8 · 1M | xhigh | **99.2** | 100.0 | A | 100 | 100 | 100 | 100 | 99 | 100 | 95 | 99 | 97 | 3.956 | — |
+| 3 | claude_code | Sonnet 4.6 | xhigh | **96.5** | 99.5 | A | 98 | 100 | 98 | 95 | 97 | 98 | 88 | 94 | 96 | 3.100 | — |
 
 ## Modificadores aplicados
 
