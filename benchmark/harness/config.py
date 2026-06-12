@@ -28,10 +28,15 @@ class Candidate:
     display: str | None = None  # nome limpo de exibição (ex.: "Opus 4.8")
     thinking: str | None = None  # rótulo exibido no ranking (ex.: "xhigh", "medium")
     effort: str | None = None  # flag --effort passada ao CLI (Claude Code): low..max
+    scenarios: list[str] | None = None  # cenários que este candidato roda (None => só "cep_etl")
 
     @property
     def slug(self) -> str:
         return f"{self.agent}-{self.model_slug}"
+
+    def runs_scenario(self, scenario_id: str) -> bool:
+        active = self.scenarios or ["cep_etl"]
+        return scenario_id in active
 
 
 @dataclass
@@ -64,6 +69,21 @@ class Config:
 
     def candidate_by_slug(self, slug: str) -> Candidate | None:
         return next((c for c in self.candidates if c.slug == slug), None)
+
+    def dataset_for(self, scenario_id: str) -> Path:
+        """Caminho do dataset do cenário. cep_etl usa dne_path (retrocompat); demais vêm do
+        bloco `scenarios:` do config.yaml (`scenarios.<id>.dataset`)."""
+        if scenario_id == "cep_etl":
+            return self.dne_path
+        sc = (self.raw.get("scenarios") or {}).get(scenario_id) or {}
+        return _abspath(sc["dataset"])
+
+    def expected_for(self, scenario_id: str) -> Path:
+        """Arquivo de 'verdade' das checagens objetivas. cep_etl usa expected_queries."""
+        if scenario_id == "cep_etl":
+            return self.expected_queries
+        sc = (self.raw.get("scenarios") or {}).get(scenario_id) or {}
+        return _abspath(sc["expected"])
 
 
 def _abspath(value: str) -> Path:

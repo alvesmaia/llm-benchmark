@@ -13,8 +13,7 @@ import tempfile
 from pathlib import Path
 
 from benchmark.harness.adapters.base import run_command
-from benchmark.harness.config import REPO_ROOT, Config, Judge
-from benchmark.harness.rubric import DIMENSIONS
+from benchmark.harness.config import Config, Judge
 
 MAX_FILE_BYTES = 6000
 CODE_GLOBS = ["*.py", "Dockerfile", "docker-compose.y*ml", "pyproject.toml"]
@@ -62,9 +61,9 @@ def _git_log(app_dir: Path) -> str:
     return f"COMMITS:\n{out.strip()}\n\nTAGS:\n{tags.strip()}"
 
 
-def build_prompt(template: str, *, app_dir: Path, objective: dict) -> str:
-    brief = (REPO_ROOT / "benchmark" / "brief" / "challenge.md").read_text(encoding="utf-8")
-    rubric = (REPO_ROOT / "benchmark" / "rubric" / "rubric.md").read_text(encoding="utf-8")
+def build_prompt(template: str, *, app_dir: Path, objective: dict, scenario) -> str:
+    brief = (scenario.brief_dir / "challenge.md").read_text(encoding="utf-8")
+    rubric = scenario.rubric_md.read_text(encoding="utf-8")
     repl = {
         "{{BRIEF}}": brief,
         "{{RUBRIC}}": rubric,
@@ -132,10 +131,13 @@ def _invoke_judge(judge: Judge, prompt: str, cwd: Path) -> dict:
     return scores
 
 
-def run_panel(app_dir: Path, candidate_slug: str, objective: dict, cfg: Config) -> dict:
+def run_panel(app_dir: Path, candidate_slug: str, objective: dict, cfg: Config,
+              scenario=None) -> dict:
     """Roda todos os juízes, aplica anti-auto-favorecimento e calcula a média por dimensão."""
-    template = (REPO_ROOT / "benchmark" / "rubric" / "judge_prompt.md").read_text(encoding="utf-8")
-    prompt = build_prompt(template, app_dir=app_dir, objective=objective)
+    from benchmark.harness.scenarios.registry import get_scenario
+    scenario = scenario or get_scenario("cep_etl")
+    template = scenario.judge_prompt.read_text(encoding="utf-8")
+    prompt = build_prompt(template, app_dir=app_dir, objective=objective, scenario=scenario)
 
     candidate = cfg.candidate_by_slug(candidate_slug)
     per_judge = {}
@@ -152,7 +154,7 @@ def run_panel(app_dir: Path, candidate_slug: str, objective: dict, cfg: Config) 
     # média por dimensão entre juízes válidos
     averaged = {}
     divergences = {}
-    for dim in DIMENSIONS:
+    for dim in scenario.dimensions:
         notes = []
         for _jid, res in per_judge.items():
             if "scores" in res and isinstance(res["scores"].get(dim), (int, float)):
@@ -172,6 +174,7 @@ def run_panel(app_dir: Path, candidate_slug: str, objective: dict, cfg: Config) 
         "averaged_by_dimension": averaged,
         "divergences": divergences,
         "hallucinated_dependency_votes": hallucinated,
+        "prompt": prompt,  # prompt montado (idêntico p/ todos os juízes) — usado no export
     }
 
 

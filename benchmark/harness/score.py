@@ -3,17 +3,17 @@
 from __future__ import annotations
 
 from benchmark.harness.config import Config
-from benchmark.harness.rubric import COMBINATION, DIMENSIONS, WEIGHTS, tier_for
+from benchmark.harness.rubric import tier_for
 
 
 def _dimension_note(dim: str, objective: float | None,
-                    judge: float | None) -> tuple[float, bool, str]:
+                    judge: float | None, combination: dict) -> tuple[float, bool, str]:
     """Combina objetivo×juiz para uma dimensão. Retorna (nota, tem_fonte, origem).
 
     tem_fonte=False quando não há nenhuma fonte (objetivo nem juiz) — nesse caso a dimensão é
     excluída do score e os pesos são renormalizados, em vez de penalizar com 0.
     """
-    w_obj, w_judge = COMBINATION[dim]
+    w_obj, w_judge = combination[dim]
     has_obj = objective is not None and w_obj > 0
     has_judge = judge is not None and w_judge > 0
 
@@ -32,22 +32,26 @@ def _dimension_note(dim: str, objective: float | None,
 
 
 def compute_score(objective_by_dimension: dict, judge_avg: dict, flags: dict,
-                  cfg: Config) -> dict:
+                  cfg: Config, scenario=None) -> dict:
+    from benchmark.harness.scenarios.registry import get_scenario
+    sc = scenario or get_scenario("cep_etl")
+    dimensions, weights, combination = sc.dimensions, sc.weights, sc.combination
+
     mods_cfg = cfg.modifiers or {}
     dim_notes = {}
     weighted_acc = 0.0
     scored_weight = 0
     excluded = []
-    for dim in DIMENSIONS:
+    for dim in dimensions:
         obj = objective_by_dimension.get(dim)
         jud = judge_avg.get(dim)
-        note, has_source, source = _dimension_note(dim, obj, jud)
+        note, has_source, source = _dimension_note(dim, obj, jud, combination)
         note = max(0.0, min(100.0, note))
         dim_notes[dim] = {"note": round(note, 1), "objective": obj, "judge": jud,
                           "source": source, "counted": has_source}
         if has_source:
-            weighted_acc += WEIGHTS[dim] * note / 100.0
-            scored_weight += WEIGHTS[dim]
+            weighted_acc += weights[dim] * note / 100.0
+            scored_weight += weights[dim]
         else:
             excluded.append(dim)
 

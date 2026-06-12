@@ -6,35 +6,6 @@ import json
 from pathlib import Path
 
 from benchmark.harness.config import Config
-from benchmark.harness.rubric import DIMENSIONS, WEIGHTS
-
-DIM_LABELS = {
-    "etl_parsing": "ETL",
-    "completeness": "Completude",
-    "interfaces": "Interfaces",
-    "persistence": "Persistência",
-    "tests": "Testes",
-    "error_handling": "Tratamento de Erros",
-    "architecture": "Arquitetura",
-    "production": "Produção",
-    "git": "Git",
-}
-
-# Descrição de cada dimensão no contexto do desafio (ETL CEP Correios).
-DIM_DESCRIPTIONS = {
-    "etl_parsing": "correção do ETL/parsing da base DNE (encoding Latin-1, separador `@`, "
-                   "mapeamento de campos, fallback de CEP de localidade)",
-    "completeness": "completude dos entregáveis obrigatórios (ETL, consulta, CLI, API, Web, "
-                    "testes, README, lint/CI)",
-    "interfaces": "as três interfaces de consulta (CLI, API REST e Web) funcionam, aceitam 1+ "
-                  "CEPs, e o projeto roda via `uv run`/`uvx`",
-    "persistence": "modelagem do banco: schema, índice por CEP e carga idempotente",
-    "tests": "suíte de testes (pytest) cobre ETL/consulta/erros e passa",
-    "error_handling": "tratamento de CEP inválido, CEP não encontrado e base DNE ausente",
-    "architecture": "arquitetura e organização do código (modularidade, separação de camadas)",
-    "production": "preparação para produção (CI, README, lint/ruff, empacotamento)",
-    "git": "interação com Git/GitHub: commits significativos, tag semver e push",
-}
 
 # Descrição das colunas não-dimensionais.
 META_COLUMNS = [
@@ -53,15 +24,16 @@ META_COLUMNS = [
 ]
 
 
-def _legend_lines() -> list[str]:
+def _legend_lines(scenario) -> list[str]:
     lines = ["### Legenda das colunas", ""]
     for name, desc in META_COLUMNS[:8]:  # # .. Tempo
         lines.append(f"- **{name}** — {desc}")
     lines.append("")
     lines.append("Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):")
     lines.append("")
-    for dim in DIMENSIONS:
-        lines.append(f"- **{DIM_LABELS[dim]}** (peso {WEIGHTS[dim]}) — {DIM_DESCRIPTIONS[dim]}")
+    for dim in scenario.dimensions:
+        lines.append(f"- **{scenario.dim_labels[dim]}** (peso {scenario.weights[dim]}) — "
+                     f"{scenario.dim_descriptions[dim]}")
     lines.append("")
     for name, desc in META_COLUMNS[8:]:  # Custo, Diverg.
         lines.append(f"- **{name}** — {desc}")
@@ -69,22 +41,25 @@ def _legend_lines() -> list[str]:
     return lines
 
 
-def _load_scores(cfg: Config) -> list[dict]:
+def _load_scores(cfg: Config, scenario) -> list[dict]:
     rows = []
-    if not cfg.results_dir.exists():
+    base = scenario.results_dir(cfg.results_dir)
+    if not base.exists():
         return rows
-    for scores_file in sorted(cfg.results_dir.glob("*/scores.json")):
+    for scores_file in sorted(base.glob("*/scores.json")):
         try:
             row = json.loads(scores_file.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             continue
-        row["_total_cost"] = _read_cost(cfg, scores_file.parent)
-        row["_total_duration"] = _read_duration(cfg, scores_file.parent)
+        slug = scores_file.parent.name
+        run_logs = scenario.run_dir(cfg.runs_dir, slug) / "logs"
+        row["_total_cost"] = _read_cost(scores_file.parent, run_logs)
+        row["_total_duration"] = _read_duration(scores_file.parent, run_logs)
         rows.append(row)
     return rows
 
 
-def _read_cost(cfg: Config, results_slug_dir) -> float | None:
+def _read_cost(results_slug_dir, run_logs_dir) -> float | None:
     """Custo total das fases. Prefere o result.json; cai para os logs das fases (que sobrevivem
     a re-avaliações com --skip-agent, que esvaziam as fases do result.json)."""
     costs = []
@@ -96,8 +71,7 @@ def _read_cost(cfg: Config, results_slug_dir) -> float | None:
         except json.JSONDecodeError:
             costs = []
     if not costs:
-        logs_dir = cfg.runs_dir / results_slug_dir.name / "logs"
-        for pf in sorted(logs_dir.glob("phase*.json")) if logs_dir.exists() else []:
+        for pf in sorted(run_logs_dir.glob("phase*.json")) if run_logs_dir.exists() else []:
             try:
                 c = json.loads(pf.read_text(encoding="utf-8")).get("cost_usd")
                 if c:
@@ -107,7 +81,7 @@ def _read_cost(cfg: Config, results_slug_dir) -> float | None:
     return round(sum(costs), 3) if costs else None
 
 
-def _read_duration(cfg: Config, results_slug_dir) -> float | None:
+def _read_duration(results_slug_dir, run_logs_dir) -> float | None:
     """Tempo total (s) das fases (result.json; fallback nos logs locais)."""
     durs = []
     result_file = results_slug_dir / "result.json"
@@ -118,8 +92,7 @@ def _read_duration(cfg: Config, results_slug_dir) -> float | None:
         except json.JSONDecodeError:
             durs = []
     if not durs:
-        logs_dir = cfg.runs_dir / results_slug_dir.name / "logs"
-        for pf in sorted(logs_dir.glob("phase*.json")) if logs_dir.exists() else []:
+        for pf in sorted(run_logs_dir.glob("phase*.json")) if run_logs_dir.exists() else []:
             try:
                 v = json.loads(pf.read_text(encoding="utf-8")).get("duration_s")
                 if v:
@@ -137,8 +110,10 @@ def _fmt_duration(seconds: float | None) -> str:
     return f"{m}m {s}s" if m else f"{s}s"
 
 
-def build_leaderboard(cfg: Config) -> str:
-    rows = _load_scores(cfg)
+def build_leaderboard(cfg: Config, scenario=None) -> str:
+    from benchmark.harness.scenarios.registry import get_scenario
+    scenario = scenario or get_scenario("cep_etl")
+    rows = _load_scores(cfg, scenario)
     # ordena por subtotal (pré-modificadores) — discrimina melhor que o final (satura no teto 100)
     def _key(r):
         sc = r.get("score", {})
@@ -162,11 +137,12 @@ def build_leaderboard(cfg: Config) -> str:
                      "`uv run bench report`._")
         return "\n".join(lines) + "\n"
 
-    lines += _legend_lines()
+    lines += _legend_lines(scenario)
 
     header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | " + \
-        " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Diverg. |"
-    sep = "|" + "---|" * (8 + len(DIMENSIONS) + 2)
+        " | ".join(scenario.dim_labels[d] for d in scenario.dimensions) + \
+        " | Custo (US$) | Diverg. |"
+    sep = "|" + "---|" * (8 + len(scenario.dimensions) + 2)
     lines += [header, sep]
 
     for i, r in enumerate(rows, 1):
@@ -174,7 +150,7 @@ def build_leaderboard(cfg: Config) -> str:
         dims = sc.get("dimensions", {})
         dim_cells = " | ".join(
             str(int(round(dims.get(d, {}).get("note", 0)))) if dims.get(d) else "-"
-            for d in DIMENSIONS
+            for d in scenario.dimensions
         )
         cost = f"{r['_total_cost']:.3f}" if r.get("_total_cost") else "—"
         tempo = _fmt_duration(r.get("_total_duration"))
@@ -207,39 +183,38 @@ def build_leaderboard(cfg: Config) -> str:
     return "\n".join(lines) + "\n"
 
 
-README_START = "<!-- LEADERBOARD:START -->"
-README_END = "<!-- LEADERBOARD:END -->"
-
-
-def update_readme(cfg: Config) -> bool:
-    """Injeta o leaderboard no README.md entre os marcadores. Retorna True se atualizou."""
+def update_readme(cfg: Config, scenario) -> bool:
+    """Injeta o leaderboard do cenário no README entre os marcadores próprios. True se atualizou."""
     from benchmark.harness.config import REPO_ROOT
 
     readme = REPO_ROOT / "README.md"
     if not readme.exists():
         return False
+    start, end = scenario.markers
     text = readme.read_text(encoding="utf-8")
-    if README_START not in text or README_END not in text:
+    if start not in text or end not in text:
         return False
-    table = build_leaderboard(cfg)
-    # remove o H1 "# Leaderboard ..." (a seção "## Ranking atual" do README já encabeça)
+    table = build_leaderboard(cfg, scenario)
+    # remove o H1 "# Leaderboard ..." (a seção do README já encabeça)
     lines = table.splitlines()
     if lines and lines[0].startswith("# "):
         lines = lines[1:]
         while lines and not lines[0].strip():
             lines = lines[1:]
     table = "\n".join(lines)
-    block = f"{README_START}\n\n{table}\n{README_END}"
-    before = text.split(README_START)[0]
-    after = text.split(README_END)[1]
+    block = f"{start}\n\n{table}\n{end}"
+    before = text.split(start)[0]
+    after = text.split(end)[1]
     readme.write_text(before + block + after, encoding="utf-8")
     return True
 
 
-def write_leaderboard(cfg: Config) -> Path:
-    content = build_leaderboard(cfg)
-    out = cfg.results_dir / "leaderboard.md"
+def write_leaderboard(cfg: Config, scenario=None) -> Path:
+    from benchmark.harness.scenarios.registry import get_scenario
+    scenario = scenario or get_scenario("cep_etl")
+    content = build_leaderboard(cfg, scenario)
+    out = scenario.leaderboard_path(cfg.results_dir)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(content, encoding="utf-8")
-    update_readme(cfg)
+    update_readme(cfg, scenario)
     return out

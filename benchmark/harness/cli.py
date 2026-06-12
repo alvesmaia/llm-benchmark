@@ -12,6 +12,7 @@ from benchmark.harness import report as report_mod
 from benchmark.harness import run_benchmark
 from benchmark.harness import serve as serve_mod
 from benchmark.harness.config import load_config
+from benchmark.harness.scenarios.registry import get_scenario
 
 app = typer.Typer(add_completion=False,
                   help="Benchmark de LLMs como code agents (desafio ETL CEP).")
@@ -22,28 +23,31 @@ console = Console()
 def run(
     only: str = typer.Option(None, help="slug(s) separados por vírgula (ex.: claude_code-sonnet)"),
     config: str = typer.Option(None, help="caminho do config.yaml"),
+    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
     skip_agent: bool = typer.Option(
         False, "--skip-agent",
         help="não rebuilda: re-roda checagens + juízes no app já construído"),
 ):
     """Roda a matriz de candidatos (3 fases) e pontua cada um."""
     cfg = load_config(config)
+    sc = get_scenario(scenario)
     only_list = [s.strip() for s in only.split(",")] if only else None
-    results = run_benchmark.run_matrix(cfg, only=only_list, skip_agent=skip_agent)
+    results = run_benchmark.run_matrix(cfg, only=only_list, skip_agent=skip_agent, scenario=sc)
     for r in results:
-        sc = r["score"]
-        console.print(f"[bold]{r['slug']}[/bold]: {sc['final_score']} (Tier {sc['tier']})")
-    report_mod.write_leaderboard(cfg)
-    console.print(f"[green]Leaderboard atualizado:[/green] {cfg.results_dir / 'leaderboard.md'}")
+        score = r["score"]
+        console.print(f"[bold]{r['slug']}[/bold]: {score['final_score']} (Tier {score['tier']})")
+    out = report_mod.write_leaderboard(cfg, sc)
+    console.print(f"[green]Leaderboard atualizado:[/green] {out}")
 
 
 @app.command()
 def selftest(
     config: str = typer.Option(None, help="caminho do config.yaml"),
+    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
 ):
     """Valida o pipeline contra a fixture + sample_app, sem chamar agentes pagos."""
     cfg = load_config(config)
-    out = run_benchmark.selftest(cfg)
+    out = run_benchmark.selftest(cfg, get_scenario(scenario))
     _print_objective(out["objective"])
     sc = out["score"]
     console.print(f"\n[bold]Score (só objetivo):[/bold] {sc['final_score']} — Tier {sc['tier']}")
@@ -58,31 +62,39 @@ def selftest(
 def rescore(
     slug: str = typer.Argument(..., help="slug do candidato (ex.: claude_code-sonnet)"),
     config: str = typer.Option(None, help="caminho do config.yaml"),
+    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
 ):
     """Recalcula o score de um candidato já avaliado: re-roda as checagens objetivas no app
     existente e reaproveita as notas dos juízes (não rebuilda nem chama juízes de novo)."""
     cfg = load_config(config)
-    out = run_benchmark.rescore(cfg, slug)
+    sc_obj = get_scenario(scenario)
+    out = run_benchmark.rescore(cfg, slug, sc_obj)
     _print_objective(out["objective"])
     sc = out["score"]
     console.print(f"\n[bold]{slug}:[/bold] {sc['final_score']} — Tier {sc['tier']}")
-    report_mod.write_leaderboard(cfg)
-    console.print(f"[green]Leaderboard atualizado:[/green] {cfg.results_dir / 'leaderboard.md'}")
+    leaderboard = report_mod.write_leaderboard(cfg, sc_obj)
+    console.print(f"[green]Leaderboard atualizado:[/green] {leaderboard}")
 
 
 @app.command()
-def score(config: str = typer.Option(None, help="caminho do config.yaml")):
+def score(
+    config: str = typer.Option(None, help="caminho do config.yaml"),
+    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+):
     """Reconstrói o leaderboard a partir dos results/<slug>/scores.json já existentes."""
     cfg = load_config(config)
-    out = report_mod.write_leaderboard(cfg)
+    out = report_mod.write_leaderboard(cfg, get_scenario(scenario))
     console.print(f"[green]Leaderboard:[/green] {out}")
 
 
 @app.command()
-def report(config: str = typer.Option(None, help="caminho do config.yaml")):
+def report(
+    config: str = typer.Option(None, help="caminho do config.yaml"),
+    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+):
     """Alias de `score`: regenera o leaderboard."""
     cfg = load_config(config)
-    out = report_mod.write_leaderboard(cfg)
+    out = report_mod.write_leaderboard(cfg, get_scenario(scenario))
     console.print(out.read_text(encoding="utf-8"))
 
 
