@@ -1,0 +1,5 @@
+# Normaliza fins de linha: texto em LF no repositório.
+* text=auto eol=lf
+
+# Arquivos da base DNE são binários para o git (encoding Latin-1).
+*.TXT binary

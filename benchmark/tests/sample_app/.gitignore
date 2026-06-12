@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.db
+*.sqlite3
+.ruff_cache/
+.pytest_cache/
+_probe.db
+_empty_dne_probe/
+_bench_check.db

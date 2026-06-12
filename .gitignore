@@ -1,0 +1,31 @@
+# Saídas de execução — projetos gerados pelos agentes (cada um com seu próprio .git aninhado),
+# logs brutos do CLI e snapshots de sessão. Mantidos apenas localmente.
+runs/
+
+# Base DNE oficial dos Correios (proprietária — nunca versionar)
+dne/
+*.DNE
+DNE_*/
+eDNE*/
+
+# Python / uv
+__pycache__/
+*.py[cod]
+.venv/
+.uv/
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+build/
+dist/
+
+# Bancos gerados localmente
+*.db
+*.sqlite
+*.sqlite3
+
+# SO / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Consulta de CEP</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 2rem auto; padding: 0 1rem; }
+    table { border-collapse: collapse; width: 100%; margin-top: 1rem; }
+    th, td { border: 1px solid #ddd; padding: .4rem .6rem; text-align: left; }
+    th { background: #f5f5f5; }
+    textarea { width: 100%; }
+  </style>
+</head>
+<body>
+  <h1>Consulta de CEP</h1>
+  <form method="get" action="/">
+    <label for="ceps">Um ou mais CEPs (separados por vírgula ou quebra de linha):</label><br>
+    <textarea id="ceps" name="ceps" rows="3" placeholder="01001000, 20040002">{{ ceps }}</textarea><br>
+    <button type="submit">Consultar</button>
+  </form>
+
+  {% if results %}
+  <table>
+    <thead>
+      <tr><th>CEP</th><th>Logradouro</th><th>Bairro</th><th>Localidade</th><th>UF</th><th>Obs.</th></tr>
+    </thead>
+    <tbody>
+      {% for r in results %}
+      <tr>
+        <td>{{ r.cep }}</td>
+        <td>{{ r.tipo_logradouro or "" }} {{ r.logradouro or "" }}</td>
+        <td>{{ r.bairro or "" }}</td>
+        <td>{{ r.localidade or "" }}</td>
+        <td>{{ r.uf or "" }}</td>
+        <td>{{ r.erro or "" }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+</body>
+</html>

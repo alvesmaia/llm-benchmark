@@ -1,0 +1,54 @@
+# Configuração do harness de benchmark.
+# Tudo aqui é declarado para auditoria/reprodutibilidade.
+
+# Caminho da base DNE. Para auto-teste e CI, aponta para a fixture sintética.
+# Para a avaliação real, troque por uma pasta com os arquivos eDNE Básico (LOG_*.TXT).
+dne_path: "benchmark/fixtures/dne_sample"
+
+# Conjunto de queries esperadas usadas nas checagens objetivas (derivado do dne_path acima).
+expected_queries: "benchmark/fixtures/expected_queries.json"
+
+# Onde os projetos gerados e logs ficam (gitignored).
+runs_dir: "runs"
+# Onde os metadados/scores commitados ficam.
+results_dir: "results"
+
+git:
+  # Remoto GitHub compartilhado para onde os projetos gerados fazem push (branch run/<slug>).
+  # Deixe vazio para desabilitar push (o agente ainda commita e cria tag localmente).
+  github_remote: "https://github.com/alvesmaia/llm-benchmark.git"
+  push_enabled: false
+  branch_prefix: "run/"     # branch por modelo: run/<slug>
+  tag_namespace: true       # tags viram <slug>/vX.Y.Z no remoto compartilhado
+
+# Limites e modificadores (espelham a rubrica).
+modifiers:
+  hallucinated_dependency: -10
+  no_boot: -5
+  load_performance_bonus: 3
+  load_time_threshold_seconds: 60
+divergence_flag_threshold: 25   # diferença entre juízes (por dimensão) que dispara revisão manual
+
+# Painel de juízes (média das notas reduz viés).
+judges:
+  - id: claude_opus
+    agent: claude_code
+    model: opus
+  - id: copilot_gpt
+    agent: copilot_cli
+    model: gpt-5.1-codex
+
+# Matriz de candidatos avaliados. slug = <agent>-<model_slug>.
+candidates:
+  - agent: claude_code
+    model: opus
+    model_slug: opus
+  - agent: claude_code
+    model: sonnet
+    model_slug: sonnet
+  - agent: copilot_cli
+    model: claude-opus-4.8
+    model_slug: copilot-opus
+  - agent: copilot_cli
+    model: gpt-5.1-codex
+    model_slug: copilot-gpt

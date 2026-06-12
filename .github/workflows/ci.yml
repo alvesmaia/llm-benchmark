@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  harness:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+      - name: Sync deps
+        run: uv sync
+      - name: Lint (ruff)
+        run: uv run ruff check benchmark
+      - name: Testes do harness (pytest)
+        run: uv run pytest -q
+      - name: Self-test do pipeline (sem agentes)
+        run: uv run bench selftest
