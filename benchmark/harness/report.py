@@ -96,9 +96,39 @@ def build_leaderboard(cfg: Config) -> str:
     return "\n".join(lines) + "\n"
 
 
+README_START = "<!-- LEADERBOARD:START -->"
+README_END = "<!-- LEADERBOARD:END -->"
+
+
+def update_readme(cfg: Config) -> bool:
+    """Injeta o leaderboard no README.md entre os marcadores. Retorna True se atualizou."""
+    from benchmark.harness.config import REPO_ROOT
+
+    readme = REPO_ROOT / "README.md"
+    if not readme.exists():
+        return False
+    text = readme.read_text(encoding="utf-8")
+    if README_START not in text or README_END not in text:
+        return False
+    table = build_leaderboard(cfg)
+    # remove o H1 "# Leaderboard ..." (a seção "## Ranking atual" do README já encabeça)
+    lines = table.splitlines()
+    if lines and lines[0].startswith("# "):
+        lines = lines[1:]
+        while lines and not lines[0].strip():
+            lines = lines[1:]
+    table = "\n".join(lines)
+    block = f"{README_START}\n\n{table}\n{README_END}"
+    before = text.split(README_START)[0]
+    after = text.split(README_END)[1]
+    readme.write_text(before + block + after, encoding="utf-8")
+    return True
+
+
 def write_leaderboard(cfg: Config) -> Path:
     content = build_leaderboard(cfg)
     out = cfg.results_dir / "leaderboard.md"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(content, encoding="utf-8")
+    update_readme(cfg)
     return out

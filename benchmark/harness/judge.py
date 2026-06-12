@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import re
 import shutil
+import tempfile
 from pathlib import Path
 
 from benchmark.harness.adapters.base import run_command
@@ -101,9 +102,10 @@ def _invoke_judge(judge: Judge, prompt: str, cwd: Path) -> dict:
     """Invoca o CLI do juiz em modo print e parseia o JSON de notas."""
     if judge.agent == "claude_code":
         claude = shutil.which("claude") or "claude"
+        # prompt via stdin: o prompt do juiz é grande e estoura o limite de argv no Windows
         cmd = [claude, "--model", judge.model, "--output-format", "json",
-               "--dangerously-skip-permissions", "-p", prompt]
-        rc, out, err, _ = run_command(cmd, cwd=cwd, timeout=1200)
+               "--dangerously-skip-permissions", "-p"]
+        rc, out, err, _ = run_command(cmd, cwd=cwd, timeout=1200, stdin_text=prompt)
         # claude --output-format json embrulha em {result: "..."}; pegamos o result
         wrapped = _extract_json(out)
         inner = None
@@ -112,9 +114,16 @@ def _invoke_judge(judge: Judge, prompt: str, cwd: Path) -> dict:
         scores = inner or wrapped or _extract_json(out)
     elif judge.agent == "copilot_cli":
         copilot = shutil.which("copilot") or "copilot"
-        cmd = [copilot, "-p", prompt, "--model", judge.model, "--allow-all-tools"]
+        # copilot -p exige o prompt no argv (estoura o limite no Windows) e não lê stdin;
+        # então gravamos o prompt num arquivo e pedimos ao copilot para lê-lo via tools.
+        pf = Path(tempfile.gettempdir()) / f"judge_prompt_{judge.id}.md"
+        pf.write_text(prompt, encoding="utf-8")
+        instr = (f"Leia o arquivo {pf} e siga EXATAMENTE as instruções nele. "
+                 f"Responda APENAS com o JSON pedido, sem texto adicional.")
+        cmd = [copilot, "-p", instr, "--model", judge.model, "--allow-all"]
         rc, out, err, _ = run_command(cmd, cwd=cwd, timeout=1200)
         scores = _extract_json(out)
+        pf.unlink(missing_ok=True)
     else:
         return {"error": f"juiz desconhecido: {judge.agent}"}
 

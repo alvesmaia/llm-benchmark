@@ -8,8 +8,10 @@ dne_path: "benchmark/fixtures/dne_sample"
 # Conjunto de queries esperadas usadas nas checagens objetivas (derivado do dne_path acima).
 expected_queries: "benchmark/fixtures/expected_queries.json"
 
-# Onde os projetos gerados e logs ficam (gitignored).
-runs_dir: "runs"
+# Onde os projetos gerados e logs ficam.
+# IMPORTANTE: deve ficar FORA do repositório do benchmark, senão o agente enxerga (e se contamina
+# com) a rubrica, o brief e o sample_app de referência. Use um caminho absoluto externo.
+runs_dir: "C:/PROJETOS/llm-benchmark-runs"
 # Onde os metadados/scores commitados ficam.
 results_dir: "results"
 
@@ -47,7 +49,7 @@ candidates:
     model: sonnet
     model_slug: sonnet
   - agent: copilot_cli
-    model: claude-opus-4.8
+    model: claude-opus-4.6
     model_slug: copilot-opus
   - agent: copilot_cli
     model: gpt-5.1-codex

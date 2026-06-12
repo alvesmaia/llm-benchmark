@@ -29,6 +29,25 @@ Matriz inicial (em [`benchmark/harness/config.yaml`](benchmark/harness/config.ya
 | GitHub Copilot CLI | Claude Opus |
 | GitHub Copilot CLI | GPT (codex) |
 
+## Ranking atual
+
+> Esta seção é **gerada automaticamente** ao final de cada `uv run bench run` (ou `uv run bench report`).
+> Ver também [`results/leaderboard.md`](results/leaderboard.md).
+
+<!-- LEADERBOARD:START -->
+
+Ranking por **candidato = harness (agent) + modelo**. O mesmo modelo aparece como
+entradas distintas conforme o harness (o harness influencia o resultado).
+
+| # | Harness | Modelo | Score | Tier | ETL | Compl. | Interf. | Persist. | Testes | Erros | Arquit. | Prod. | Git | Custo (US$) | Diverg. |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 | claude_code | sonnet | **97.5** | A | 84 | 100 | 98 | 98 | 97 | 99 | 84 | 98 | 98 | 3.100 | — |
+
+## Modificadores aplicados
+
+- **claude_code-sonnet**: load_performance_bonus (+3)
+<!-- LEADERBOARD:END -->
+
 ## Como funciona
 
 1. **Fase 1 (build):** o agente recebe o brief e constrói a aplicação, headless, num diretório isolado.

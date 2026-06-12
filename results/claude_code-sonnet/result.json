@@ -1,0 +1,120 @@
+{
+  "slug": "claude_code-sonnet",
+  "agent": "claude_code",
+  "model": "sonnet",
+  "started_utc": "2026-06-12T12:53:22.190247+00:00",
+  "finished_utc": "2026-06-12T13:07:35.697819+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 410.81,
+      "session_id": "5e5c0044-ca6e-4424-bd81-9304896b48d8",
+      "cost_usd": 1.1693421000000002,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":409223,\"duration_api_ms\":385824,\"ttft_ms\":2460,\"ttft_stream_ms\":1671,\"time_to_request_ms\":57,\"num_turns\":39,\"result\":\"Projeto completo. Resumo do que foi implementado:\\n\\n---\\n\\n## Entregáveis concluídos\\n\\n| # | Entregável | Status |\\n|---|-----------|--------|\\n| 1 | `pyproject.toml` com console script `cep-etl` e projeto uv | ✅ |\\n| 2 | `src/cep_etl/etl.py` — parsing Latin-1/@, carga idempotente | ✅ |\\n| 3 | `src/cep_etl/query.py` — busca com fallback localidade | ✅ |\\n| 4 | `src/cep_etl/cli.py` — `load`, `query`, `serve` | ✅ |\\n| 5 | `src/cep_etl/api.py` — FastAPI com `GET /cep/{cep}` e `POST /ceps` | ✅ |\\n| 6 | `templates/index.html` — formulário web com tabela de resultados | ✅ |\\n| 7 | **40 testes pytest passando** (ETL, consulta, fallback, erros) | ✅ |\\n| 8 | `README.md` com instruções completas | ✅ |\\n| 9 | `ruff` configurado + `.github/workflows/ci.yml` | ✅ |\\n\\n**Validação contra base real:** `uv run cep-etl load` processou os arquivos em `DNE_PATH` sem erros.\",\"stop_reason\":\"end_turn\",\"session_id\":\"5e5c0044-ca6e-4424-bd81-9304896b48d8\",\"total_cost_usd\":1.1693421000000002,\"usage\":{\"input_tokens\":36,\"cache_creation_input_tokens\":50069,\"cache_read_input_tokens\":1707167,\"output_tokens\":23778,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":50069,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":383,\"cache_read_input_tokens\":71322,\"cache_creation_input_tokens\":245,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":245},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-sonnet-4-6\":{\"inputTokens\":36,\"outputTokens\":23778,\"cacheReadInputTokens\":1707167,\"cacheCreationInputTokens\":50069,\"webSearchRequests\":0,\"costUSD\":1.1693421000000002,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"adf56fa7-c987-491a-8a33-6ee34cdbbf15\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 39,
+        "result": "Projeto completo. Resumo do que foi implementado:\n\n---\n\n## Entregáveis concluídos\n\n| # | Entregável | Status |\n|---|-----------|--------|\n| 1 | `pyproject.toml` com console script `cep-etl` e projeto uv | ✅ |\n| 2 | `src/cep_etl/etl.py` — parsing Latin-1/@, carga idempotente | ✅ |\n| 3 | `src/cep_etl/query.py` — busca com fallback localidade | ✅ |\n| 4 | `src/cep_etl/cli.py` — `load`, `query`, `serve` | ✅ |\n| 5 | `src/cep_etl/api.py` — FastAPI com `GET /cep/{cep}` e `POST /ceps` | ✅ |\n| 6 | `templates/index.html` — formulário web com tabela de resultados | ✅ |\n| 7 | **40 testes pytest passando** (ETL, consulta, fallback, erros) | ✅ |\n| 8 | `README.md` com instruções completas | ✅ |\n| 9 | `ruff` configurado + `.github/workflows/ci.yml` | ✅ |\n\n**Validação contra base real:** `uv run cep-etl load` processou os arquivos em `DNE_PATH` sem erros."
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 235.0,
+      "session_id": "5e5c0044-ca6e-4424-bd81-9304896b48d8",
+      "cost_usd": 1.1985807,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":232765,\"duration_api_ms\":162727,\"ttft_ms\":7935,\"ttft_stream_ms\":7504,\"time_to_request_ms\":110,\"num_turns\":28,\"result\":\"Tudo validado. Aqui está o resumo do que foi verificado e corrigido na Fase 2:\\n\\n---\\n\\n## Validações e correções realizadas\\n\\n**O que funcionou sem ajustes:**\\n- ETL (`uv run cep-etl load`) contra `DNE_PATH` — 4 localidades, 4 bairros, 4 logradouros carregados sem erros.\\n- 40/40 testes passando (ETL, consulta, fallback, API REST, Web, CLI).\\n- Lint `ruff check` — zero erros.\\n\\n**O que foi corrigido:**\\n\\n1. **TemplateResponse incompatível com Starlette 1.x** — a API mudou para `templates.TemplateResponse(request, \\\"name\\\", context)` em vez do antigo `TemplateResponse(\\\"name\\\", {\\\"request\\\": request, ...})`. Corrigido em todos os endpoints web.\\n\\n2. **Templates fora do pacote Python** — os templates estavam em `templates/` na raiz do projeto, o que funcionava com `uv run` (acesso ao diretório local) mas quebrava com `uvx --from .` (wheel instalado no cache sem acesso ao diretório do projeto). Corrigi movendo os templates para `src/cep_etl/templates/` e atualizando o path para `Path(__file__).parent / \\\"templates\\\"`, garantindo que sejam incluídos no wheel.\\n\\n3. **Cache stale do uvx** — após a correção, o `uvx` ainda usava o wheel antigo. Bumpeei a versão para `1.0.1` para forçar rebuild.\\n\\n**Resultado final:** `uvx --from . cep-etl serve` sobe, responde `HTTP 200` na web e na API.\",\"stop_reason\":\"end_turn\",\"session_id\":\"5e5c0044-ca6e-4424-bd81-9304896b48d8\",\"total_cost_usd\":1.1985807,\"usage\":{\"input_tokens\":28,\"cache_creation_input_tokens\":71606,\"cache_read_input_tokens\":2199269,\"output_tokens\":7272,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":71606,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":440,\"cache_read_input_tokens\":92932,\"cache_creation_input_tokens\":172,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":172},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-sonnet-4-6\":{\"inputTokens\":28,\"outputTokens\":7272,\"cacheReadInputTokens\":2199269,\"cacheCreationInputTokens\":71606,\"webSearchRequests\":0,\"costUSD\":1.1985807,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"c00b29c2-fe13-49a7-87cd-e19e79d5a7fc\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 28,
+        "result": "Tudo validado. Aqui está o resumo do que foi verificado e corrigido na Fase 2:\n\n---\n\n## Validações e correções realizadas\n\n**O que funcionou sem ajustes:**\n- ETL (`uv run cep-etl load`) contra `DNE_PATH` — 4 localidades, 4 bairros, 4 logradouros carregados sem erros.\n- 40/40 testes passando (ETL, consulta, fallback, API REST, Web, CLI).\n- Lint `ruff check` — zero erros.\n\n**O que foi corrigido:**\n\n1. **TemplateResponse incompatível com Starlette 1.x** — a API mudou para `templates.TemplateResponse(request, \"name\", context)` em vez do antigo `TemplateResponse(\"name\", {\"request\": request, ...})`. Corrigido em todos os endpoints web.\n\n2. **Templates fora do pacote Python** — os templates estavam em `templates/` na raiz do projeto, o que funcionava com `uv run` (acesso ao diretório local) mas quebrava com `uvx --from .` (wheel instalado no cache sem acesso ao diretório do projeto). Corrigi movendo os templates para `src/cep_etl/templates/` e atualizando o path para `Path(__file__).parent / \"templates\"`, garantindo que sejam incluídos no wheel.\n\n3. **Cache stale do uvx** — após a correção, o `uvx` ainda usava o wheel antigo. Bumpeei a versão para `1.0.1` para forçar rebuild.\n\n**Resultado final:** `uvx --from . cep-etl serve` sobe, responde `HTTP 200` na web e na API."
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 113.41,
+      "session_id": "5e5c0044-ca6e-4424-bd81-9304896b48d8",
+      "cost_usd": 0.7324638000000001,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":111284,\"duration_api_ms\":101768,\"ttft_ms\":2723,\"ttft_stream_ms\":2262,\"time_to_request_ms\":95,\"num_turns\":19,\"result\":\"---\\n\\n## Resumo do versionamento\\n\\n**Commits criados (8, por área lógica):**\\n| Hash | Mensagem |\\n|------|----------|\\n| `2d6065d` | `chore: add .gitignore for Python/uv project` |\\n| `7ac688f` | `chore: initialize uv project with dependencies and console script cep-etl` |\\n| `0898482` | `feat(etl): implement eDNE ETL — parse Latin-1/@-delimited files, idempotent SQLite load with CEP indexes` |\\n| `6995cbf` | `feat(query): implement CEP lookup with logradouro→localidade fallback and batch support` |\\n| `a6e0c99` | `feat(cli): add cep-etl CLI with load, query (--json), and serve subcommands` |\\n| `36a3858` | `feat(api): add FastAPI REST endpoints (GET /cep/{cep}, POST /ceps) and Jinja2 web UI` |\\n| `db0da86` | `test: add pytest suite covering ETL, query, fallback, CLI, REST API and web UI (40 tests)` |\\n| `e9491b5` | `docs: add README with usage instructions and CI workflow (ruff lint + pytest)` |\\n\\n**Tag:** `claude_code-sonnet/v1.0.1` (namespaced conforme convenção do harness)\\n\\n**Push:** branch `run/claude_code-sonnet` e tag enviados com sucesso para o origin. O `git push origin HEAD` para `main` foi rejeitado pois o remote principal é o repositório do harness — o push foi redirecionado corretamente para `run/claude_code-sonnet`, conforme a convenção documentada no README do projeto.\",\"stop_reason\":\"end_turn\",\"session_id\":\"5e5c0044-ca6e-4424-bd81-9304896b48d8\",\"total_cost_usd\":0.7324638000000001,\"usage\":{\"input_tokens\":20,\"cache_creation_input_tokens\":16466,\"cache_read_input_tokens\":1882726,\"output_tokens\":4586,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":16466,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":444,\"cache_read_input_tokens\":109177,\"cache_creation_input_tokens\":393,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":393},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-sonnet-4-6\":{\"inputTokens\":20,\"outputTokens\":4586,\"cacheReadInputTokens\":1882726,\"cacheCreationInputTokens\":16466,\"webSearchRequests\":0,\"costUSD\":0.7324638000000001,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"5ead4d52-da5a-442e-aab9-16165754033c\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 19,
+        "result": "---\n\n## Resumo do versionamento\n\n**Commits criados (8, por área lógica):**\n| Hash | Mensagem |\n|------|----------|\n| `2d6065d` | `chore: add .gitignore for Python/uv project` |\n| `7ac688f` | `chore: initialize uv project with dependencies and console script cep-etl` |\n| `0898482` | `feat(etl): implement eDNE ETL — parse Latin-1/@-delimited files, idempotent SQLite load with CEP indexes` |\n| `6995cbf` | `feat(query): implement CEP lookup with logradouro→localidade fallback and batch support` |\n| `a6e0c99` | `feat(cli): add cep-etl CLI with load, query (--json), and serve subcommands` |\n| `36a3858` | `feat(api): add FastAPI REST endpoints (GET /cep/{cep}, POST /ceps) and Jinja2 web UI` |\n| `db0da86` | `test: add pytest suite covering ETL, query, fallback, CLI, REST API and web UI (40 tests)` |\n| `e9491b5` | `docs: add README with usage instructions and CI workflow (ruff lint + pytest)` |\n\n**Tag:** `claude_code-sonnet/v1.0.1` (namespaced conforme convenção do harness)\n\n**Push:** branch `run/claude_code-sonnet` e tag enviados com sucesso para o origin. O `git push origin HEAD` para `main` foi rejeitado pois o remote principal é o repositório do harness — o push foi redirecionado corretamente para `run/claude_code-sonnet`, conforme a convenção documentada no README do projeto."
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "etl_parsing": {
+        "note": 83.8,
+        "objective": 100.0,
+        "judge": 46.0,
+        "source": "obj+juiz"
+      },
+      "completeness": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "só obj (sem juiz)"
+      },
+      "interfaces": {
+        "note": 98.0,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz"
+      },
+      "persistence": {
+        "note": 97.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz"
+      },
+      "tests": {
+        "note": 97.0,
+        "objective": 100.0,
+        "judge": 92.5,
+        "source": "obj+juiz"
+      },
+      "error_handling": {
+        "note": 98.8,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz"
+      },
+      "architecture": {
+        "note": 84.0,
+        "objective": null,
+        "judge": 84.0,
+        "source": "só juiz (sem obj)"
+      },
+      "production": {
+        "note": 98.4,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz"
+      },
+      "git": {
+        "note": 98.2,
+        "objective": 100.0,
+        "judge": 94.0,
+        "source": "obj+juiz"
+      }
+    },
+    "weighted_subtotal": 94.5,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 97.5,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "divergences": {}
+}

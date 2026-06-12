@@ -125,6 +125,42 @@ def run_matrix(cfg: Config, only: list[str] | None = None) -> list[dict]:
     return results
 
 
+def rescore(cfg: Config, slug: str) -> dict:
+    """Re-roda apenas as checagens objetivas no app já construído e recombina com as notas dos
+    juízes já salvas (sem rebuildar nem re-invocar os juízes)."""
+    candidate = cfg.candidate_by_slug(slug)
+    if candidate is None:
+        raise ValueError(f"slug desconhecido: {slug}")
+    app_dir = cfg.runs_dir / slug / "app"
+    if not app_dir.exists():
+        raise FileNotFoundError(f"app não encontrado: {app_dir}")
+
+    res_dir = cfg.results_dir / slug
+    prior = json.loads((res_dir / "scores.json").read_text(encoding="utf-8"))
+    judge_avg = {d: v.get("judge") for d, v in prior["score"]["dimensions"].items()}
+
+    expected = _load_expected(cfg)
+    objective = checks_mod.run_all_checks(app_dir, cfg.dne_path, expected)
+    git_res = gitcheck.check_git(app_dir, slug, cfg.git)
+    objective["objective_by_dimension"]["git"] = git_res["note"]
+    objective["git_detail"] = git_res
+
+    scored = score_mod.compute_score(
+        objective["objective_by_dimension"], judge_avg, objective["flags"], cfg,
+    )
+
+    prior["score"] = scored
+    prior["objective"] = objective
+    (res_dir / "scores.json").write_text(
+        json.dumps(prior, ensure_ascii=False, indent=2), encoding="utf-8")
+    result_file = res_dir / "result.json"
+    if result_file.exists():
+        result = json.loads(result_file.read_text(encoding="utf-8"))
+        result["score"] = scored
+        result_file.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    return {"objective": objective, "score": scored}
+
+
 def selftest(cfg: Config) -> dict:
     """Valida o pipeline sem chamar agentes: usa o sample_app de teste como projeto gerado."""
     sample = REPO_ROOT / "benchmark" / "tests" / "sample_app"

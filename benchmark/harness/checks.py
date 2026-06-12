@@ -72,6 +72,28 @@ def _free_port() -> int:
 # ---------------------------------------------------------------------------
 # Normalização de endereços para comparação tolerante.
 # ---------------------------------------------------------------------------
+def _loads_lenient(text: str):
+    """Parseia JSON de uma saída de CLI: aceita pretty-print (multilinha) e logs antes do JSON."""
+    text = text.strip()
+    if not text:
+        return None
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        pass
+    # extrai do primeiro [ ou { até o último ] ou } correspondente
+    starts = [i for i in (text.find("["), text.find("{")) if i != -1]
+    ends = [i for i in (text.rfind("]"), text.rfind("}")) if i != -1]
+    if starts and ends:
+        start, end = min(starts), max(ends)
+        if end > start:
+            try:
+                return json.loads(text[start:end + 1])
+            except json.JSONDecodeError:
+                return None
+    return None
+
+
 def _norm(value: str) -> str:
     if value is None:
         return ""
@@ -156,14 +178,11 @@ def check_expected_queries(app_dir: Path, env: dict, expected: dict) -> CheckRes
         rc, out, _err, _ = _uv(["cep-etl", "query", cep, "--json"], app_dir, env, timeout=120)
         ok = False
         if rc == 0 and out.strip():
-            try:
-                blob = out.strip()
-                parsed = json.loads(blob.splitlines()[-1] if "\n" in blob else blob)
-                # resultado pode ser objeto único ou lista
+            parsed = _loads_lenient(out)
+            if parsed is not None:
+                # resultado pode ser objeto único ou lista (pretty-printed ou não)
                 candidates = parsed if isinstance(parsed, list) else [parsed]
-                ok = any(_address_matches(exp, c) for c in candidates)
-            except (json.JSONDecodeError, IndexError):
-                ok = False
+                ok = any(_address_matches(exp, c) for c in candidates if isinstance(c, dict))
         correct += int(ok)
         if not ok:
             misses.append(cep)
@@ -177,9 +196,11 @@ def check_cli_multi(app_dir: Path, env: dict, expected: dict) -> CheckResult:
     if len(ceps) < 2:
         ceps = ["01001000", "20040002"]
     rc, out, _err, _ = _uv(["cep-etl", "query", *ceps, "--json"], app_dir, env, timeout=120)
-    ok = rc == 0 and out.strip().count("cep") >= 2 if out else False
+    parsed = _loads_lenient(out) if rc == 0 else None
+    n = len(parsed) if isinstance(parsed, list) else 0
+    ok = n >= 2
     return CheckResult("cli_multi", "interfaces", 100 if ok else 0,
-                       detail="aceita 2+ CEPs" if ok else "não retornou múltiplos")
+                       detail=f"retornou {n} itens" if ok else "não retornou múltiplos")
 
 
 def check_error_handling(app_dir: Path, env: dict, expected: dict) -> list[CheckResult]:

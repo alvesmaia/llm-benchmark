@@ -52,6 +52,22 @@ def selftest(
 
 
 @app.command()
+def rescore(
+    slug: str = typer.Argument(..., help="slug do candidato (ex.: claude_code-sonnet)"),
+    config: str = typer.Option(None, help="caminho do config.yaml"),
+):
+    """Recalcula o score de um candidato já avaliado: re-roda as checagens objetivas no app
+    existente e reaproveita as notas dos juízes (não rebuilda nem chama juízes de novo)."""
+    cfg = load_config(config)
+    out = run_benchmark.rescore(cfg, slug)
+    _print_objective(out["objective"])
+    sc = out["score"]
+    console.print(f"\n[bold]{slug}:[/bold] {sc['final_score']} — Tier {sc['tier']}")
+    report_mod.write_leaderboard(cfg)
+    console.print(f"[green]Leaderboard atualizado:[/green] {cfg.results_dir / 'leaderboard.md'}")
+
+
+@app.command()
 def score(config: str = typer.Option(None, help="caminho do config.yaml")):
     """Reconstrói o leaderboard a partir dos results/<slug>/scores.json já existentes."""
     cfg = load_config(config)

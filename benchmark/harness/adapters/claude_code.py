@@ -49,9 +49,8 @@ class ClaudeCodeAdapter(Adapter):
             # continua a sessão pelo id capturado na fase anterior
             cmd = [CLAUDE_BIN, "--model", self.model, "--output-format", "json",
                    "--dangerously-skip-permissions", "--resume", resume, "-p"]
-        cmd = cmd + [prompt]
-        rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=env.get("_TIMEOUT", 5400)
-                                        if isinstance(env, dict) and "_TIMEOUT" in env else 5400)
+        # prompt via stdin (evita o limite de tamanho de linha de comando do Windows)
+        rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=5400, stdin_text=prompt)
         data = _parse_json_output(out)
         return PhaseResult(
             phase=phase,
@@ -74,8 +73,8 @@ class ClaudeCodeAdapter(Adapter):
         if prev.session_id:
             return self._run(phase, prompt, workdir, env, resume=prev.session_id)
         cmd = [CLAUDE_BIN, "--model", self.model, "--output-format", "json",
-               "--dangerously-skip-permissions", "--continue", "-p", prompt]
-        rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=5400)
+               "--dangerously-skip-permissions", "--continue", "-p"]
+        rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=5400, stdin_text=prompt)
         data = _parse_json_output(out)
         return PhaseResult(phase=phase, ok=(rc == 0 and not data.get("is_error", False)),
                            returncode=rc, stdout=out, stderr=err, duration_s=dur,
