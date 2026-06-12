@@ -6,6 +6,30 @@ entradas distintas conforme o harness (o harness influencia o resultado).
 Ordenado por **Subtotal** (soma ponderada 0–100 pré-modificadores), que diferencia melhor
 que o Score final — este satura no teto 100 e inclui bônus/penalidades.
 
+### Legenda das colunas
+
+- **#** — posição no ranking (ordenado pelo Subtotal)
+- **Harness** — o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)
+- **Modelo** — modelo avaliado; tag `· 1M` quando rodou em contexto de 1M
+- **Subtotal** — soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — critério de ordenação
+- **Score** — Subtotal + modificadores (bônus de performance, penalidades), com teto 100
+- **Tier** — faixa do Score: A (80+), B (60–79), C (40–59), D (<40)
+
+Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
+
+- **ETL** (peso 18) — correção do ETL/parsing da base DNE (encoding Latin-1, separador `@`, mapeamento de campos, fallback de CEP de localidade)
+- **Compl.** (peso 13) — completude dos entregáveis obrigatórios (ETL, consulta, CLI, API, Web, testes, README, lint/CI)
+- **Interf.** (peso 14) — as três interfaces de consulta (CLI, API REST e Web) funcionam, aceitam 1+ CEPs, e o projeto roda via `uv run`/`uvx`
+- **Persist.** (peso 11) — modelagem do banco: schema, índice por CEP e carga idempotente
+- **Testes** (peso 11) — suíte de testes (pytest) cobre ETL/consulta/erros e passa
+- **Erros** (peso 9) — tratamento de CEP inválido, CEP não encontrado e base DNE ausente
+- **Arquit.** (peso 8) — arquitetura e organização do código (modularidade, separação de camadas)
+- **Prod.** (peso 8) — preparação para produção (CI, README, lint/ruff, empacotamento)
+- **Git** (peso 8) — interação com Git/GitHub: commits significativos, tag semver e push
+
+- **Custo (US$)** — custo-equivalente estimado das fases (referência; o consumo conta no plano)
+- **Diverg.** — dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)
+
 | # | Harness | Modelo | Subtotal | Score | Tier | ETL | Compl. | Interf. | Persist. | Testes | Erros | Arquit. | Prod. | Git | Custo (US$) | Diverg. |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | claude_code | Opus 4.7 · 1M | **99.6** | 100.0 | A | 100 | 100 | 100 | 100 | 100 | 100 | 95 | 100 | 100 | 4.412 | — |

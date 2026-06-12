@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from benchmark.harness.config import Config
-from benchmark.harness.rubric import DIMENSIONS
+from benchmark.harness.rubric import DIMENSIONS, WEIGHTS
 
 DIM_LABELS = {
     "etl_parsing": "ETL",
@@ -19,6 +19,51 @@ DIM_LABELS = {
     "production": "Prod.",
     "git": "Git",
 }
+
+# Descrição de cada dimensão no contexto do desafio (ETL CEP Correios).
+DIM_DESCRIPTIONS = {
+    "etl_parsing": "correção do ETL/parsing da base DNE (encoding Latin-1, separador `@`, "
+                   "mapeamento de campos, fallback de CEP de localidade)",
+    "completeness": "completude dos entregáveis obrigatórios (ETL, consulta, CLI, API, Web, "
+                    "testes, README, lint/CI)",
+    "interfaces": "as três interfaces de consulta (CLI, API REST e Web) funcionam, aceitam 1+ "
+                  "CEPs, e o projeto roda via `uv run`/`uvx`",
+    "persistence": "modelagem do banco: schema, índice por CEP e carga idempotente",
+    "tests": "suíte de testes (pytest) cobre ETL/consulta/erros e passa",
+    "error_handling": "tratamento de CEP inválido, CEP não encontrado e base DNE ausente",
+    "architecture": "arquitetura e organização do código (modularidade, separação de camadas)",
+    "production": "preparação para produção (CI, README, lint/ruff, empacotamento)",
+    "git": "interação com Git/GitHub: commits significativos, tag semver e push",
+}
+
+# Descrição das colunas não-dimensionais.
+META_COLUMNS = [
+    ("#", "posição no ranking (ordenado pelo Subtotal)"),
+    ("Harness", "o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)"),
+    ("Modelo", "modelo avaliado; tag `· 1M` quando rodou em contexto de 1M"),
+    ("Subtotal", "soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — "
+                 "critério de ordenação"),
+    ("Score", "Subtotal + modificadores (bônus de performance, penalidades), com teto 100"),
+    ("Tier", "faixa do Score: A (80+), B (60–79), C (40–59), D (<40)"),
+    ("Custo (US$)", "custo-equivalente estimado das fases (referência; o consumo conta no plano)"),
+    ("Diverg.", "dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)"),
+]
+
+
+def _legend_lines() -> list[str]:
+    lines = ["### Legenda das colunas", ""]
+    for name, desc in META_COLUMNS[:6]:
+        lines.append(f"- **{name}** — {desc}")
+    lines.append("")
+    lines.append("Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):")
+    lines.append("")
+    for dim in DIMENSIONS:
+        lines.append(f"- **{DIM_LABELS[dim]}** (peso {WEIGHTS[dim]}) — {DIM_DESCRIPTIONS[dim]}")
+    lines.append("")
+    for name, desc in META_COLUMNS[6:]:
+        lines.append(f"- **{name}** — {desc}")
+    lines.append("")
+    return lines
 
 
 def _load_scores(cfg: Config) -> list[dict]:
@@ -82,6 +127,8 @@ def build_leaderboard(cfg: Config) -> str:
         lines.append("_Nenhum resultado ainda. Rode `uv run bench run` e depois "
                      "`uv run bench report`._")
         return "\n".join(lines) + "\n"
+
+    lines += _legend_lines()
 
     header = "| # | Harness | Modelo | Subtotal | Score | Tier | " + \
         " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Diverg. |"
