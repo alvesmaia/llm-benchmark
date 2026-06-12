@@ -84,7 +84,7 @@ candidates:
     model: claude-sonnet-4.6
     model_slug: copilot-sonnet
     context: "1M"
-    display: "Sonnet 4.6 (Copilot)"
+    display: "Sonnet 4.6"
     thinking: "xhigh"
   - agent: copilot_cli
     model: gpt-5.1-codex
@@ -96,3 +96,9 @@ candidates:
     model_slug: codex-5-4
     display: "GPT-5.4 (Codex)"
     thinking: "medium"
+  - agent: opencode
+    model: github-copilot/claude-sonnet-4.6
+    model_slug: sonnet
+    context: "1M"
+    display: "Sonnet 4.6"
+    thinking: "xhigh"

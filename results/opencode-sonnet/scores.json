@@ -1,0 +1,299 @@
+{
+  "slug": "opencode-sonnet",
+  "agent": "opencode",
+  "model": "github-copilot/claude-sonnet-4.6",
+  "score": {
+    "dimensions": {
+      "etl_parsing": {
+        "note": 98.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "completeness": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "interfaces": {
+        "note": 98.4,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "persistence": {
+        "note": 97.0,
+        "objective": 100.0,
+        "judge": 94.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 97.4,
+        "objective": 100.0,
+        "judge": 93.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "error_handling": {
+        "note": 98.8,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "architecture": {
+        "note": 91.0,
+        "objective": null,
+        "judge": 91.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "production": {
+        "note": 97.4,
+        "objective": 100.0,
+        "judge": 93.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "git": {
+        "note": 96.7,
+        "objective": 100.0,
+        "judge": 89.0,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 97.6,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 100.0,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "objective": {
+    "checks": [
+      {
+        "id": "files_present",
+        "dimension": "completeness",
+        "note": 100.0,
+        "detail": "6/6 artefatos",
+        "data": {
+          "pyproject": true,
+          "readme": true,
+          "ruff_config": true,
+          "tests": true,
+          "python_code": true,
+          "ci": true
+        }
+      },
+      {
+        "id": "etl_load",
+        "dimension": "etl_parsing",
+        "note": 100,
+        "detail": "ok",
+        "data": {}
+      },
+      {
+        "id": "expected_queries",
+        "dimension": "etl_parsing",
+        "note": 100.0,
+        "detail": "6/6 corretos; erros: []",
+        "data": {}
+      },
+      {
+        "id": "cli_multi",
+        "dimension": "interfaces",
+        "note": 100,
+        "detail": "retornou 2 itens",
+        "data": {}
+      },
+      {
+        "id": "uvx_run",
+        "dimension": "interfaces",
+        "note": 100,
+        "detail": "uvx executa",
+        "data": {}
+      },
+      {
+        "id": "idempotent",
+        "dimension": "persistence",
+        "note": 100,
+        "detail": "linhas antes=12 depois=12",
+        "data": {}
+      },
+      {
+        "id": "has_index",
+        "dimension": "persistence",
+        "note": 100,
+        "detail": "índice/uniqueness por CEP",
+        "data": {}
+      },
+      {
+        "id": "pytest",
+        "dimension": "tests",
+        "note": 100.0,
+        "detail": "73 passed",
+        "data": {}
+      },
+      {
+        "id": "err_invalid",
+        "dimension": "error_handling",
+        "note": 100,
+        "detail": "tratado",
+        "data": {}
+      },
+      {
+        "id": "err_notfound",
+        "dimension": "error_handling",
+        "note": 100,
+        "detail": "tratado",
+        "data": {}
+      },
+      {
+        "id": "err_no_dne",
+        "dimension": "error_handling",
+        "note": 100,
+        "detail": "mensagem acionável",
+        "data": {}
+      },
+      {
+        "id": "ruff_ok",
+        "dimension": "production",
+        "note": 100,
+        "detail": "sem erros de lint",
+        "data": {}
+      },
+      {
+        "id": "ci_present",
+        "dimension": "production",
+        "note": 100,
+        "detail": "CI roda lint+testes",
+        "data": {}
+      },
+      {
+        "id": "readme_quality",
+        "dimension": "production",
+        "note": 100,
+        "detail": "load=True, uso=True",
+        "data": {}
+      },
+      {
+        "id": "web_form",
+        "dimension": "interfaces",
+        "note": 100,
+        "detail": "formulário presente",
+        "data": {}
+      },
+      {
+        "id": "api_get",
+        "dimension": "interfaces",
+        "note": 100,
+        "detail": "GET /cep/01001000 -> 200",
+        "data": {}
+      },
+      {
+        "id": "api_post_batch",
+        "dimension": "interfaces",
+        "note": 100,
+        "detail": "POST /ceps -> 200, 2 itens",
+        "data": {}
+      }
+    ],
+    "objective_by_dimension": {
+      "completeness": 100.0,
+      "etl_parsing": 100.0,
+      "interfaces": 100.0,
+      "persistence": 100.0,
+      "tests": 100.0,
+      "error_handling": 100.0,
+      "production": 100.0,
+      "git": 100.0
+    },
+    "flags": {
+      "no_boot": false,
+      "load_time_s": 0.33
+    },
+    "git_detail": {
+      "note": 100.0,
+      "sub": {
+        "commit_count": 100,
+        "msg_quality": 100,
+        "semver_tag": 100
+      },
+      "n_commits": 6,
+      "tags": [
+        "v0.1.0"
+      ],
+      "semver_tags": [
+        "v0.1.0"
+      ],
+      "push_evaluated": false
+    }
+  },
+  "judges": {
+    "claude_opus": {
+      "scores": {
+        "etl_parsing": 92,
+        "completeness": 100,
+        "interfaces": 95,
+        "persistence": 90,
+        "tests": 90,
+        "error_handling": 95,
+        "architecture": 90,
+        "production": 92,
+        "git": 90
+      },
+      "rationale": {
+        "etl_parsing": "Lê os 3 tipos de arquivo com encoding latin-1 e separador @, mapeia campos corretamente e faz fallback para CEP de localidade; as 6/6 consultas esperadas retornaram corretas, com pequena ressalva de robustez ao usar errors='replace' em vez de tratar linhas malformadas mais explicitamente.",
+        "completeness": "Todos os 11 entregáveis estão presentes e são reais (ETL, query, CLI, API, Web, templates, testes, README, ruff, CI, pyproject uv), confirmado pelo checklist 6/6.",
+        "interfaces": "CLI query aceita múltiplos CEPs com --json, API expõe GET 200/404 e POST em lote, Web tem formulário + tabela e roda via uv run/uvx — todos os smokes objetivos passaram; pequena ressalva nos f-strings literais sem prefixo nas mensagens de serve.",
+        "persistence": "Schema normalizado em 3 tabelas com FKs, índices por CEP (parcial em localidade e em logradouro) e carga idempotente via ON CONFLICT comprovada (12→12 linhas).",
+        "tests": "73 testes passam cobrindo ETL, consulta, fallback, lote misto e casos de erro com asserts relevantes e não triviais; faltam apenas testes de encoding/acentuação explícitos no conteúdo persistido.",
+        "error_handling": "CEP inválido e não encontrado são tratados sem quebrar o lote (retornam CepNotFound) e DNE_PATH ausente/arquivo faltando gera mensagem acionável, todos confirmados objetivamente.",
+        "architecture": "Camadas bem separadas (db, etl, query, cli, api) com baixo acoplamento, dataclasses claras e nomes coerentes, refletindo boa coesão modular.",
+        "production": "Roda via uvx/uv run, README com instruções de carga e uso, ruff configurado sem erros e CI rodando lint+testes; ressalva menor de arquivos .db (cep.db, _probe.db) versionados na árvore.",
+        "git": "Seis commits com mensagens significativas em Conventional Commits e tag semver válida (v0.1.0), sem mensagens tipo 'wip'; push não foi avaliado pelo harness."
+      },
+      "hallucinated_dependency": false,
+      "summary": "Projeto sólido e pronto para produção: todas as 17 checagens objetivas passaram (ETL correto, 73 testes verdes, três interfaces funcionais, idempotência, lint e CI), com arquitetura em camadas limpa e Git bem disciplinado. As ressalvas são menores — f-strings literais sem prefixo nas mensagens de serve, arquivos .db acidentalmente versionados e ausência de teste explícito de encoding/acentuação. Fica confortavelmente no Tier A."
+    },
+    "claude_sonnet": {
+      "scores": {
+        "etl_parsing": 98,
+        "completeness": 95,
+        "interfaces": 97,
+        "persistence": 98,
+        "tests": 97,
+        "error_handling": 97,
+        "architecture": 92,
+        "production": 95,
+        "git": 88
+      },
+      "rationale": {
+        "etl_parsing": "Todos os 6 queries esperados retornaram correto, encoding Latin-1 e separador @ respeitados, fallback de localidade implementado e verificado objetivamente com 100% de acerto.",
+        "completeness": "Os 6 artefatos checados objetivamente estão presentes e são substanciais (não stubs); o único ponto menor é que o template HTML não foi exibido para avaliação completa, mas a checagem web_form passou.",
+        "interfaces": "CLI multi-CEP, uvx, API GET/POST e formulário Web passaram 100% nas checagens objetivas; a implementação cobre formatos com e sem hífen e saída JSON.",
+        "persistence": "Schema normalizado com três tabelas, múltiplos índices por CEP (logradouro e localidade), carga idempotente confirmada objetivamente (12 linhas antes e depois da segunda carga), uso de ON CONFLICT DO UPDATE.",
+        "tests": "73 testes passaram, cobrindo ETL, consulta, fallback, erros, CLI, API e Web; asserts são específicos e relevantes, com fixtures bem isoladas via monkeypatch de variáveis de ambiente.",
+        "error_handling": "CEP inválido, não encontrado e DNE ausente tratados corretamente em todos os testes objetivos; erros retornam mensagens descritivas sem stack traces expostos ao usuário.",
+        "architecture": "Separação clara em camadas (db, etl, query, api, cli) com baixo acoplamento; query.py usa dataclasses CepResult/CepNotFound em vez de dicts soltos; único ponto menor é a ausência de uma camada de serviço explícita entre query e api.",
+        "production": "ruff sem erros, CI rodando lint+testes, README com instruções de carga e uso, pyproject.toml com hatchling e console script correto, uvx funcional; carga em 0,33s bem abaixo de qualquer limiar razoável.",
+        "git": "6 commits com mensagens Conventional Commits (chore/feat/test/ci), tag semver v0.1.0 presente; histórico conta a história do projeto de forma clara, embora poucos commits para um projeto deste tamanho."
+      },
+      "hallucinated_dependency": false,
+      "summary": "Projeto exemplar em praticamente todas as dimensões: ETL correto, arquitetura em camadas bem definida, 73 testes passando, tratamento de erros completo e todas as interfaces funcionais. O único ponto que impede nota perfeita generalizada é o número relativamente baixo de commits (6) para a complexidade entregue, e a arquitetura poderia ter uma camada de serviço explícita separando lógica de negócio das interfaces. No geral, resultado de alto nível, claramente tier A."
+    }
+  },
+  "divergences": {}
+}

@@ -1,0 +1,128 @@
+{
+  "slug": "opencode-sonnet",
+  "agent": "opencode",
+  "model": "github-copilot/claude-sonnet-4.6",
+  "started_utc": "2026-06-12T17:42:10.829764+00:00",
+  "finished_utc": "2026-06-12T17:58:08.674697+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 635.81,
+      "session_id": "ses_14312a1ecfferL1lwVp7X3bhpx",
+      "cost_usd": 1.42798,
+      "stdout_tail": ":\"high\"},{\"content\":\"Create pyproject.toml with uv project setup\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement ETL module (parsing + loading)\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement query module (search + fallback)\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement CLI (cep-etl commands)\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Implement FastAPI app (REST API + Web)\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Create HTML templates for Web interface\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Write pytest tests (ETL, query, fallback, errors)\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Create README with usage instructions\",\"status\":\"completed\",\"priority\":\"medium\"},{\"content\":\"Configure ruff lint and GitHub Actions CI\",\"status\":\"completed\",\"priority\":\"medium\"},{\"content\":\"Run ETL load against DNE_PATH to validate\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Run tests to ensure they pass\",\"status\":\"completed\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"0 todos\",\"time\":{\"start\":1781286754308,\"end\":1781286754311}},\"metadata\":{\"anthropic\":{\"caller\":{\"type\":\"direct\"}}},\"id\":\"prt_ebcf6c5a90011Gs7EpX3rh9n0T\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"messageID\":\"msg_ebcf6b87c0014Yzc2I804u8lgT\"}}\n{\"type\":\"step_finish\",\"timestamp\":1781286754758,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf6d9c1001hdWv0NwFC5gh3R\",\"reason\":\"tool-calls\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"messageID\":\"msg_ebcf6b87c0014Yzc2I804u8lgT\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":78999,\"input\":1,\"output\":375,\"reasoning\":0,\"cache\":{\"write\":453,\"read\":78170}},\"cost\":0.03077775}}\n{\"type\":\"step_start\",\"timestamp\":1781286758422,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf6e813001uxCh7Q3nMjWyTL\",\"messageID\":\"msg_ebcf6db9a001JFxNdOwPPrIj7O\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"type\":\"step-start\"}}\n{\"type\":\"text\",\"timestamp\":1781286765806,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf6e90a001GXfi16e9izmzo7\",\"messageID\":\"msg_ebcf6db9a001JFxNdOwPPrIj7O\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"text\",\"text\":\"The project is complete. Here's a summary of everything delivered:\\n\\n## Deliverables\\n\\n| Item | File(s) |\\n|------|---------|\\n| `pyproject.toml` (uv, console script `cep-etl`) | `pyproject.toml` |\\n| ETL module | `src/cep_etl/etl.py`, `src/cep_etl/db.py` |\\n| Query module (+ fallback) | `src/cep_etl/query.py` |\\n| CLI (`load`, `query --json`, `serve`) | `src/cep_etl/cli.py` |\\n| FastAPI app (`GET /cep/{cep}`, `POST /ceps`, Web) | `src/cep_etl/api.py` |\\n| Web template (form + results table) | `src/cep_etl/templates/index.html` |\\n| Tests — **73/73 passing** | `tests/test_{etl,query,api,cli}.py` |\\n| README | `README.md` |\\n| ruff config + GitHub Actions CI | `pyproject.toml`, `.github/workflows/ci.yml` |\\n\\n### Key behaviors verified:\\n- **ETL is idempotent** — running twice doesn't duplicate data (uses `ON CONFLICT DO UPDATE`)\\n- **CEP normalization** — accepts `01001-000` or `01001000`\\n- **Fallback** — CEP `37564000` (municipality-only) correctly returns `Borda da Mata / MG` with no logradouro\\n- **Error handling** — invalid CEPs return clear messages; missing `DNE_PATH` gives actionable error; batch queries never break on partial failures\\n- **Ruff lint** — all checks pass cleanly\",\"time\":{\"start\":1781286758666,\"end\":1781286765802}}}\n{\"type\":\"step_finish\",\"timestamp\":1781286766356,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf706ce001R5RKTrOLJqE1WF\",\"reason\":\"stop\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"messageID\":\"msg_ebcf6db9a001JFxNdOwPPrIj7O\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":79895,\"input\":1,\"output\":427,\"reasoning\":0,\"cache\":{\"write\":844,\"read\":78623}},\"cost\":0.0331599}}\n",
+      "stderr_tail": "",
+      "extra": {
+        "result": "ca32aa35f7d73553cad9f191c4fb2649b0e\",\"type\":\"step-start\"}}\n{\"type\":\"text\",\"timestamp\":1781286765806,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf6e90a001GXfi16e9izmzo7\",\"messageID\":\"msg_ebcf6db9a001JFxNdOwPPrIj7O\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"text\",\"text\":\"The project is complete. Here's a summary of everything delivered:\\n\\n## Deliverables\\n\\n| Item | File(s) |\\n|------|---------|\\n| `pyproject.toml` (uv, console script `cep-etl`) | `pyproject.toml` |\\n| ETL module | `src/cep_etl/etl.py`, `src/cep_etl/db.py` |\\n| Query module (+ fallback) | `src/cep_etl/query.py` |\\n| CLI (`load`, `query --json`, `serve`) | `src/cep_etl/cli.py` |\\n| FastAPI app (`GET /cep/{cep}`, `POST /ceps`, Web) | `src/cep_etl/api.py` |\\n| Web template (form + results table) | `src/cep_etl/templates/index.html` |\\n| Tests — **73/73 passing** | `tests/test_{etl,query,api,cli}.py` |\\n| README | `README.md` |\\n| ruff config + GitHub Actions CI | `pyproject.toml`, `.github/workflows/ci.yml` |\\n\\n### Key behaviors verified:\\n- **ETL is idempotent** — running twice doesn't duplicate data (uses `ON CONFLICT DO UPDATE`)\\n- **CEP normalization** — accepts `01001-000` or `01001000`\\n- **Fallback** — CEP `37564000` (municipality-only) correctly returns `Borda da Mata / MG` with no logradouro\\n- **Error handling** — invalid CEPs return clear messages; missing `DNE_PATH` gives actionable error; batch queries never break on partial failures\\n- **Ruff lint** — all checks pass cleanly\",\"time\":{\"start\":1781286758666,\"end\":1781286765802}}}\n{\"type\":\"step_finish\",\"timestamp\":1781286766356,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf706ce001R5RKTrOLJqE1WF\",\"reason\":\"stop\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"messageID\":\"msg_ebcf6db9a001JFxNdOwPPrIj7O\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":79895,\"input\":1,\"output\":427,\"reasoning\":0,\"cache\":{\"write\":844,\"read\":78623}},\"cost\":0.0331599}}\n"
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 71.33,
+      "session_id": "ses_14312a1ecfferL1lwVp7X3bhpx",
+      "cost_usd": 0.144349,
+      "stdout_tail": "ro\\\": \\\"Avenida Rio Branco\\\",\\r\\n    \\\"tipo_logradouro\\\": \\\"Avenida\\\",\\r\\n    \\\"bairro\\\": \\\"Centro\\\",\\r\\n    \\\"localidade\\\": \\\"Rio de Janeiro\\\",\\r\\n    \\\"uf\\\": \\\"RJ\\\",\\r\\n    \\\"found\\\": true,\\r\\n    \\\"error\\\": null\\r\\n  },\\r\\n  {\\r\\n    \\\"cep\\\": \\\"37564000\\\",\\r\\n    \\\"logradouro\\\": null,\\r\\n    \\\"tipo_logradouro\\\": null,\\r\\n    \\\"bairro\\\": null,\\r\\n    \\\"localidade\\\": \\\"Borda da Mata\\\",\\r\\n    \\\"uf\\\": \\\"MG\\\",\\r\\n    \\\"found\\\": true,\\r\\n    \\\"error\\\": null\\r\\n  }\\r\\n]\\r\\n\",\"exit\":0,\"description\":\"Verify CLI query output with proper encoding\",\"truncated\":false},\"title\":\"Verify CLI query output with proper encoding\",\"time\":{\"start\":1781286821551,\"end\":1781286822854}},\"metadata\":{\"anthropic\":{\"caller\":{\"type\":\"direct\"}}},\"id\":\"prt_ebcf7d6f7001xlkf7e55p65TtM\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"messageID\":\"msg_ebcf7c605001iL82cY9gxy7XKZ\"}}\n{\"type\":\"step_finish\",\"timestamp\":1781286823323,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf7e596001exjL0z5Scgbp03\",\"reason\":\"tool-calls\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"messageID\":\"msg_ebcf7c605001iL82cY9gxy7XKZ\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":85154,\"input\":1,\"output\":170,\"reasoning\":0,\"cache\":{\"write\":1131,\"read\":83852}},\"cost\":0.03194985}}\n{\"type\":\"step_start\",\"timestamp\":1781286825686,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf7eed4001N2eZtvdUTmYHaL\",\"messageID\":\"msg_ebcf7e755001vfGBJlha4cgWuO\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"type\":\"step-start\"}}\n{\"type\":\"text\",\"timestamp\":1781286837304,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf7efd60017o9eS1xc6TvHOv\",\"messageID\":\"msg_ebcf7e755001vfGBJlha4cgWuO\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"text\",\"text\":\"All validations pass. Summary of what was validated and what had been fixed (during Phase 1, carried forward clean into Phase 2):\\n\\n## Validation Summary\\n\\n**ETL (`uv run cep-etl load`)** — passes cleanly: 4 localidades, 4 bairros, 4 logradouros (1 RJ + 3 SP) loaded from `DNE_PATH`.\\n\\n**Tests (`uv run pytest`)** — **73/73 passed**. Issues that were found and corrected during Phase 1 (already clean here):\\n- Jinja2 `TemplateResponse` API changed in newer Starlette — fixed to use `request=` + `context=` keyword args instead of positional dict.\\n- ETL \\\"missing file\\\" tests were passing the same `tmp_path` that the `dne_dir` fixture uses (pytest shares `tmp_path` within the same test scope), so no `FileNotFoundError` was raised. Fixed by using `tempfile.TemporaryDirectory()` to create a truly independent empty directory.\\n- `test_no_files_returns_zero` had a FK integrity error because `load_logradouros` tried to insert into a DB that already had localidade data from the shared `isolated_env`. Same fix.\\n\\n**Lint (`uv run ruff check .)** — **`All checks passed!`** Auto-fixed unused imports, `Optional[X]` → `X | None`, import sorting, `Iterator` → `collections.abc`. Manually fixed `raise ... from e` in except clauses, renamed `line_num` → `_line_num`, and added `# noqa: B008` for the Typer `Argument` default call.\\n\\n**Web/API** — Server boots correctly; `GET /health` → 200, `GET /cep/01001000` → 200 with full address, `GET /` → 200 HTML page (6 KB). Server started in background job and terminated immediately after probing.\\n\\n**`uvx --from . cep-etl --help`** — works correctly, displays all three commands (`load`, `query`, `serve`).\",\"time\":{\"start\":1781286825942,\"end\":1781286837300}}}\n{\"type\":\"step_finish\",\"timestamp\":1781286837741,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf81de9001F7NCEk35VIkc3R\",\"reason\":\"stop\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"messageID\":\"msg_ebcf7e755001vfGBJlha4cgWuO\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":86005,\"input\":1,\"output\":502,\"reasoning\":0,\"cache\":{\"write\":519,\"read\":84983}},\"cost\":0.03497415}}\n",
+      "stderr_tail": "",
+      "extra": {
+        "result": "ary\\n\\n**ETL (`uv run cep-etl load`)** — passes cleanly: 4 localidades, 4 bairros, 4 logradouros (1 RJ + 3 SP) loaded from `DNE_PATH`.\\n\\n**Tests (`uv run pytest`)** — **73/73 passed**. Issues that were found and corrected during Phase 1 (already clean here):\\n- Jinja2 `TemplateResponse` API changed in newer Starlette — fixed to use `request=` + `context=` keyword args instead of positional dict.\\n- ETL \\\"missing file\\\" tests were passing the same `tmp_path` that the `dne_dir` fixture uses (pytest shares `tmp_path` within the same test scope), so no `FileNotFoundError` was raised. Fixed by using `tempfile.TemporaryDirectory()` to create a truly independent empty directory.\\n- `test_no_files_returns_zero` had a FK integrity error because `load_logradouros` tried to insert into a DB that already had localidade data from the shared `isolated_env`. Same fix.\\n\\n**Lint (`uv run ruff check .)** — **`All checks passed!`** Auto-fixed unused imports, `Optional[X]` → `X | None`, import sorting, `Iterator` → `collections.abc`. Manually fixed `raise ... from e` in except clauses, renamed `line_num` → `_line_num`, and added `# noqa: B008` for the Typer `Argument` default call.\\n\\n**Web/API** — Server boots correctly; `GET /health` → 200, `GET /cep/01001000` → 200 with full address, `GET /` → 200 HTML page (6 KB). Server started in background job and terminated immediately after probing.\\n\\n**`uvx --from . cep-etl --help`** — works correctly, displays all three commands (`load`, `query`, `serve`).\",\"time\":{\"start\":1781286825942,\"end\":1781286837300}}}\n{\"type\":\"step_finish\",\"timestamp\":1781286837741,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcf81de9001F7NCEk35VIkc3R\",\"reason\":\"stop\",\"snapshot\":\"a1409ca32aa35f7d73553cad9f191c4fb2649b0e\",\"messageID\":\"msg_ebcf7e755001vfGBJlha4cgWuO\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":86005,\"input\":1,\"output\":502,\"reasoning\":0,\"cache\":{\"write\":519,\"read\":84983}},\"cost\":0.03497415}}\n"
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 191.23,
+      "session_id": "ses_14312a1ecfferL1lwVp7X3bhpx",
+      "cost_usd": 0.78031,
+      "stdout_tail": ": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Stage and commit in logical groups (feat, test, docs, chore)\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Create semver tag v0.1.0\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  },\\n  {\\n    \\\"content\\\": \\\"Push branch and tags to origin\\\",\\n    \\\"status\\\": \\\"completed\\\",\\n    \\\"priority\\\": \\\"high\\\"\\n  }\\n]\",\"metadata\":{\"todos\":[{\"content\":\"Create .gitignore\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Stage and commit in logical groups (feat, test, docs, chore)\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Create semver tag v0.1.0\",\"status\":\"completed\",\"priority\":\"high\"},{\"content\":\"Push branch and tags to origin\",\"status\":\"completed\",\"priority\":\"high\"}],\"truncated\":false},\"title\":\"0 todos\",\"time\":{\"start\":1781287016902,\"end\":1781287016905}},\"metadata\":{\"anthropic\":{\"caller\":{\"type\":\"direct\"}}},\"id\":\"prt_ebcfad91f001RQk0eVkQsZSAcu\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"messageID\":\"msg_ebcfacc630011jOQXtpECh551S\"}}\n{\"type\":\"step_finish\",\"timestamp\":1781287017352,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcfadb840012BOsZq53ZA2b8c\",\"reason\":\"tool-calls\",\"snapshot\":\"8909d253750c341f32cf0a126c6c529c6b2e67ae\",\"messageID\":\"msg_ebcfacc630011jOQXtpECh551S\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":94095,\"input\":1,\"output\":160,\"reasoning\":0,\"cache\":{\"write\":191,\"read\":93743}},\"cost\":0.03124215}}\n{\"type\":\"step_start\",\"timestamp\":1781287020041,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcfae606001HvL36tNvICwzCK\",\"messageID\":\"msg_ebcfadd56001sQTeUO5I93NOSJ\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"snapshot\":\"8909d253750c341f32cf0a126c6c529c6b2e67ae\",\"type\":\"step-start\"}}\n{\"type\":\"text\",\"timestamp\":1781287028484,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcfae6fc001BG0nzwjQXXJzBU\",\"messageID\":\"msg_ebcfadd56001sQTeUO5I93NOSJ\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"text\",\"text\":\"## Resultado\\n\\n**`git log --oneline`**\\n```\\n0c86d32 ci: add GitHub Actions workflow for lint and tests\\nce070e9 test: add pytest suite covering ETL, query, CLI and API (73 tests)\\n4e0af82 feat: CEP query, CLI, REST API and Web interface\\nf7689e7 feat: implement ETL pipeline for eDNE Básico (Correios CEP database)\\na531c5c chore: initialise uv project with dependencies and cep-etl console script\\na99bd40 chore: add .gitignore for Python/uv project\\n```\\n\\n**`git tag`**\\n```\\nv0.1.0\\n```\\n\\n---\\n\\n### O que foi feito\\n\\n**`.gitignore`** — criado cobrindo `.venv/`, `*.db` (banco gerado em runtime), `__pycache__`, `.ruff_cache`, `.pytest_cache`, `.env`, IDEs e OS artifacts. O `cep.db` ficou corretamente de fora do repositório.\\n\\n**6 commits em Conventional Commits**, separados por responsabilidade lógica:\\n1. `chore` — `.gitignore`\\n2. `chore` — `pyproject.toml` + `uv.lock` (scaffolding do projeto uv)\\n3. `feat` — ETL pipeline (`db.py`, `etl.py`)\\n4. `feat` — query, CLI, API REST e Web (`query.py`, `cli.py`, `api.py`, template)\\n5. `test` — suíte pytest com 73 testes\\n6. `ci/docs` — workflow GitHub Actions e README\\n\\n**Tag anotada `v0.1.0`** criada apontando para o commit final.\\n\\n**Push** — o `origin` não está configurado neste ambiente de harness (`fatal: 'origin' does not appear to be a git repository`), então commits e tag existem localmente íntegros; o push falhou por ausência de remote, não por problema no código ou histórico.\",\"time\":{\"start\":1781287020284,\"end\":1781287028480}}}\n{\"type\":\"step_finish\",\"timestamp\":1781287028927,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcfb08ba001Gxy55p7SUCNJjT\",\"reason\":\"stop\",\"snapshot\":\"8909d253750c341f32cf0a126c6c529c6b2e67ae\",\"messageID\":\"msg_ebcfadd56001sQTeUO5I93NOSJ\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":94761,\"input\":1,\"output\":500,\"reasoning\":0,\"cache\":{\"write\":326,\"read\":93934}},\"cost\":0.0369057}}\n",
+      "stderr_tail": "",
+      "extra": {
+        "result": "s_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"text\",\"text\":\"## Resultado\\n\\n**`git log --oneline`**\\n```\\n0c86d32 ci: add GitHub Actions workflow for lint and tests\\nce070e9 test: add pytest suite covering ETL, query, CLI and API (73 tests)\\n4e0af82 feat: CEP query, CLI, REST API and Web interface\\nf7689e7 feat: implement ETL pipeline for eDNE Básico (Correios CEP database)\\na531c5c chore: initialise uv project with dependencies and cep-etl console script\\na99bd40 chore: add .gitignore for Python/uv project\\n```\\n\\n**`git tag`**\\n```\\nv0.1.0\\n```\\n\\n---\\n\\n### O que foi feito\\n\\n**`.gitignore`** — criado cobrindo `.venv/`, `*.db` (banco gerado em runtime), `__pycache__`, `.ruff_cache`, `.pytest_cache`, `.env`, IDEs e OS artifacts. O `cep.db` ficou corretamente de fora do repositório.\\n\\n**6 commits em Conventional Commits**, separados por responsabilidade lógica:\\n1. `chore` — `.gitignore`\\n2. `chore` — `pyproject.toml` + `uv.lock` (scaffolding do projeto uv)\\n3. `feat` — ETL pipeline (`db.py`, `etl.py`)\\n4. `feat` — query, CLI, API REST e Web (`query.py`, `cli.py`, `api.py`, template)\\n5. `test` — suíte pytest com 73 testes\\n6. `ci/docs` — workflow GitHub Actions e README\\n\\n**Tag anotada `v0.1.0`** criada apontando para o commit final.\\n\\n**Push** — o `origin` não está configurado neste ambiente de harness (`fatal: 'origin' does not appear to be a git repository`), então commits e tag existem localmente íntegros; o push falhou por ausência de remote, não por problema no código ou histórico.\",\"time\":{\"start\":1781287020284,\"end\":1781287028480}}}\n{\"type\":\"step_finish\",\"timestamp\":1781287028927,\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"part\":{\"id\":\"prt_ebcfb08ba001Gxy55p7SUCNJjT\",\"reason\":\"stop\",\"snapshot\":\"8909d253750c341f32cf0a126c6c529c6b2e67ae\",\"messageID\":\"msg_ebcfadd56001sQTeUO5I93NOSJ\",\"sessionID\":\"ses_14312a1ecfferL1lwVp7X3bhpx\",\"type\":\"step-finish\",\"tokens\":{\"total\":94761,\"input\":1,\"output\":500,\"reasoning\":0,\"cache\":{\"write\":326,\"read\":93934}},\"cost\":0.0369057}}\n"
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "etl_parsing": {
+        "note": 98.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "completeness": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "interfaces": {
+        "note": 98.4,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "persistence": {
+        "note": 97.0,
+        "objective": 100.0,
+        "judge": 94.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 97.4,
+        "objective": 100.0,
+        "judge": 93.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "error_handling": {
+        "note": 98.8,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "architecture": {
+        "note": 91.0,
+        "objective": null,
+        "judge": 91.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "production": {
+        "note": 97.4,
+        "objective": 100.0,
+        "judge": 93.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "git": {
+        "note": 96.7,
+        "objective": 100.0,
+        "judge": 89.0,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 97.6,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 100.0,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "divergences": {}
+}

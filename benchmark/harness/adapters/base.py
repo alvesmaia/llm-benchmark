@@ -90,11 +90,13 @@ def get_adapter(agent: str, model: str, effort: str | None = None) -> Adapter:
     from benchmark.harness.adapters.claude_code import ClaudeCodeAdapter
     from benchmark.harness.adapters.codex_cli import CodexCliAdapter
     from benchmark.harness.adapters.copilot_cli import CopilotCliAdapter
+    from benchmark.harness.adapters.opencode_cli import OpenCodeCliAdapter
 
     mapping = {
         "claude_code": ClaudeCodeAdapter,
         "copilot_cli": CopilotCliAdapter,
         "codex_cli": CodexCliAdapter,
+        "opencode": OpenCodeCliAdapter,
     }
     if agent not in mapping:
         raise ValueError(f"agente desconhecido: {agent} (conhecidos: {list(mapping)})")
