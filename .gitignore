@@ -1,0 +1,42 @@
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Banco de dados gerado pelo ETL
+*.db
+*.db-shm
+*.db-wal
+
+# Caches Python
+__pycache__/
+*.py[cod]
+*.pyo
+.mypy_cache/
+.ruff_cache/
+
+# Build / distribuição
+dist/
+build/
+*.egg-info/
+*.whl
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Segredos / env
+.env
+.env.*
+secrets.toml
