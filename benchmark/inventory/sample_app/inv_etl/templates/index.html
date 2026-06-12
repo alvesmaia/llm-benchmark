@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <title>Gestão de Estoque — Login</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 480px; margin: 3rem auto; padding: 0 1rem; }
+    form { display: grid; gap: .6rem; }
+    label { font-weight: 600; }
+    input { padding: .4rem .6rem; width: 100%; box-sizing: border-box; }
+    button { padding: .5rem 1rem; cursor: pointer; }
+    .error { color: #b00020; }
+    .ok { color: #0a7d28; }
+  </style>
+</head>
+<body>
+  <h1>Gestão de Estoque</h1>
+  <p>Faça login para acessar as operações protegidas (API REST).</p>
+
+  <form method="post" action="/">
+    <div>
+      <label for="username">Usuário</label>
+      <input id="username" name="username" type="text" value="{{ username or '' }}" required>
+    </div>
+    <div>
+      <label for="password">Senha</label>
+      <input id="password" name="password" type="password" required>
+    </div>
+    <button type="submit">Entrar</button>
+  </form>
+
+  {% if error %}
+  <p class="error">{{ error }}</p>
+  {% endif %}
+  {% if token %}
+  <p class="ok">Autenticado. Token: <code>{{ token }}</code></p>
+  {% endif %}
+</body>
+</html>

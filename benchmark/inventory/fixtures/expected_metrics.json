@@ -1,0 +1,21 @@
+{
+  "revenue": 491500,
+  "cost": 393200,
+  "profit": 98300,
+  "units_sold": 14,
+  "movements": 14,
+  "by_company": {
+    "Ford": 107000,
+    "Chevrolet": 55000,
+    "Toyota": 135000,
+    "Volkswagen": 91500,
+    "Honda": 103000
+  },
+  "by_region": {
+    "São Paulo": 96500,
+    "Rio de Janeiro": 164000,
+    "Curitiba": 116000,
+    "Belo Horizonte": 115000
+  },
+  "products_count": 9
+}

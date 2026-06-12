@@ -1,0 +1,36 @@
+[project]
+name = "inv-etl"
+version = "0.1.0"
+description = "Gestão de Estoque: ETL de vendas (car-sales), API REST, dashboard e Web com login (sample de referência do harness)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "typer>=0.12",
+    "fastapi>=0.115",
+    "uvicorn>=0.30",
+    "jinja2>=3.1",
+    "python-multipart>=0.0.9",
+]
+
+[project.scripts]
+inv-etl = "inv_etl.cli:app"
+
+[dependency-groups]
+dev = ["pytest>=8.0", "ruff>=0.6", "httpx>=0.27"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["inv_etl"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

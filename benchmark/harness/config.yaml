@@ -1,6 +1,13 @@
 # Configuração do harness de benchmark.
 # Tudo aqui é declarado para auditoria/reprodutibilidade.
 
+# Cenários multi-desafio. cep_etl usa dne_path/expected_queries (abaixo, retrocompat); cenários
+# novos declaram aqui o dataset (fixture sintética) e o expected (verdade dos checks objetivos).
+scenarios:
+  inventory:
+    dataset: "benchmark/inventory/fixtures/car_sales_sample/car_sales.csv"
+    expected: "benchmark/inventory/fixtures/expected_metrics.json"
+
 # Caminho da base DNE. Para auto-teste e CI, aponta para a fixture sintética.
 # Para a avaliação real, troque por uma pasta com os arquivos eDNE Básico (LOG_*.TXT).
 dne_path: "benchmark/fixtures/dne_sample"
