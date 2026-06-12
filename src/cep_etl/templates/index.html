@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de CEP — eDNE Correios</title>
+    <style>
+        *, *::before, *::after { box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+            background: #f5f5f5;
+            color: #333;
+        }
+        h1 { color: #1a56a7; margin-bottom: 4px; }
+        .subtitle { color: #666; margin-top: 0; margin-bottom: 32px; }
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+        }
+        label { display: block; font-weight: 600; margin-bottom: 8px; }
+        textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 15px;
+            font-family: monospace;
+            resize: vertical;
+            min-height: 90px;
+            transition: border-color 0.2s;
+        }
+        textarea:focus { outline: none; border-color: #1a56a7; }
+        button {
+            background: #1a56a7;
+            color: white;
+            border: none;
+            padding: 10px 28px;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            transition: background 0.2s;
+        }
+        button:hover { background: #1447a0; }
+        .hint { font-size: 13px; color: #888; margin-top: 6px; }
+        .error {
+            background: #fef2f2;
+            border: 1px solid #f87171;
+            color: #b91c1c;
+            padding: 10px 16px;
+            border-radius: 6px;
+            margin-bottom: 16px;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        thead th {
+            background: #1a56a7;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+        tbody tr:nth-child(even) { background: #f8fafc; }
+        tbody td { padding: 10px 12px; border-bottom: 1px solid #e5e7eb; }
+        .tag-not-found { color: #b91c1c; font-style: italic; }
+        .tag-loc { color: #6b7280; font-size: 12px; }
+        .cep-code { font-family: monospace; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <h1>Consulta de CEP</h1>
+    <p class="subtitle">Base eDNE Básico dos Correios</p>
+
+    <div class="card">
+        <form method="post" action="/">
+            <label for="ceps">CEP(s) para consultar</label>
+            <textarea
+                id="ceps"
+                name="ceps"
+                placeholder="01001-000&#10;20040002&#10;13012100"
+            >{{ query or "" }}</textarea>
+            <p class="hint">Separe múltiplos CEPs por vírgula ou quebra de linha. Com ou sem hífen.</p>
+            {% if error %}
+            <div class="error">{{ error }}</div>
+            {% endif %}
+            <button type="submit">Consultar</button>
+        </form>
+    </div>
+
+    {% if results is not none %}
+    <div class="card">
+        <h2 style="margin-top:0">Resultados</h2>
+        {% if results %}
+        <table>
+            <thead>
+                <tr>
+                    <th>CEP</th>
+                    <th>Tipo</th>
+                    <th>Logradouro</th>
+                    <th>Complemento</th>
+                    <th>Bairro</th>
+                    <th>Município/UF</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in results %}
+                <tr>
+                    {% if r.encontrado %}
+                    <td class="cep-code">{{ r.cep[:5] }}-{{ r.cep[5:] }}</td>
+                    <td>{{ r.tipo_logradouro or "" }}</td>
+                    <td>{{ r.logradouro or "" }}</td>
+                    <td>{{ r.complemento or "" }}</td>
+                    <td>{{ r.bairro or "" }}</td>
+                    <td>{{ r.localidade }}/{{ r.uf }}
+                        {% if r.fonte == "localidade" %}
+                        <span class="tag-loc">(CEP de município)</span>
+                        {% endif %}
+                    </td>
+                    {% else %}
+                    <td class="cep-code tag-not-found">{{ r.cep }}</td>
+                    <td colspan="5" class="tag-not-found">{{ r.erro }}</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>Nenhum resultado.</p>
+        {% endif %}
+    </div>
+    {% endif %}
+</body>
+</html>
