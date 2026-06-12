@@ -41,6 +41,8 @@ META_COLUMNS = [
     ("#", "posição no ranking (ordenado pelo Subtotal)"),
     ("Harness", "o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)"),
     ("Modelo", "modelo avaliado; tag `· 1M` quando rodou em contexto de 1M"),
+    ("Thinking", "modo/esforço de raciocínio do modelo na execução "
+                 "(ex.: `adaptive` no Claude Code, `medium` no Codex)"),
     ("Subtotal", "soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — "
                  "critério de ordenação"),
     ("Score", "Subtotal + modificadores (bônus de performance, penalidades), com teto 100"),
@@ -52,7 +54,7 @@ META_COLUMNS = [
 
 def _legend_lines() -> list[str]:
     lines = ["### Legenda das colunas", ""]
-    for name, desc in META_COLUMNS[:6]:
+    for name, desc in META_COLUMNS[:7]:  # # .. Tier
         lines.append(f"- **{name}** — {desc}")
     lines.append("")
     lines.append("Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):")
@@ -60,7 +62,7 @@ def _legend_lines() -> list[str]:
     for dim in DIMENSIONS:
         lines.append(f"- **{DIM_LABELS[dim]}** (peso {WEIGHTS[dim]}) — {DIM_DESCRIPTIONS[dim]}")
     lines.append("")
-    for name, desc in META_COLUMNS[6:]:
+    for name, desc in META_COLUMNS[7:]:  # Custo, Diverg.
         lines.append(f"- **{name}** — {desc}")
     lines.append("")
     return lines
@@ -130,9 +132,9 @@ def build_leaderboard(cfg: Config) -> str:
 
     lines += _legend_lines()
 
-    header = "| # | Harness | Modelo | Subtotal | Score | Tier | " + \
+    header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | " + \
         " | ".join(DIM_LABELS[d] for d in DIMENSIONS) + " | Custo (US$) | Diverg. |"
-    sep = "|" + "---|" * (6 + len(DIMENSIONS) + 2)
+    sep = "|" + "---|" * (7 + len(DIMENSIONS) + 2)
     lines += [header, sep]
 
     for i, r in enumerate(rows, 1):
@@ -149,8 +151,9 @@ def build_leaderboard(cfg: Config) -> str:
         model_label = (cand.display if cand and cand.display else r.get("model", "?"))
         if cand and cand.context and cand.context.upper() == "1M":
             model_label = f"{model_label} · 1M"
+        thinking = (cand.thinking if cand and cand.thinking else "—")
         lines.append(
-            f"| {i} | {r.get('agent','?')} | {model_label} | "
+            f"| {i} | {r.get('agent','?')} | {model_label} | {thinking} | "
             f"**{sc.get('weighted_subtotal','?')}** | {sc.get('final_score','?')} | "
             f"{sc.get('tier','?')} | {dim_cells} | {cost} | {diverg} |"
         )
