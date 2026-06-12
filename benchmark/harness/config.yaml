@@ -67,3 +67,7 @@ candidates:
     model: gpt-5.1-codex
     model_slug: copilot-gpt
     display: "GPT-5.1 Codex (Copilot)"
+  - agent: codex_cli
+    model: gpt-5.4
+    model_slug: codex-5-4
+    display: "GPT-5.4 (Codex)"

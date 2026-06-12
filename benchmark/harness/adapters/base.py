@@ -87,11 +87,13 @@ class Adapter:
 def get_adapter(agent: str, model: str) -> Adapter:
     # import tardio para evitar ciclos
     from benchmark.harness.adapters.claude_code import ClaudeCodeAdapter
+    from benchmark.harness.adapters.codex_cli import CodexCliAdapter
     from benchmark.harness.adapters.copilot_cli import CopilotCliAdapter
 
     mapping = {
         "claude_code": ClaudeCodeAdapter,
         "copilot_cli": CopilotCliAdapter,
+        "codex_cli": CodexCliAdapter,
     }
     if agent not in mapping:
         raise ValueError(f"agente desconhecido: {agent} (conhecidos: {list(mapping)})")
