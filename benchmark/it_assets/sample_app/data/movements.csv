@@ -1,0 +1,31 @@
+movement_id,date,asset_tag,asset_type,action,employee,from_location,to_location,status,value
+MV-0001,2024-01-03,NB-0001,notebook,allocate,José Antônio,Almoxarifado,TI - 3º andar,in_use,5200.00
+MV-0002,2024-01-05,NB-0002,notebook,allocate,Maria Conceição,Almoxarifado,Vendas,in_use,4800.00
+MV-0003,2024-01-08,MON-0101,monitor,allocate,João da Silva,Almoxarifado,Vendas,in_use,1200.00
+MV-0004,2024-01-10,NB-0003,notebook,transfer,Ana Paula,TI - 3º andar,Diretoria,in_use,6100.00
+MV-0005,2024-01-12,PH-0201,phone,allocate,Carlos Eduardo,Almoxarifado,Logística,in_use,3300.00
+MV-0006,2024-01-15,NB-0001,maintenance,maintenance,,TI - 3º andar,Assistência,in_repair,250.00
+MV-0007,2024-01-18,MON-0102,monitor,allocate,Beatriz Lação,Almoxarifado,Financeiro,in_use,1150.00
+MV-0008,2024-01-20,NB-0004,notebook,allocate,Rafael Gonçalves,Almoxarifado,Engenharia,in_use,7200.00
+MV-0009,2024-01-22,PH-0202,phone,allocate,Fernanda Müller,Almoxarifado,RH,in_use,2900.00
+MV-0010,2024-01-25,NB-0002,return,return,Maria Conceição,Vendas,Almoxarifado,available,4800.00
+MV-0011,2024-01-28,TB-0301,tablet,allocate,Lucas Almeida,Almoxarifado,Vendas,in_use,2100.00
+MV-0012,2024-02-01,NB-0005,notebook,allocate,Patrícia Nóbrega,Almoxarifado,Marketing,in_use,5600.00
+MV-0013,2024-02-03,MON-0101,monitor,transfer,Thiago Ávila,Vendas,Marketing,in_use,1200.00
+MV-0014,2024-02-06,NB-0001,return,return,,Assistência,Almoxarifado,available,5200.00
+MV-0015,2024-02-09,PH-0203,phone,allocate,Juliana Rezende,Almoxarifado,Diretoria,in_use,3100.00
+MV-0016,2024-02-11,NB-0006,notebook,allocate,Marcelo Fróes,Almoxarifado,Suporte,in_use,4500.00
+MV-0017,2024-02-14,TB-0302,tablet,allocate,Camila Sá,Almoxarifado,Comercial,in_use,1980.00
+MV-0018,2024-02-17,NB-0003,maintenance,maintenance,Ana Paula,Diretoria,Assistência,in_repair,320.00
+MV-0019,2024-02-20,MON-0103,monitor,allocate,Renato Lima,Almoxarifado,Engenharia,in_use,1300.00
+MV-0020,2024-02-23,NB-0004,transfer,transfer,Rafael Gonçalves,Engenharia,Suporte,in_use,7200.00
+MV-0021,2024-02-26,PH-0201,phone,return,Carlos Eduardo,Logística,Almoxarifado,available,3300.00
+MV-0022,2024-03-01,NB-0007,notebook,allocate,Vanessa Côrtes,Almoxarifado,Financeiro,in_use,5900.00
+MV-0023,2024-03-04,TB-0301,tablet,maintenance,Lucas Almeida,Vendas,Assistência,in_repair,180.00
+MV-0024,2024-03-07,NB-0008,notebook,allocate,Eduardo Peçanha,Almoxarifado,TI - 3º andar,in_use,6800.00
+MV-0025,2024-03-10,MON-0102,monitor,transfer,Beatriz Lação,Financeiro,RH,in_use,1150.00
+MV-0026,2024-03-13,PH-0202,phone,return,Fernanda Müller,RH,Almoxarifado,available,2900.00
+MV-0027,2024-03-16,NB-0005,transfer,transfer,Patrícia Nóbrega,Marketing,Vendas,in_use,5600.00
+MV-0028,2024-03-19,TB-0303,tablet,allocate,Sérgio Antunes,Almoxarifado,Logística,in_use,2050.00
+MV-0029,2024-03-22,NB-0009,notebook,allocate,Letícia Brandão,Almoxarifado,Comercial,in_use,5300.00
+MV-0030,2024-03-25,MON-0101,monitor,return,Thiago Ávila,Marketing,Almoxarifado,available,1200.00

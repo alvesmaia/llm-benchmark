@@ -16,7 +16,7 @@ from benchmark.harness.config import load_config
 from benchmark.harness.scenarios.registry import get_scenario
 
 app = typer.Typer(add_completion=False,
-                  help="Benchmark de LLMs como code agents (desafio ETL CEP).")
+                  help="Benchmark de LLMs como code agents (Gestão de Ativos de TI, 3 fases).")
 console = Console()
 
 
@@ -24,7 +24,7 @@ console = Console()
 def run(
     only: str = typer.Option(None, help="slug(s) separados por vírgula (ex.: claude_code-sonnet)"),
     config: str = typer.Option(None, help="caminho do config.yaml"),
-    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+    scenario: str = typer.Option("it_assets", help="cenário (único: it_assets)"),
     skip_agent: bool = typer.Option(
         False, "--skip-agent",
         help="não rebuilda: re-roda checagens + juízes no app já construído"),
@@ -50,7 +50,7 @@ def run(
 @app.command()
 def selftest(
     config: str = typer.Option(None, help="caminho do config.yaml"),
-    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+    scenario: str = typer.Option("it_assets", help="cenário (único: it_assets)"),
 ):
     """Valida o pipeline contra a fixture + sample_app, sem chamar agentes pagos."""
     cfg = load_config(config)
@@ -69,7 +69,7 @@ def selftest(
 def rescore(
     slug: str = typer.Argument(..., help="slug do candidato (ex.: claude_code-sonnet)"),
     config: str = typer.Option(None, help="caminho do config.yaml"),
-    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+    scenario: str = typer.Option("it_assets", help="cenário (único: it_assets)"),
 ):
     """Recalcula o score de um candidato já avaliado: re-roda as checagens objetivas no app
     existente e reaproveita as notas dos juízes (não rebuilda nem chama juízes de novo)."""
@@ -86,7 +86,7 @@ def rescore(
 @app.command()
 def score(
     config: str = typer.Option(None, help="caminho do config.yaml"),
-    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+    scenario: str = typer.Option("it_assets", help="cenário (único: it_assets)"),
 ):
     """Reconstrói o leaderboard a partir dos results/<slug>/scores.json já existentes."""
     cfg = load_config(config)
@@ -97,7 +97,7 @@ def score(
 @app.command()
 def report(
     config: str = typer.Option(None, help="caminho do config.yaml"),
-    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+    scenario: str = typer.Option("it_assets", help="cenário (único: it_assets)"),
 ):
     """Alias de `score`: regenera o leaderboard."""
     cfg = load_config(config)
@@ -109,7 +109,7 @@ def report(
 def export(
     slug: str = typer.Argument(..., help="slug do candidato (ex.: opencode-sonnet)"),
     config: str = typer.Option(None, help="caminho do config.yaml"),
-    scenario: str = typer.Option("cep_etl", help="cenário: cep_etl ou inventory"),
+    scenario: str = typer.Option("it_assets", help="cenário (único: it_assets)"),
     output: str = typer.Option(None, help="diretório de saída (default: exports/<scenario>/)"),
 ):
     """Gera um ZIP com o projeto gerado + o prompt do juiz + os resultados, para reavaliação
@@ -125,27 +125,16 @@ def export(
 
 @app.command()
 def serve(
-    slug: str = typer.Argument(..., help="slug do candidato (ex.: claude_code-opus)"),
+    slug: str = typer.Argument(..., help="slug do candidato (ex.: claude_code-opus-4-8)"),
     host: str = typer.Option("127.0.0.1"),
     port: int = typer.Option(8000),
     config: str = typer.Option(None),
-    load: bool = typer.Option(True, help="rodar o ETL antes de subir"),
+    scenario: str = typer.Option("it_assets", help="cenário (único: it_assets)"),
 ):
-    """Sobe Web+API do projeto gerado por um candidato (um único comando)."""
+    """Sobe Web+API do projeto gerado por um candidato (um único comando `uvx`/`uv run`)."""
     cfg = load_config(config)
-    raise typer.Exit(serve_mod.serve(cfg, slug, host=host, port=port, load_first=load))
-
-
-@app.command()
-def query(
-    slug: str = typer.Argument(...),
-    ceps: list[str] = typer.Argument(...),
-    as_json: bool = typer.Option(False, "--json"),
-    config: str = typer.Option(None),
-):
-    """Consulta CEP(s) usando o projeto gerado por um candidato."""
-    cfg = load_config(config)
-    raise typer.Exit(serve_mod.query(cfg, slug, ceps, as_json=as_json))
+    raise typer.Exit(serve_mod.serve(cfg, slug, host=host, port=port,
+                                     scenario=get_scenario(scenario)))
 
 
 def _print_objective(objective: dict) -> None:

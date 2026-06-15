@@ -34,7 +34,7 @@ def _dimension_note(dim: str, objective: float | None,
 def compute_score(objective_by_dimension: dict, judge_avg: dict, flags: dict,
                   cfg: Config, scenario=None) -> dict:
     from benchmark.harness.scenarios.registry import get_scenario
-    sc = scenario or get_scenario("cep_etl")
+    sc = scenario or get_scenario()
     dimensions, weights, combination = sc.dimensions, sc.weights, sc.combination
 
     mods_cfg = cfg.modifiers or {}

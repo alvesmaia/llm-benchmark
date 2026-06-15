@@ -135,7 +135,7 @@ def run_panel(app_dir: Path, candidate_slug: str, objective: dict, cfg: Config,
               scenario=None) -> dict:
     """Roda todos os juízes, aplica anti-auto-favorecimento e calcula a média por dimensão."""
     from benchmark.harness.scenarios.registry import get_scenario
-    scenario = scenario or get_scenario("cep_etl")
+    scenario = scenario or get_scenario()
     template = scenario.judge_prompt.read_text(encoding="utf-8")
     prompt = build_prompt(template, app_dir=app_dir, objective=objective, scenario=scenario)
 

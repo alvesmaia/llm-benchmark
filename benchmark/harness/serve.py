@@ -1,20 +1,22 @@
-"""Runner local: sobe (ou consulta) o projeto gerado por um candidato em um único comando.
+"""Runner local: sobe o projeto gerado por um candidato em um único comando.
 
-`uv run bench serve <slug>` carrega o DNE/fixture e sobe Web+API do projeto escolhido.
-Internamente delega ao console script `cep-etl` do projeto gerado (via `uv run` no diretório dele).
+`uv run bench serve <slug>` sobe a app (FastAPI/Web) do projeto escolhido, delegando ao console
+script `it-assets` do projeto gerado (via `uv run` no diretório dele), com o `.env`/base do cenário.
 """
 
 from __future__ import annotations
 
 import os
+import re
 import subprocess
 from pathlib import Path
 
 from benchmark.harness.config import Config
+from benchmark.harness.scenarios.registry import get_scenario
 
 
-def _app_dir(cfg: Config, slug: str) -> Path:
-    app_dir = cfg.runs_dir / slug / "app"
+def _app_dir(cfg: Config, slug: str, scenario) -> Path:
+    app_dir = scenario.run_dir(cfg.runs_dir, slug) / "app"
     if not app_dir.exists():
         raise FileNotFoundError(
             f"projeto gerado não encontrado: {app_dir}\n"
@@ -23,32 +25,33 @@ def _app_dir(cfg: Config, slug: str) -> Path:
     return app_dir
 
 
-def _env(cfg: Config, app_dir: Path) -> dict:
+def _console_script(app_dir: Path) -> str:
+    pp = app_dir / "pyproject.toml"
+    if pp.exists():
+        txt = pp.read_text(encoding="utf-8", errors="replace")
+        m = re.search(r"^\s*([\w-]+)\s*=\s*[\"'][\w_]+(?:\.[\w_]+)*:", txt, re.MULTILINE)
+        if m:
+            return m.group(1)
+    return "it-assets"
+
+
+def _env(cfg: Config, app_dir: Path, scenario) -> dict:
     env = dict(os.environ)
-    env["DNE_PATH"] = str(cfg.dne_path)
-    env["DB_PATH"] = str(app_dir / "cep.db")
+    env[scenario.dataset_env] = str(cfg.dataset_for(scenario.id))
+    env["DB_PATH"] = str(app_dir / scenario.db_filename)
     env["PYTHONIOENCODING"] = "utf-8"
+    env.update(scenario.extra_env)
     return env
 
 
 def serve(cfg: Config, slug: str, *, host: str = "127.0.0.1", port: int = 8000,
-          load_first: bool = True) -> int:
-    app_dir = _app_dir(cfg, slug)
-    env = _env(cfg, app_dir)
-    if load_first:
-        print(f"[bench] carregando DNE ({cfg.dne_path}) em {env['DB_PATH']} ...")
-        subprocess.run(["uv", "run", "cep-etl", "load"], cwd=str(app_dir), env=env, check=False)
+          scenario=None) -> int:
+    scenario = scenario or get_scenario()
+    app_dir = _app_dir(cfg, slug, scenario)
+    env = _env(cfg, app_dir, scenario)
+    script = _console_script(app_dir)
     print(f"[bench] subindo {slug} em http://{host}:{port} (Ctrl+C para parar)")
     return subprocess.run(
-        ["uv", "run", "cep-etl", "serve", "--host", host, "--port", str(port)],
+        ["uv", "run", script, "serve", "--host", host, "--port", str(port)],
         cwd=str(app_dir), env=env, check=False,
     ).returncode
-
-
-def query(cfg: Config, slug: str, ceps: list[str], *, as_json: bool = False) -> int:
-    app_dir = _app_dir(cfg, slug)
-    env = _env(cfg, app_dir)
-    args = ["uv", "run", "cep-etl", "query", *ceps]
-    if as_json:
-        args.append("--json")
-    return subprocess.run(args, cwd=str(app_dir), env=env, check=False).returncode

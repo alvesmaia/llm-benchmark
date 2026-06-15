@@ -1,47 +1,15 @@
-"""Definição canônica da rubrica em código (espelha benchmark/rubric/rubric.md)."""
+"""Tiers do score + reexport das dimensões/pesos canônicos do cenário ativo (it_assets).
+
+Historicamente este módulo guardava a rubrica do CEP. Com o cenário único `it_assets`, a fonte
+canônica de dimensões/pesos/combinação é `scenarios/it_assets.py`; aqui apenas reexportamos para
+compatibilidade e mantemos `tier_for`/`TIERS` (independentes de cenário).
+"""
 
 from __future__ import annotations
 
 from dataclasses import dataclass
 
-# Chaves estáveis das 9 dimensões (mesmas chaves usadas pelo JSON do juiz).
-DIMENSIONS = [
-    "etl_parsing",
-    "completeness",
-    "interfaces",
-    "persistence",
-    "tests",
-    "error_handling",
-    "architecture",
-    "production",
-    "git",
-]
-
-# Peso de cada dimensão (soma = 100).
-WEIGHTS = {
-    "etl_parsing": 18,
-    "completeness": 13,
-    "interfaces": 14,
-    "persistence": 11,
-    "tests": 11,
-    "error_handling": 9,
-    "architecture": 8,
-    "production": 8,
-    "git": 8,
-}
-
-# Combinação objetivo × juízes por dimensão (peso_obj, peso_juiz). Soma = 1.0.
-COMBINATION = {
-    "etl_parsing": (0.7, 0.3),
-    "completeness": (1.0, 0.0),
-    "interfaces": (0.6, 0.4),
-    "persistence": (0.5, 0.5),
-    "tests": (0.6, 0.4),
-    "error_handling": (0.7, 0.3),
-    "architecture": (0.0, 1.0),
-    "production": (0.6, 0.4),
-    "git": (0.7, 0.3),
-}
+from benchmark.harness.scenarios.it_assets import COMBINATION, DIMENSIONS, WEIGHTS
 
 assert sum(WEIGHTS.values()) == 100, "Os pesos da rubrica devem somar 100"
 assert set(WEIGHTS) == set(DIMENSIONS) == set(COMBINATION)

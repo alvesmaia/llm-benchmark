@@ -1,19 +1,18 @@
 # Configuração do harness de benchmark.
 # Tudo aqui é declarado para auditoria/reprodutibilidade.
 
-# Cenários multi-desafio. cep_etl usa dne_path/expected_queries (abaixo, retrocompat); cenários
-# novos declaram aqui o dataset (fixture sintética) e o expected (verdade dos checks objetivos).
+# Cenário único: it_assets (gestão de movimentação de ativos de TI). Cada cenário declara aqui o
+# dataset (fixture sintética) e o expected (verdade mínima dos checks objetivos).
 scenarios:
-  inventory:
-    dataset: "benchmark/inventory/fixtures/car_sales_sample/car_sales.csv"
-    expected: "benchmark/inventory/fixtures/expected_metrics.json"
+  it_assets:
+    dataset: "benchmark/it_assets/fixtures/it_assets_movements/movements.csv"
+    expected: "benchmark/it_assets/fixtures/expected.json"
 
-# Caminho da base DNE. Para auto-teste e CI, aponta para a fixture sintética.
-# Para a avaliação real, troque por uma pasta com os arquivos eDNE Básico (LOG_*.TXT).
-dne_path: "benchmark/fixtures/dne_sample"
-
-# Conjunto de queries esperadas usadas nas checagens objetivas (derivado do dne_path acima).
-expected_queries: "benchmark/fixtures/expected_queries.json"
+# Juiz E2E "funciona como usuário": agente que dirige o browser via Playwright MCP (Sonnet).
+# Indisponível em headless/cron => a dimensão e2e cai para fallback sem quebrar o pipeline.
+e2e_judge:
+  agent: claude_code
+  model: sonnet
 
 # Onde os projetos gerados e logs ficam.
 # IMPORTANTE: deve ficar FORA do repositório do benchmark, senão o agente enxerga (e se contamina
@@ -71,7 +70,6 @@ candidates:
     display: "Opus 4.7"
     thinking: "medium"
     effort: "medium"
-    scenarios: ["cep_etl", "inventory"]
   - agent: claude_code
     model: sonnet
     model_slug: sonnet
@@ -96,7 +94,6 @@ candidates:
     display: "Opus 4.7"
     thinking: "medium"
     effort: "medium"
-    scenarios: ["inventory"]
   - agent: copilot_cli
     model: claude-sonnet-4.6
     model_slug: copilot-sonnet

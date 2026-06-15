@@ -1,0 +1,36 @@
+{
+  "row_count": 30,
+  "valid_actions": [
+    "allocate",
+    "return",
+    "transfer",
+    "maintenance"
+  ],
+  "actions_in_dataset": [
+    "allocate",
+    "maintenance",
+    "return",
+    "transfer"
+  ],
+  "asset_tags": [
+    "MON-0101",
+    "MON-0102",
+    "MON-0103",
+    "NB-0001",
+    "NB-0002",
+    "NB-0003",
+    "NB-0004",
+    "NB-0005",
+    "NB-0006",
+    "NB-0007",
+    "NB-0008",
+    "NB-0009",
+    "PH-0201",
+    "PH-0202",
+    "PH-0203",
+    "TB-0301",
+    "TB-0302",
+    "TB-0303"
+  ],
+  "asset_tags_count": 18
+}

@@ -7,26 +7,33 @@ from pathlib import Path
 
 from benchmark.harness.config import Config
 
-# Descrição das colunas não-dimensionais.
+# Descrição das colunas não-dimensionais. As 8 primeiras vêm ANTES das dimensões na legenda;
+# as demais (a partir do índice _META_TAIL) vêm depois.
 META_COLUMNS = [
     ("#", "posição no ranking (ordenado pelo Subtotal)"),
     ("Harness", "o code agent que dirigiu o modelo (ex.: `claude_code`, `copilot_cli`)"),
     ("Modelo", "modelo avaliado; tag `· 1M` quando rodou em contexto de 1M"),
     ("Thinking", "esforço de raciocínio declarado (default predefinido `medium`; candidatos "
                  "podem sobrescrever, ex.: `xhigh`/`high`)"),
-    ("Subtotal", "soma ponderada das 9 dimensões (0–100, **antes** dos modificadores) — "
+    ("Subtotal", "soma ponderada das dimensões (0–100, **antes** dos modificadores) — "
                  "critério de ordenação"),
     ("Score", "Subtotal + modificadores (bônus de performance, penalidades), com teto 100"),
     ("Tier", "faixa do Score: A (80+), B (60–79), C (40–59), D (<40)"),
-    ("Tempo", "tempo total de conclusão (soma das 3 fases: build + validação + git)"),
+    ("Tempo", "tempo total de conclusão (soma das 3 fases: dashboard + refactor + correção)"),
+    # tail (depois das dimensões)
+    ("Tokens In", "tokens de entrada somados nas 3 fases (— quando o CLI não reporta)"),
+    ("Tokens Out", "tokens de saída somados nas 3 fases (— quando o CLI não reporta)"),
+    ("Cache", "tokens de cache (escrita + leitura) somados nas 3 fases"),
     ("Custo (US$)", "custo-equivalente estimado das fases (referência; o consumo conta no plano)"),
+    ("Cobertura (%)", "cobertura de testes medida pelo harness (dimensão `tests`, alvo oculto)"),
     ("Diverg.", "dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)"),
 ]
+_META_HEAD = 8   # # .. Tempo (antes das dimensões)
 
 
 def _legend_lines(scenario) -> list[str]:
     lines = ["### Legenda das colunas", ""]
-    for name, desc in META_COLUMNS[:8]:  # # .. Tempo
+    for name, desc in META_COLUMNS[:_META_HEAD]:  # # .. Tempo
         lines.append(f"- **{name}** — {desc}")
     lines.append("")
     lines.append("Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):")
@@ -35,7 +42,7 @@ def _legend_lines(scenario) -> list[str]:
         lines.append(f"- **{scenario.dim_labels[dim]}** (peso {scenario.weights[dim]}) — "
                      f"{scenario.dim_descriptions[dim]}")
     lines.append("")
-    for name, desc in META_COLUMNS[8:]:  # Custo, Diverg.
+    for name, desc in META_COLUMNS[_META_HEAD:]:  # Tokens, Custo, Cobertura, Diverg.
         lines.append(f"- **{name}** — {desc}")
     lines.append("")
     return lines
@@ -55,8 +62,62 @@ def _load_scores(cfg: Config, scenario) -> list[dict]:
         run_logs = scenario.run_dir(cfg.runs_dir, slug) / "logs"
         row["_total_cost"] = _read_cost(scores_file.parent, run_logs)
         row["_total_duration"] = _read_duration(scores_file.parent, run_logs)
+        row["_tokens"] = _read_tokens(scores_file.parent, run_logs)
+        row["_coverage"] = _read_coverage(row)
         rows.append(row)
     return rows
+
+
+def _phase_dicts(results_slug_dir, run_logs_dir) -> list[dict]:
+    """Lista os dicts de fase (preferindo result.json; fallback nos logs phase*.json)."""
+    result_file = results_slug_dir / "result.json"
+    if result_file.exists():
+        try:
+            phases = json.loads(result_file.read_text(encoding="utf-8")).get("phases", {})
+            if phases:
+                return list(phases.values())
+        except json.JSONDecodeError:
+            pass
+    out = []
+    if run_logs_dir.exists():
+        for pf in sorted(run_logs_dir.glob("phase*.json")):
+            try:
+                out.append(json.loads(pf.read_text(encoding="utf-8")))
+            except json.JSONDecodeError:
+                continue
+    return out
+
+
+def _read_tokens(results_slug_dir, run_logs_dir) -> dict:
+    """Soma tokens (input/output/cache write+read) de todas as fases. None se nenhuma fase
+    reportou aquele campo (ex.: copilot/codex não dão dados estruturados)."""
+    acc = {"input": 0, "output": 0, "cache": 0}
+    seen = {"input": False, "output": False, "cache": False}
+    for p in _phase_dicts(results_slug_dir, run_logs_dir):
+        if isinstance(p.get("tokens_input"), (int, float)):
+            acc["input"] += int(p["tokens_input"])
+            seen["input"] = True
+        if isinstance(p.get("tokens_output"), (int, float)):
+            acc["output"] += int(p["tokens_output"])
+            seen["output"] = True
+        for k in ("tokens_cache_write", "tokens_cache_read"):
+            if isinstance(p.get(k), (int, float)):
+                acc["cache"] += int(p[k])
+                seen["cache"] = True
+    return {
+        "input": acc["input"] if seen["input"] else None,
+        "output": acc["output"] if seen["output"] else None,
+        "cache": acc["cache"] if seen["cache"] else None,
+    }
+
+
+def _read_coverage(row: dict) -> float | None:
+    """Lê a % de cobertura capturada pelas checagens objetivas (objective.coverage_pct)."""
+    obj = row.get("objective") or {}
+    cov = obj.get("coverage_pct")
+    if isinstance(cov, (int, float)):
+        return round(float(cov), 1)
+    return None
 
 
 def _read_cost(results_slug_dir, run_logs_dir) -> float | None:
@@ -112,7 +173,7 @@ def _fmt_duration(seconds: float | None) -> str:
 
 def build_leaderboard(cfg: Config, scenario=None) -> str:
     from benchmark.harness.scenarios.registry import get_scenario
-    scenario = scenario or get_scenario("cep_etl")
+    scenario = scenario or get_scenario()
     rows = _load_scores(cfg, scenario)
     # ordena por subtotal (pré-modificadores) — discrimina melhor que o final (satura no teto 100)
     def _key(r):
@@ -122,7 +183,7 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
     rows.sort(key=_key, reverse=True)
 
     lines = [
-        "# Leaderboard — Benchmark ETL CEP",
+        "# Leaderboard — Benchmark Gestão de Ativos de TI (3 fases)",
         "",
         "Ranking por **candidato = harness (agent) + modelo**. O mesmo modelo aparece como",
         "entradas distintas conforme o harness (o harness influencia o resultado).",
@@ -141,9 +202,13 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
 
     header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | " + \
         " | ".join(scenario.dim_labels[d] for d in scenario.dimensions) + \
-        " | Custo (US$) | Diverg. |"
-    sep = "|" + "---|" * (8 + len(scenario.dimensions) + 2)
+        " | Tokens In | Tokens Out | Cache | Custo (US$) | Cobertura (%) | Diverg. |"
+    # colunas fixas: 8 (head) + dimensões + 6 (tail: 3 tokens + custo + cobertura + diverg)
+    sep = "|" + "---|" * (_META_HEAD + len(scenario.dimensions) + 6)
     lines += [header, sep]
+
+    def _tok(v):
+        return f"{v:,}".replace(",", " ") if isinstance(v, (int, float)) else "—"
 
     for i, r in enumerate(rows, 1):
         sc = r.get("score", {})
@@ -154,6 +219,8 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
         )
         cost = f"{r['_total_cost']:.3f}" if r.get("_total_cost") else "—"
         tempo = _fmt_duration(r.get("_total_duration"))
+        toks = r.get("_tokens") or {}
+        cov = f"{r['_coverage']:.0f}" if r.get("_coverage") is not None else "—"
         diverg = ", ".join(r.get("divergences", {}).keys()) or "—"
         # nome limpo de exibição; tag de contexto SÓ para modelos 1M
         cand = cfg.candidate_by_slug(r.get("slug", ""))
@@ -164,7 +231,9 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
         lines.append(
             f"| {i} | {r.get('agent','?')} | {model_label} | {thinking} | "
             f"**{sc.get('weighted_subtotal','?')}** | {sc.get('final_score','?')} | "
-            f"{sc.get('tier','?')} | {tempo} | {dim_cells} | {cost} | {diverg} |"
+            f"{sc.get('tier','?')} | {tempo} | {dim_cells} | "
+            f"{_tok(toks.get('input'))} | {_tok(toks.get('output'))} | {_tok(toks.get('cache'))} | "
+            f"{cost} | {cov} | {diverg} |"
         )
 
     lines += [
@@ -211,7 +280,7 @@ def update_readme(cfg: Config, scenario) -> bool:
 
 def write_leaderboard(cfg: Config, scenario=None) -> Path:
     from benchmark.harness.scenarios.registry import get_scenario
-    scenario = scenario or get_scenario("cep_etl")
+    scenario = scenario or get_scenario()
     content = build_leaderboard(cfg, scenario)
     out = scenario.leaderboard_path(cfg.results_dir)
     out.parent.mkdir(parents=True, exist_ok=True)

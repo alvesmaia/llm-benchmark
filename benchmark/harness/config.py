@@ -28,14 +28,16 @@ class Candidate:
     display: str | None = None  # nome limpo de exibição (ex.: "Opus 4.8")
     thinking: str | None = "medium"  # rótulo exibido no ranking; default predefinido "medium"
     effort: str | None = None  # flag --effort passada ao CLI (Claude Code): low..max
-    scenarios: list[str] | None = None  # cenários que este candidato roda (None => só "cep_etl")
+    scenarios: list[str] | None = None  # cenários que este candidato roda (None => só o default)
 
     @property
     def slug(self) -> str:
         return f"{self.agent}-{self.model_slug}"
 
     def runs_scenario(self, scenario_id: str) -> bool:
-        active = self.scenarios or ["cep_etl"]
+        from benchmark.harness.scenarios.registry import DEFAULT_SCENARIO
+
+        active = self.scenarios or [DEFAULT_SCENARIO]
         return scenario_id in active
 
 
@@ -56,8 +58,6 @@ class GitConfig:
 
 @dataclass
 class Config:
-    dne_path: Path
-    expected_queries: Path
     runs_dir: Path
     results_dir: Path
     git: GitConfig
@@ -71,17 +71,12 @@ class Config:
         return next((c for c in self.candidates if c.slug == slug), None)
 
     def dataset_for(self, scenario_id: str) -> Path:
-        """Caminho do dataset do cenário. cep_etl usa dne_path (retrocompat); demais vêm do
-        bloco `scenarios:` do config.yaml (`scenarios.<id>.dataset`)."""
-        if scenario_id == "cep_etl":
-            return self.dne_path
+        """Caminho do dataset do cenário (bloco `scenarios.<id>.dataset` do config.yaml)."""
         sc = (self.raw.get("scenarios") or {}).get(scenario_id) or {}
         return _abspath(sc["dataset"])
 
     def expected_for(self, scenario_id: str) -> Path:
-        """Arquivo de 'verdade' das checagens objetivas. cep_etl usa expected_queries."""
-        if scenario_id == "cep_etl":
-            return self.expected_queries
+        """Arquivo de 'verdade' das checagens objetivas (`scenarios.<id>.expected`)."""
         sc = (self.raw.get("scenarios") or {}).get(scenario_id) or {}
         return _abspath(sc["expected"])
 
@@ -100,8 +95,6 @@ def load_config(path: str | Path | None = None) -> Config:
     candidates = [Candidate(**c) for c in data.get("candidates", [])]
 
     return Config(
-        dne_path=_abspath(data["dne_path"]),
-        expected_queries=_abspath(data["expected_queries"]),
         runs_dir=_abspath(data.get("runs_dir", "runs")),
         results_dir=_abspath(data.get("results_dir", "results")),
         git=git,

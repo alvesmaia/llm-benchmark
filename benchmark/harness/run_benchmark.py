@@ -25,9 +25,11 @@ def _phase_prompt(scenario, name: str) -> str:
 
 
 def _build_phase1_prompt(scenario) -> str:
-    p1 = _phase_prompt(scenario, "phase1_prompt")
-    challenge = (scenario.brief_dir / "challenge.md").read_text(encoding="utf-8")
-    return f"{p1}\n\n{challenge}"
+    p1 = _phase_prompt(scenario, scenario.phase_prompts[0])
+    challenge_file = scenario.brief_dir / "challenge.md"
+    if challenge_file.exists():
+        return f"{p1}\n\n{challenge_file.read_text(encoding='utf-8')}"
+    return p1
 
 
 def _agent_env(cfg: Config, app_dir: Path, scenario) -> dict:
@@ -42,7 +44,7 @@ def _agent_env(cfg: Config, app_dir: Path, scenario) -> dict:
 def run_candidate(cfg: Config, candidate: Candidate, scenario=None, *,
                   skip_agent: bool = False) -> dict:
     """Executa um candidato de ponta a ponta. Se skip_agent, assume que app/ já existe."""
-    scenario = scenario or get_scenario("cep_etl")
+    scenario = scenario or get_scenario()
     slug = candidate.slug
     run_dir = scenario.run_dir(cfg.runs_dir, slug)
     app_dir = run_dir / "app"
@@ -54,37 +56,56 @@ def run_candidate(cfg: Config, candidate: Candidate, scenario=None, *,
     phases = {}
 
     if not skip_agent:
+        # repo aninhado p/ isolamento; só faz commits/push se o cenário tiver fase de git.
         git_info = gitsetup.init_nested_repo(app_dir, slug, cfg.git)
         (logs_dir / "gitsetup.json").write_text(json.dumps(git_info, indent=2), encoding="utf-8")
 
         adapter = get_adapter(candidate.agent, candidate.model, effort=candidate.effort)
         env = _agent_env(cfg, app_dir, scenario)
 
-        p1 = adapter.build(_build_phase1_prompt(scenario), app_dir, env)
-        phases["phase1"] = p1.to_dict()
-        (logs_dir / "phase1.json").write_text(json.dumps(p1.to_dict(), indent=2), encoding="utf-8")
+        prev = None
+        for idx, name in enumerate(scenario.phase_prompts):
+            # hook ANTES desta fase (ex.: perturbar a base copiada antes da Fase 3)
+            hook = scenario.pre_phase_hooks.get(idx)
+            if hook is not None:
+                try:
+                    hook(app_dir)
+                except Exception as e:  # noqa: BLE001 - hook nunca derruba o pipeline
+                    (logs_dir / f"hook_phase{idx + 1}.json").write_text(
+                        json.dumps({"error": str(e)}, indent=2), encoding="utf-8")
 
-        p2 = adapter.continue_session("phase2", _phase_prompt(scenario, "phase2_prompt"),
-                                      app_dir, env, p1)
-        phases["phase2"] = p2.to_dict()
-        (logs_dir / "phase2.json").write_text(json.dumps(p2.to_dict(), indent=2), encoding="utf-8")
+            phase = f"phase{idx + 1}"
+            prompt = (_build_phase1_prompt(scenario) if idx == 0
+                      else _phase_prompt(scenario, name))
+            if idx == 0:
+                res = adapter.build(prompt, app_dir, env)
+            else:
+                res = adapter.continue_session(phase, prompt, app_dir, env, prev)
+            phases[phase] = res.to_dict()
+            (logs_dir / f"{phase}.json").write_text(
+                json.dumps(res.to_dict(), indent=2), encoding="utf-8")
+            prev = res
 
-        p3 = adapter.continue_session("phase3", _phase_prompt(scenario, "phase3_prompt"),
-                                      app_dir, env, p2)
-        phases["phase3"] = p3.to_dict()
-        (logs_dir / "phase3.json").write_text(json.dumps(p3.to_dict(), indent=2), encoding="utf-8")
-
-        push_res = gitsetup.push_results(app_dir, slug, cfg.git)
-        (logs_dir / "push.json").write_text(json.dumps(push_res, indent=2), encoding="utf-8")
+        if scenario.has_git_phase:
+            push_res = gitsetup.push_results(app_dir, slug, cfg.git)
+            (logs_dir / "push.json").write_text(json.dumps(push_res, indent=2), encoding="utf-8")
 
     # ----- avaliação -----
     expected = _load_expected(cfg, scenario)
     objective = scenario.run_checks(app_dir, cfg.dataset_for(scenario.id), expected)
 
-    git_res = gitcheck.check_git(app_dir, slug, cfg.git)
-    # injeta a nota de git como dimensão objetiva
-    objective["objective_by_dimension"]["git"] = git_res["note"]
-    objective["git_detail"] = git_res
+    if scenario.has_git_phase:
+        git_res = gitcheck.check_git(app_dir, slug, cfg.git)
+        objective["objective_by_dimension"]["git"] = git_res["note"]
+        objective["git_detail"] = git_res
+
+    # juiz E2E (Playwright/Sonnet): nota objetiva da dimensão e2e (quando o cenário a tem)
+    if "e2e" in scenario.dimensions:
+        from benchmark.harness import e2e_judge
+        e2e_res = e2e_judge.run_e2e(app_dir, logs_dir, scenario, cfg)
+        if e2e_res.get("note") is not None:
+            objective["objective_by_dimension"]["e2e"] = e2e_res["note"]
+        objective["e2e_detail"] = e2e_res
 
     panel = judge_mod.run_panel(app_dir, slug, objective, cfg, scenario)
     if panel.get("hallucinated_dependency_votes"):
@@ -126,7 +147,7 @@ def run_candidate(cfg: Config, candidate: Candidate, scenario=None, *,
 
 def run_matrix(cfg: Config, only: list[str] | None = None, *,
                skip_agent: bool = False, scenario=None) -> list[dict]:
-    scenario = scenario or get_scenario("cep_etl")
+    scenario = scenario or get_scenario()
     candidates = [c for c in cfg.candidates if c.runs_scenario(scenario.id)]
     if only:
         candidates = [c for c in candidates if c.slug in only]
@@ -139,7 +160,7 @@ def run_matrix(cfg: Config, only: list[str] | None = None, *,
 def rescore(cfg: Config, slug: str, scenario=None) -> dict:
     """Re-roda apenas as checagens objetivas no app já construído e recombina com as notas dos
     juízes já salvas (sem rebuildar nem re-invocar os juízes)."""
-    scenario = scenario or get_scenario("cep_etl")
+    scenario = scenario or get_scenario()
     candidate = cfg.candidate_by_slug(slug)
     if candidate is None:
         raise ValueError(f"slug desconhecido: {slug}")
@@ -153,9 +174,10 @@ def rescore(cfg: Config, slug: str, scenario=None) -> dict:
 
     expected = _load_expected(cfg, scenario)
     objective = scenario.run_checks(app_dir, cfg.dataset_for(scenario.id), expected)
-    git_res = gitcheck.check_git(app_dir, slug, cfg.git)
-    objective["objective_by_dimension"]["git"] = git_res["note"]
-    objective["git_detail"] = git_res
+    if scenario.has_git_phase:
+        git_res = gitcheck.check_git(app_dir, slug, cfg.git)
+        objective["objective_by_dimension"]["git"] = git_res["note"]
+        objective["git_detail"] = git_res
 
     scored = score_mod.compute_score(
         objective["objective_by_dimension"], judge_avg, objective["flags"], cfg, scenario,
@@ -175,7 +197,7 @@ def rescore(cfg: Config, slug: str, scenario=None) -> dict:
 
 def selftest(cfg: Config, scenario=None) -> dict:
     """Valida o pipeline sem chamar agentes: usa o sample_app de teste como projeto gerado."""
-    scenario = scenario or get_scenario("cep_etl")
+    scenario = scenario or get_scenario()
     sample = scenario.sample_app
     if not sample.exists():
         raise FileNotFoundError(f"sample_app não encontrado em {sample}")
@@ -200,25 +222,28 @@ def selftest(cfg: Config, scenario=None) -> dict:
         else:
             shutil.copy2(item, dest)
 
-    # git: cria histórico de exemplo para exercitar gitcheck
-    gitsetup.init_nested_repo(app_dir, slug, cfg.git)
-    from benchmark.harness.adapters.base import run_command
-    run_command(["git", "add", "-A"], cwd=app_dir, timeout=60)
-    run_command(["git", "commit", "-q", "-m", "feat: aplicação inicial e interfaces"],
-                cwd=app_dir, timeout=60)
-    (app_dir / "README.md").write_text(
-        (app_dir / "README.md").read_text(encoding="utf-8") + "\n", encoding="utf-8")
-    run_command(["git", "add", "-A"], cwd=app_dir, timeout=60)
-    run_command(["git", "commit", "-q", "-m", "docs: detalhes de uso no README"],
-                cwd=app_dir, timeout=60)
-    run_command(["git", "tag", "v0.1.0"], cwd=app_dir, timeout=60)
+    git_res = None
+    if scenario.has_git_phase:
+        # git: cria histórico de exemplo para exercitar gitcheck
+        gitsetup.init_nested_repo(app_dir, slug, cfg.git)
+        from benchmark.harness.adapters.base import run_command
+        run_command(["git", "add", "-A"], cwd=app_dir, timeout=60)
+        run_command(["git", "commit", "-q", "-m", "feat: aplicação inicial e interfaces"],
+                    cwd=app_dir, timeout=60)
+        (app_dir / "README.md").write_text(
+            (app_dir / "README.md").read_text(encoding="utf-8") + "\n", encoding="utf-8")
+        run_command(["git", "add", "-A"], cwd=app_dir, timeout=60)
+        run_command(["git", "commit", "-q", "-m", "docs: detalhes de uso no README"],
+                    cwd=app_dir, timeout=60)
+        run_command(["git", "tag", "v0.1.0"], cwd=app_dir, timeout=60)
 
     expected = _load_expected(cfg, scenario)
     objective = scenario.run_checks(app_dir, cfg.dataset_for(scenario.id), expected)
-    git_res = gitcheck.check_git(app_dir, slug, cfg.git)
-    objective["objective_by_dimension"]["git"] = git_res["note"]
+    if scenario.has_git_phase:
+        git_res = gitcheck.check_git(app_dir, slug, cfg.git)
+        objective["objective_by_dimension"]["git"] = git_res["note"]
 
-    # selftest não chama juízes (são pagos); pontua só com objetivo
+    # selftest não chama juízes (são pagos) nem o juiz E2E; pontua só com objetivo
     scored = score_mod.compute_score(
         objective["objective_by_dimension"], {d: None for d in objective["objective_by_dimension"]},
         objective["flags"], cfg, scenario,

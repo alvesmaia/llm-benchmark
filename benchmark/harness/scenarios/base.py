@@ -1,7 +1,8 @@
 """Abstração de Cenário: encapsula tudo que muda entre desafios (rubrica, brief, checks, dataset).
 
-O harness é parametrizado por um `Scenario`. O default histórico é `cep_etl` (desafio ETL CEP),
-preservando 100% o comportamento atual. Cenários novos (ex.: `inventory`) vivem em paralelo.
+O harness é parametrizado por um `Scenario`. O cenário ativo é `it_assets` (Gestão de Movimentação
+de Ativos de TI, 3 fases com mudança de direção + perturbação). A abstração permite adicionar
+cenários sem tocar o orquestrador.
 """
 
 from __future__ import annotations
@@ -17,8 +18,8 @@ class Scenario:
 
     Campos de rubrica (dimensions/weights/combination) seguem o mesmo formato de `rubric.py`.
     `run_checks(app_dir, dataset_path, expected) -> dict` roda as checagens objetivas caixa-preta
-    e devolve `{"checks": [...], "objective_by_dimension": {...}, "flags": {...}, ...}` (mesmo
-    formato de `checks.run_all_checks`).
+    e devolve `{"checks": [...], "objective_by_dimension": {...}, "flags": {...}, ...}` (ver
+    `benchmark/it_assets/checks.py::run_checks`).
     """
 
     id: str
@@ -35,11 +36,21 @@ class Scenario:
     sample_app: Path          # app de referência usado pelo selftest
 
     # execução
-    db_filename: str          # nome do banco gerado (ex.: "cep.db", "inventory.db")
-    dataset_env: str          # env var com o caminho do dataset (ex.: "DNE_PATH", "DATASET_PATH")
+    db_filename: str          # nome do banco gerado (ex.: "cep.db", "it_assets.db")
+    dataset_env: str          # env var com o caminho do dataset (ex.: "DATASET_PATH")
     run_checks: Callable[[Path, Path, dict], dict]
 
-    # env extra fornecida ao agente E aos checks (ex.: credenciais semente do inventory)
+    # sequência de fases: nomes de prompt (sem .md) em benchmark/<id>/brief/. O índice 0 é o build;
+    # os demais continuam a mesma sessão do agente.
+    phase_prompts: list[str] = field(
+        default_factory=lambda: ["phase1_prompt", "phase2_prompt", "phase3_prompt"])
+    # há fase de git? (gitsetup/gitcheck/push/dimensão git). Default False (cenários novos).
+    has_git_phase: bool = False
+    # hooks executados ANTES da fase de dado índice (ex.: {2: perturb_dataset} muta a base
+    # copiada antes da Fase 3). Recebem o app_dir do candidato.
+    pre_phase_hooks: dict[int, Callable[[Path], None]] = field(default_factory=dict)
+
+    # env extra fornecida ao agente E aos checks (ex.: credenciais semente)
     extra_env: dict[str, str] = field(default_factory=dict)
 
     # layout de saída (aditivo: cep usa raiz, cenários novos usam subpasta)
@@ -56,7 +67,7 @@ class Scenario:
 
     def run_dir(self, base_runs_dir: Path, slug: str) -> Path:
         """Diretório de execução do candidato (app/logs) — namespaced por cenário para não
-        colidir com outros cenários do mesmo candidato (ex.: runs_dir/inventory/<slug>)."""
+        colidir com outros cenários do mesmo candidato (ex.: runs_dir/<subdir>/<slug>)."""
         base = base_runs_dir / self.results_subdir if self.results_subdir else base_runs_dir
         return base / slug
 

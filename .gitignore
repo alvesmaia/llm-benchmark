@@ -11,9 +11,10 @@ dne/
 DNE_*/
 eDNE*/
 
-# Fixture sintética do cenário inventory: o CSV é gerado por _generate.py (não versionar);
-# só _generate.py e expected_metrics.json são commitados.
-benchmark/inventory/fixtures/car_sales_sample/
+# Fixture sintética do cenário it_assets: o CSV é gerado por _generate.py (não versionar);
+# só _generate.py e expected.json são commitados. (O CSV em sample_app/data/ É versionado, pois
+# o sample_app de referência precisa ser autossuficiente para o selftest.)
+benchmark/it_assets/fixtures/it_assets_movements/
 
 # Python / uv
 __pycache__/

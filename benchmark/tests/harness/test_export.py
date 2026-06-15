@@ -13,7 +13,7 @@ def test_export_candidate_zip(tmp_path):
     cfg = load_config()
     cfg.runs_dir = tmp_path / "runs"
     cfg.results_dir = tmp_path / "results"
-    sc = get_scenario("cep_etl")
+    sc = get_scenario("it_assets")
     slug = "fake-cand"
 
     run_dir = sc.run_dir(cfg.runs_dir, slug)

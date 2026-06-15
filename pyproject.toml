@@ -1,7 +1,7 @@
 [project]
-name = "llm-benchmark-cep"
+name = "llm-benchmark"
 version = "0.1.0"
-description = "Benchmark de LLMs como code agents — desafio ETL da base CEP dos Correios, inspirado na metodologia do Akita"
+description = "Benchmark de LLMs como code agents — Gestão de Movimentação de Ativos de TI em 3 fases (mudança de direção + perturbação), inspirado na metodologia do Akita"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
@@ -36,6 +36,9 @@ packages = ["benchmark"]
 [tool.ruff]
 line-length = 100
 target-version = "py311"
+# O sample_app de referência é "código de candidato": tem o próprio ruff (line-length 100) e é
+# lint-checado pelo harness no diretório dele. Não o incluímos no scan do repo.
+extend-exclude = ["benchmark/it_assets/sample_app"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
@@ -44,7 +47,7 @@ select = ["E", "F", "I", "UP", "B"]
 # Typer usa chamadas (Argument/Option) como defaults — padrão idiomático.
 "benchmark/harness/cli.py" = ["B008"]
 # Gerador de fixture: tabelas de dados largas são mais legíveis em uma linha.
-"benchmark/fixtures/_generate.py" = ["E501"]
+"benchmark/it_assets/fixtures/_generate.py" = ["E501"]
 
 [tool.pytest.ini_options]
 testpaths = ["benchmark/tests/harness"]

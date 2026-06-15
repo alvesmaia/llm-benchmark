@@ -18,6 +18,11 @@ class PhaseResult:
     duration_s: float
     session_id: str | None = None
     cost_usd: float | None = None
+    # custo detalhado de tokens (quando o CLI reporta de forma estruturada)
+    tokens_input: int | None = None
+    tokens_output: int | None = None
+    tokens_cache_write: int | None = None
+    tokens_cache_read: int | None = None
     extra: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
@@ -28,6 +33,10 @@ class PhaseResult:
             "duration_s": round(self.duration_s, 2),
             "session_id": self.session_id,
             "cost_usd": self.cost_usd,
+            "tokens_input": self.tokens_input,
+            "tokens_output": self.tokens_output,
+            "tokens_cache_write": self.tokens_cache_write,
+            "tokens_cache_read": self.tokens_cache_read,
             "stdout_tail": self.stdout[-4000:],
             "stderr_tail": self.stderr[-2000:],
             "extra": self.extra,

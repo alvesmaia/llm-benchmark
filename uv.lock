@@ -147,7 +147,7 @@ wheels = [
 ]
 
 [[package]]
-name = "llm-benchmark-cep"
+name = "llm-benchmark"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [

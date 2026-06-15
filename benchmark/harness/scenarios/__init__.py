@@ -1,1 +1,1 @@
-"""Cenários de benchmark plugáveis. O default é `cep_etl` (comportamento histórico)."""
+"""Cenários de benchmark plugáveis. Cenário único atual: `it_assets`."""

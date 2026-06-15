@@ -7,10 +7,11 @@ from benchmark.harness.config import load_config, slugify
 
 def test_load_config():
     cfg = load_config()
-    assert cfg.dne_path.exists(), "fixture DNE deve existir"
-    assert cfg.expected_queries.exists()
+    assert cfg.dataset_for("it_assets").exists(), "fixture it_assets deve existir"
+    assert cfg.expected_for("it_assets").exists()
     assert len(cfg.candidates) >= 1
     assert len(cfg.judges) == 2
+    assert (cfg.raw.get("e2e_judge") or {}).get("model") == "sonnet"
 
 
 def test_candidate_slug():

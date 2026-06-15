@@ -30,6 +30,22 @@ def _parse_json_output(stdout: str) -> dict:
     return {}
 
 
+def _tokens(data: dict) -> dict:
+    """Extrai o custo detalhado de tokens do bloco `usage` do JSON do Claude Code."""
+    usage = data.get("usage") or {}
+    if not isinstance(usage, dict):
+        return {}
+    def _i(key):
+        v = usage.get(key)
+        return int(v) if isinstance(v, (int, float)) else None
+    return {
+        "tokens_input": _i("input_tokens"),
+        "tokens_output": _i("output_tokens"),
+        "tokens_cache_write": _i("cache_creation_input_tokens"),
+        "tokens_cache_read": _i("cache_read_input_tokens"),
+    }
+
+
 class ClaudeCodeAdapter(Adapter):
     name = "claude_code"
 
@@ -57,6 +73,7 @@ class ClaudeCodeAdapter(Adapter):
         # prompt via stdin (evita o limite de tamanho de linha de comando do Windows)
         rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=5400, stdin_text=prompt)
         data = _parse_json_output(out)
+        usage = _tokens(data)
         return PhaseResult(
             phase=phase,
             ok=(rc == 0 and not data.get("is_error", False)),
@@ -66,6 +83,7 @@ class ClaudeCodeAdapter(Adapter):
             duration_s=dur,
             session_id=data.get("session_id"),
             cost_usd=data.get("total_cost_usd"),
+            **usage,
             extra={"num_turns": data.get("num_turns"), "result": (data.get("result") or "")[:2000]},
         )
 
@@ -85,4 +103,4 @@ class ClaudeCodeAdapter(Adapter):
         return PhaseResult(phase=phase, ok=(rc == 0 and not data.get("is_error", False)),
                            returncode=rc, stdout=out, stderr=err, duration_s=dur,
                            session_id=data.get("session_id") or prev.session_id,
-                           cost_usd=data.get("total_cost_usd"))
+                           cost_usd=data.get("total_cost_usd"), **_tokens(data))
