@@ -84,6 +84,7 @@ class ClaudeCodeAdapter(Adapter):
             session_id=data.get("session_id"),
             cost_usd=data.get("total_cost_usd"),
             **usage,
+            interactions=data.get("num_turns"),
             extra={"num_turns": data.get("num_turns"), "result": (data.get("result") or "")[:2000]},
         )
 
@@ -103,4 +104,5 @@ class ClaudeCodeAdapter(Adapter):
         return PhaseResult(phase=phase, ok=(rc == 0 and not data.get("is_error", False)),
                            returncode=rc, stdout=out, stderr=err, duration_s=dur,
                            session_id=data.get("session_id") or prev.session_id,
-                           cost_usd=data.get("total_cost_usd"), **_tokens(data))
+                           cost_usd=data.get("total_cost_usd"), **_tokens(data),
+                           interactions=data.get("num_turns"))

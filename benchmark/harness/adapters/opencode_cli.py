@@ -20,6 +20,7 @@ def _parse_events(stdout: str) -> tuple[str | None, float | None, dict]:
     saw_cost = False
     tok = {"input": 0, "output": 0, "cache_write": 0, "cache_read": 0}
     saw_tok = False
+    steps = 0
     for line in stdout.splitlines():
         line = line.strip()
         if not (line.startswith("{") and line.endswith("}")):
@@ -31,6 +32,7 @@ def _parse_events(stdout: str) -> tuple[str | None, float | None, dict]:
         session_id = session_id or ev.get("sessionID")
         part = ev.get("part") or {}
         if ev.get("type") == "step_finish":
+            steps += 1
             if isinstance(part.get("cost"), (int, float)):
                 cost += float(part["cost"])
                 saw_cost = True
@@ -53,6 +55,7 @@ def _parse_events(stdout: str) -> tuple[str | None, float | None, dict]:
         "tokens_output": tok["output"] if saw_tok else None,
         "tokens_cache_write": tok["cache_write"] if saw_tok else None,
         "tokens_cache_read": tok["cache_read"] if saw_tok else None,
+        "interactions": steps or None,
     }
     return session_id, (round(cost, 6) if saw_cost else None), usage
 

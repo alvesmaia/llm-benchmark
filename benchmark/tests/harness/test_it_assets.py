@@ -132,6 +132,7 @@ def test_opencode_token_extraction():
     assert usage["tokens_output"] == 30
     assert usage["tokens_cache_write"] == 6
     assert usage["tokens_cache_read"] == 5
+    assert usage["interactions"] == 2  # 2 eventos step_finish = 2 interações
 
 
 def test_report_aggregates_tokens(tmp_path):
@@ -142,14 +143,15 @@ def test_report_aggregates_tokens(tmp_path):
     res_dir.mkdir(parents=True)
     (res_dir / "result.json").write_text(json.dumps({"phases": {
         "phase1": {"tokens_input": 100, "tokens_output": 10,
-                   "tokens_cache_write": 1, "tokens_cache_read": 2},
+                   "tokens_cache_write": 1, "tokens_cache_read": 2, "interactions": 7},
         "phase2": {"tokens_input": 200, "tokens_output": 20,
-                   "tokens_cache_write": 3, "tokens_cache_read": 4},
+                   "tokens_cache_write": 3, "tokens_cache_read": 4, "interactions": 5},
     }}), encoding="utf-8")
     toks = report._read_tokens(res_dir, tmp_path / "nope")
     assert toks["input"] == 300
     assert toks["output"] == 30
     assert toks["cache"] == 10
+    assert toks["interactions"] == 12
 
 
 def test_checks_run_against_fixture():

@@ -23,6 +23,7 @@ class PhaseResult:
     tokens_output: int | None = None
     tokens_cache_write: int | None = None
     tokens_cache_read: int | None = None
+    interactions: int | None = None  # nº de turns/passos do agente na fase (quando o CLI reporta)
     extra: dict = field(default_factory=dict)
 
     def to_dict(self) -> dict:
@@ -37,6 +38,7 @@ class PhaseResult:
             "tokens_output": self.tokens_output,
             "tokens_cache_write": self.tokens_cache_write,
             "tokens_cache_read": self.tokens_cache_read,
+            "interactions": self.interactions,
             "stdout_tail": self.stdout[-4000:],
             "stderr_tail": self.stderr[-2000:],
             "extra": self.extra,

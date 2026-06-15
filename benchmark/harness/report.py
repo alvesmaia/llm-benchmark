@@ -24,6 +24,7 @@ META_COLUMNS = [
     ("Tokens In", "tokens de entrada somados nas 3 fases (— quando o CLI não reporta)"),
     ("Tokens Out", "tokens de saída somados nas 3 fases (— quando o CLI não reporta)"),
     ("Cache", "tokens de cache (escrita + leitura) somados nas 3 fases"),
+    ("Interações", "nº de turns/passos do agente somados nas 3 fases (— quando o CLI não reporta)"),
     ("Custo (US$)", "custo-equivalente estimado das fases (referência; o consumo conta no plano)"),
     ("Cobertura (%)", "cobertura de testes medida pelo harness (dimensão `tests`, alvo oculto)"),
     ("Diverg.", "dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)"),
@@ -91,8 +92,8 @@ def _phase_dicts(results_slug_dir, run_logs_dir) -> list[dict]:
 def _read_tokens(results_slug_dir, run_logs_dir) -> dict:
     """Soma tokens (input/output/cache write+read) de todas as fases. None se nenhuma fase
     reportou aquele campo (ex.: copilot/codex não dão dados estruturados)."""
-    acc = {"input": 0, "output": 0, "cache": 0}
-    seen = {"input": False, "output": False, "cache": False}
+    acc = {"input": 0, "output": 0, "cache": 0, "interactions": 0}
+    seen = {"input": False, "output": False, "cache": False, "interactions": False}
     for p in _phase_dicts(results_slug_dir, run_logs_dir):
         if isinstance(p.get("tokens_input"), (int, float)):
             acc["input"] += int(p["tokens_input"])
@@ -104,10 +105,14 @@ def _read_tokens(results_slug_dir, run_logs_dir) -> dict:
             if isinstance(p.get(k), (int, float)):
                 acc["cache"] += int(p[k])
                 seen["cache"] = True
+        if isinstance(p.get("interactions"), (int, float)):
+            acc["interactions"] += int(p["interactions"])
+            seen["interactions"] = True
     return {
         "input": acc["input"] if seen["input"] else None,
         "output": acc["output"] if seen["output"] else None,
         "cache": acc["cache"] if seen["cache"] else None,
+        "interactions": acc["interactions"] if seen["interactions"] else None,
     }
 
 
@@ -202,9 +207,9 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
 
     header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | " + \
         " | ".join(scenario.dim_labels[d] for d in scenario.dimensions) + \
-        " | Tokens In | Tokens Out | Cache | Custo (US$) | Cobertura (%) | Diverg. |"
-    # colunas fixas: 8 (head) + dimensões + 6 (tail: 3 tokens + custo + cobertura + diverg)
-    sep = "|" + "---|" * (_META_HEAD + len(scenario.dimensions) + 6)
+        " | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | Diverg. |"
+    # tail = 7 colunas: 3 tokens + interações + custo + cobertura + diverg
+    sep = "|" + "---|" * (_META_HEAD + len(scenario.dimensions) + 7)
     lines += [header, sep]
 
     def _tok(v):
@@ -233,7 +238,7 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
             f"**{sc.get('weighted_subtotal','?')}** | {sc.get('final_score','?')} | "
             f"{sc.get('tier','?')} | {tempo} | {dim_cells} | "
             f"{_tok(toks.get('input'))} | {_tok(toks.get('output'))} | {_tok(toks.get('cache'))} | "
-            f"{cost} | {cov} | {diverg} |"
+            f"{_tok(toks.get('interactions'))} | {cost} | {cov} | {diverg} |"
         )
 
     lines += [
