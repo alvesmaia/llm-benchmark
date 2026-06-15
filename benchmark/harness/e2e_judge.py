@@ -22,9 +22,10 @@ from benchmark.harness.adapters.base import run_command
 from benchmark.harness.config import Config
 
 QA_CHECKLIST = """\
-Você é um QA automatizado. Use as ferramentas do Playwright MCP
-(mcp__plugin_playwright_playwright__browser_*) para usar a aplicação web como um usuário real e
-verificar se ela FUNCIONA. NÃO inspecione o código; apenas dirija o browser.
+Você é um QA automatizado. Use as ferramentas do **Playwright MCP** (browser_navigate,
+browser_snapshot, browser_click, browser_type, browser_fill_form, browser_take_screenshot, etc.)
+para usar a aplicação web como um usuário real e verificar se ela FUNCIONA. NÃO inspecione o código;
+apenas dirija o browser pelas ferramentas do Playwright.
 
 URL base: {base}
 Credenciais admin: usuário={admin_user} senha={admin_password}
@@ -186,7 +187,18 @@ def _invoke_playwright_agent(e2e_cfg: dict, prompt: str, cwd: Path) -> str:
     if agent != "claude_code":
         raise RuntimeError(f"juiz E2E só suporta claude_code (recebido: {agent})")
     claude = shutil.which("claude") or "claude"
+    # habilita o Playwright MCP explicitamente p/ o agente spawnado (headless), sem depender de
+    # plugins do ambiente. Com --dangerously-skip-permissions as tools do MCP são auto-aprovadas.
+    mcp_config = json.dumps({
+        "mcpServers": {
+            "playwright": {
+                "command": "npx",
+                "args": ["-y", "@playwright/mcp@latest", "--headless"],
+            },
+        }
+    })
     cmd = [claude, "--model", model, "--output-format", "json",
+           "--mcp-config", mcp_config,
            "--dangerously-skip-permissions", "-p"]
     rc, out, err, _ = run_command(cmd, cwd=cwd, timeout=1200, stdin_text=prompt)
     if rc != 0 and not out:

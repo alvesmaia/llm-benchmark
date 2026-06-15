@@ -3,7 +3,9 @@
 Este benchmark adapta a metodologia do Fábio Akita
 ([série "LLM Benchmarks"](https://akitaonrails.com/2026/04/24/llm-benchmarks-parte-3-deepseek-kimi-mimo/),
 repo [`akitaonrails/llm-coding-benchmark`](https://github.com/akitaonrails/llm-coding-benchmark))
-para um desafio em **Python**: um **ETL da base de CEP dos Correios** com consulta por **CLI + API + Web**.
+para um desafio em **Python avaliado em etapas**: um cenário único **`it_assets`** (gestão de movimentação
+de **ativos de TI**) construído em **3 fases que continuam a mesma sessão**, com foco no que mais diferencia
+as ferramentas hoje — **gerenciamento de contexto** sob mudança de direção.
 
 ## O que viemos do Akita
 
@@ -11,73 +13,81 @@ para um desafio em **Python**: um **ETL da base de CEP dos Correios** com consul
 - **Execução em fases** (ele usa 2; nós usamos 3 — ver abaixo).
 - **Rubrica holística 0–100** classificada em **tiers A/B/C/D** com as mesmas faixas e leitura
   ("Tier A = pronto para produção com patch < 30 min", etc.).
-- **Penalidade por alucinação** (API/dependência inexistente), que no método dele distorcia o ranking
-  quando o peso da "API correta" era alto demais.
+- **Penalidade por alucinação** (API/dependência inexistente) e **bônus/penalidade** de boot/carga.
+- **Ranking por harness + modelo** (o mesmo modelo conta como entradas distintas conforme o harness, que
+  influencia fortemente o resultado — observação também feita pelo Akita).
 
 ## O que adaptamos / acrescentamos
 
-### 1. Domínio Python/ETL em vez de Rails
-As 8 dimensões do Akita (Completude, Correção da API RubyLLM, Testes, Tratamento de erros, Persistência,
-Hotwire, Arquitetura, Produção) foram remapeadas para o domínio:
+### 1. Desafio em 3 fases com pivô + perturbação (gerenciamento de contexto)
+O diferencial do benchmark é trabalhar **em etapas que estressam o contexto**, na **mesma sessão** do agente:
 
-| Akita (Rails/RubyLLM) | Aqui (Python/ETL CEP) |
-|-----------------------|------------------------|
-| Correção da API RubyLLM | **Correção do ETL / parsing DNE** (encoding Latin-1, separador `@`, campos, fallback) |
-| Hotwire (frontend) | **Interfaces CLI + API + Web** + execução `uv`/`uvx` |
-| Persistência | **Schema, índice por CEP, carga idempotente** |
-| (demais) | mantidas, recontextualizadas |
+- **Fase 1 — Dashboard:** planejar e implementar um **dashboard Streamlit** (Python 3.12 + uv) sobre a base
+  fornecida. O modelo **copia** a base (de `DATASET_PATH`) para `data/` no projeto e a usa de lá.
+- **Fase 2 — Refatoração (pivô):** refatorar o dashboard numa **aplicação completa** — **FastAPI + SQLite +
+  Jinja2**, com **JWT + RBAC**. Troca de stack proposital: testa reaproveitamento e migração limpa.
+- **Fase 3 — Perturbação dirigida:** o **harness muta valores** no CSV copiado em `data/` (campos nulos,
+  ação fora do domínio, valor negativo, data em formato alternativo, id duplicado) e pede ao modelo para
+  **rodar os testes e corrigir**. Mede robustez/depuração.
 
-### 2. Pesos numéricos explícitos
-O Akita pontua de forma holística (sem pesos publicados por dimensão). Para **reprodutibilidade**, aqui
-cada dimensão tem peso explícito (soma 100) — ver [`benchmark/rubric/rubric.md`](../benchmark/rubric/rubric.md).
-A correção do ETL é a dimensão de maior peso (18), análoga ao papel central da "API correta" no Akita,
-mas calibrada para não dominar o restante.
+**Sem fase de git** (diferente do brief Rails do Akita). Pontua-se o **estado final** (pós-Fase 3).
 
-### 3. Nona dimensão: interação com Git/GitHub
-Avaliamos o agente como engenheiro completo: **commits significativos, mensagens (Conventional Commits),
-tag semver e push**. Cada projeto gerado é um repo git independente que faz push para o mesmo remoto em
-branch por modelo (`run/<slug>`) com tags namespaced.
+### 2. Base fictícia sem estrutura imposta
+A base de movimentação de ativos de TI é **gerada deterministicamente** e fornecida igual para todos; a
+**estrutura final da aplicação não é imposta** — só um [contrato mínimo](../benchmark/it_assets/brief/challenge.md)
+(console script; `POST /auth/login`; ≥1 rota protegida; ≥1 ação restrita por papel; SQLite a partir da base)
+para viabilizar checagens determinísticas. Avalia-se o que o modelo decide entregar.
 
-### 4. Três fases
-- **Fase 1 — build:** construir a aplicação a partir do brief.
-- **Fase 2 — validação:** dar boot, rodar testes e lint, corrigir falhas (na mesma sessão).
-- **Fase 3 — git:** versionar (commits + tag semver + push).
+### 3. Execução por um único comando `uvx`
+O resultado deve subir com **um único `uvx`**, carregando automaticamente um **`.env` versionado e
+preenchido**. Sem Docker — empacotamento e execução via **uv/uvx**.
 
-### 5. Painel de 2 juízes (anti-viés)
-Em vez de um único juiz, usamos **Claude Opus + GitHub Copilot (GPT)**. Cada um pontua a rubrica de forma
-independente e a nota de cada dimensão é a **média**. Divergências grandes (> 25 pts) são sinalizadas para
-revisão manual. Cada juiz **não pontua o output do próprio par agente/modelo** (anti-auto-favorecimento).
+### 4. Pesos numéricos explícitos (12 dimensões)
+Para **reprodutibilidade**, cada dimensão tem peso explícito (soma 100) — fonte canônica em
+[`benchmark/harness/scenarios/it_assets.py`](../benchmark/harness/scenarios/it_assets.py)
+(versão humana em [`rubric.md`](../benchmark/it_assets/rubric/rubric.md)). Os **diferenciadores** (maior peso)
+são as dimensões ligadas a etapas/contexto: **Refatoração, Resiliência, E2E, Auth JWT, RBAC, Execução uvx**.
 
-### 6. Checagens objetivas + juízes
-Dimensões com verdade objetiva (ETL correto, testes passando, idempotência, interfaces respondendo, lint, CI)
-são medidas por **checagens determinísticas** do harness; dimensões subjetivas (Arquitetura) ficam com os
-juízes. A maioria é **mista**, combinando as duas fontes com pesos em
-[`benchmark/rubric/objective_checks.md`](../benchmark/rubric/objective_checks.md).
+### 5. Painel de 2 juízes (anti-viés) + Juiz E2E
+- **Painel de 2 juízes** (LLMs) pontua a rubrica de forma independente; a nota de cada dimensão é a **média**.
+  Divergências grandes (> 25 pts) são sinalizadas. Cada juiz **não pontua o output do próprio par
+  agente/família de modelo** (anti-auto-favorecimento).
+- **Juiz E2E ("funciona como usuário"):** um agente **Sonnet** dirige o **browser via Playwright MCP** —
+  login, dashboard e tentativa de ação restrita (esperando bloqueio) — e devolve um veredito que vira a nota
+  da dimensão **E2E**. Indisponível em headless/cron ⇒ a dimensão cai para fallback sem quebrar o pipeline.
 
-### 7. Ranking por harness + modelo
-O mesmo modelo conta como **entradas distintas** conforme o harness (Claude Code vs Copilot CLI), porque o
-harness influencia fortemente o resultado — observação também feita pelo Akita.
+### 6. Checagens objetivas + juízes + cobertura
+Dimensões com verdade objetiva (sobe via `uvx`, JWT 200/401, RBAC 403, SQLite populado, testes passam,
+recuperação pós-perturbação) são medidas por **checagens determinísticas**; as subjetivas (Refatoração,
+Dashboard) ficam com os juízes; a maioria é **mista**. **Cobertura de testes** é exigida e **medida**, mas o
+**alvo de % não é revelado** ao candidato (a nota é proporcional, com limiar interno) — avalia-se o que o
+modelo entrega por conta própria.
 
-### 8. Sem Docker
-Diferente do brief Rails do Akita (que exige docker-compose), aqui o empacotamento e a execução são via
-**uv/uvx** (`uv run cep-etl ...`, `uvx --from . cep-etl ...`).
+### 7. Tempo e custo detalhado por fase
+Mede-se **tempo** e **custo (input / output / cache write / cache read)** **por fase**, expostos no ranking
+(quando o CLI do agente reporta; Copilot/Codex não dão dados estruturados → `—`).
 
 ## Reprodutibilidade
 
-- A base DNE oficial é **proprietária**; o harness inclui uma **fixture sintética** no formato `@`/Latin-1
-  para auto-teste sem o arquivo real (`uv run bench selftest`).
-- Pesos, juízes e modificadores ficam versionados (`rubric.py`, `config.yaml`) para auditoria.
+- A base é uma **fixture sintética** gerada por `_generate.py` (gitignored; só o gerador e um `expected.json`
+  mínimo são versionados); `uv run bench selftest` valida o pipeline ponta a ponta sem agentes pagos.
+- Pesos, juízes e modificadores ficam versionados (`scenarios/it_assets.py`, `config.yaml`) para auditoria.
 
 ## Justificativa dos pesos
 
 | Dimensão | Peso | Por quê |
 |----------|-----:|---------|
-| ETL/parsing | 18 | núcleo do desafio; erro aqui invalida o produto |
-| Completude | 13 | entregar todos os artefatos é pré-requisito (lição do Akita) |
-| Interfaces | 14 | três interfaces + execução em um comando são o valor para o usuário |
-| Persistência | 11 | modelagem/idempotência/índice definem qualidade dos dados |
-| Testes | 11 | confiabilidade verificável |
-| Erros | 9 | robustez em entradas reais (CEP inválido/inexistente) |
-| Arquitetura | 8 | qualidade estrutural (subjetiva) |
-| Produção | 8 | CI/lint/README/empacotamento |
-| Git/GitHub | 8 | maturidade de engenharia no fluxo de versionamento |
+| Refatoração ★ | 13 | virada Streamlit→FastAPI/SQLite/JWT/RBAC é o teste central de gerenciamento de contexto |
+| Resiliência ★ | 12 | recuperar-se da perturbação da base mostra robustez/depuração real |
+| E2E ★ | 11 | "funciona como usuário" (Playwright/Sonnet) — valida o produto, não o código |
+| Auth JWT ★ | 10 | autenticação correta é pré-requisito de uma aplicação |
+| RBAC ★ | 10 | controle de acesso por papéis (403) — segurança verificável |
+| Dashboard | 9 | a entrega da Fase 1 (métricas de movimentação) |
+| Persistência | 8 | modelagem SQLite, schema/índices, carga |
+| Testes | 8 | confiabilidade verificável + **cobertura medida (alvo oculto)** |
+| API/Web | 7 | endpoints REST + telas Jinja2 |
+| Execução uvx ★ | 6 | um único comando sobe a app lendo o `.env` versionado |
+| Ingestão | 4 | leitura/parse da base de movimentações |
+| Produção | 2 | README, lint (ruff), empacotamento uv/uvx |
+
+★ = diferenciadores (etapas + gerenciamento de contexto).
