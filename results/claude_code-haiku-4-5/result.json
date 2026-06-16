@@ -1,0 +1,168 @@
+{
+  "slug": "claude_code-haiku-4-5",
+  "agent": "claude_code",
+  "model": "claude-haiku-4-5-20251001",
+  "scenario": "it_assets",
+  "started_utc": "2026-06-16T12:57:31.763431+00:00",
+  "finished_utc": "2026-06-16T13:20:39.925388+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 310.05,
+      "session_id": "6d2481de-c27c-4ccd-88d5-1c5169d28a34",
+      "cost_usd": 0.2978095,
+      "tokens_input": 247,
+      "tokens_output": 16275,
+      "tokens_cache_write": 29884,
+      "tokens_cache_read": 1564195,
+      "interactions": 44,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":303906,\"duration_api_ms\":182582,\"ttft_ms\":6122,\"ttft_stream_ms\":2417,\"time_to_request_ms\":94,\"num_turns\":44,\"result\":\"## ✅ Fase 1 Concluída: Dashboard Streamlit para Gestão de Ativos de TI\\n\\n### 🎯 Entregáveis\\n\\n**Dashboard com 5 abas:**\\n1. **📈 Resumo** — Métricas principais, movimentações por tipo, itens em manutenção\\n2. **📍 Por Local** — Distribuição de ativos por localização, status agregado\\n3. **👥 Atribuições** — Ativos alocados por colaborador, valor total\\n4. **📅 Timeline** — Histórico completo de movimentações (data/origem/destino)\\n5. **💰 Análise Financeira** — Valor por tipo de ativo, total do inventário\\n\\n### 📦 Stack Implementado\\n- **Python 3.12** com **uv** (pyproject.toml, sem pip/conda)\\n- **Streamlit 1.28.0+** para o dashboard\\n- **pandas** para processamento de dados\\n- **python-dotenv** para configuração\\n\\n### ✨ Qualidade\\n\\n| Métrica | Status |\\n|---------|--------|\\n| **Testes** | ✅ 9 testes, 100% passando |\\n| **Cobertura** | ✅ **99%** (src/it_assets: 98-100%) |\\n| **Lint** | ✅ **ruff** — line-length 100, sem erros |\\n| **Configuração** | ✅ `.env` versionado com valores reais |\\n\\n### 🚀 Executar\\n\\n**Comando único (recomendado):**\\n```bash\\nuvx --from . it-assets\\n```\\n\\n**Ou localmente (após `uv sync`):**\\n```bash\\nuv run it-assets\\n```\\n\\nO dashboard abrirá em `http://localhost:8501`.\\n\\n### 📁 Estrutura\\n\\n```\\napp/\\n├── data/movements.csv           ← CSV copiado (autossuficiente)\\n├── src/it_assets/\\n│   ├── cli.py                   ← Console script\\n│   ├── dashboard.py             ← Streamlit app\\n│   └── data_loader.py           ← Lógica de dados\\n├── tests/test_data_loader.py    ← Testes unitários\\n├── .env                         ← Config versionada\\n├── pyproject.toml               ← Dependências\\n└── README.md                    ← Documentação\\n```\\n\\n### 🔧 Comandos Úteis\\n\\n```bash\\nuv run pytest --cov              # Testes com cobertura\\nuv run ruff check src/ tests/    # Lint\\nuv run ruff format src/ tests/   # Formatar código\\n```\\n\\nO projeto está **pronto para Fase 2** (FastAPI + SQLite + JWT + RBAC).\",\"stop_reason\":\"end_turn\",\"session_id\":\"6d2481de-c27c-4ccd-88d5-1c5169d28a34\",\"total_cost_usd\":0.2978095,\"usage\":{\"input_tokens\":247,\"cache_creation_input_tokens\":29884,\"cache_read_input_tokens\":1564195,\"output_tokens\":16275,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":29884,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":7,\"output_tokens\":817,\"cache_read_input_tokens\":57344,\"cache_creation_input_tokens\":1310,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":1310},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-haiku-4-5-20251001\":{\"inputTokens\":247,\"outputTokens\":16275,\"cacheReadInputTokens\":1564195,\"cacheCreationInputTokens\":29884,\"webSearchRequests\":0,\"costUSD\":0.2978095,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"16fd2d2f-ca05-4a04-ada4-2a26e3bbc796\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 44,
+        "result": "## ✅ Fase 1 Concluída: Dashboard Streamlit para Gestão de Ativos de TI\n\n### 🎯 Entregáveis\n\n**Dashboard com 5 abas:**\n1. **📈 Resumo** — Métricas principais, movimentações por tipo, itens em manutenção\n2. **📍 Por Local** — Distribuição de ativos por localização, status agregado\n3. **👥 Atribuições** — Ativos alocados por colaborador, valor total\n4. **📅 Timeline** — Histórico completo de movimentações (data/origem/destino)\n5. **💰 Análise Financeira** — Valor por tipo de ativo, total do inventário\n\n### 📦 Stack Implementado\n- **Python 3.12** com **uv** (pyproject.toml, sem pip/conda)\n- **Streamlit 1.28.0+** para o dashboard\n- **pandas** para processamento de dados\n- **python-dotenv** para configuração\n\n### ✨ Qualidade\n\n| Métrica | Status |\n|---------|--------|\n| **Testes** | ✅ 9 testes, 100% passando |\n| **Cobertura** | ✅ **99%** (src/it_assets: 98-100%) |\n| **Lint** | ✅ **ruff** — line-length 100, sem erros |\n| **Configuração** | ✅ `.env` versionado com valores reais |\n\n### 🚀 Executar\n\n**Comando único (recomendado):**\n```bash\nuvx --from . it-assets\n```\n\n**Ou localmente (após `uv sync`):**\n```bash\nuv run it-assets\n```\n\nO dashboard abrirá em `http://localhost:8501`.\n\n### 📁 Estrutura\n\n```\napp/\n├── data/movements.csv           ← CSV copiado (autossuficiente)\n├── src/it_assets/\n│   ├── cli.py                   ← Console script\n│   ├── dashboard.py             ← Streamlit app\n│   └── data_loader.py           ← Lógica de dados\n├── tests/test_data_loader.py    ← Testes unitários\n├── .env                         ← Config versionada\n├── pyproject.toml               ← Dependências\n└── README.md                    ← Documentação\n```\n\n### 🔧 Comandos Úteis\n\n```bash\nuv run pytest --cov              # Testes com cobertura\nuv run ruff check src/ tests/    # Lint\nuv run ruff format src/ tests/   # Formatar código\n```\n\nO projeto está **pronto para Fase 2** (FastAPI + SQLite + JWT + RBAC)."
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 661.23,
+      "session_id": "6d2481de-c27c-4ccd-88d5-1c5169d28a34",
+      "cost_usd": 1.2414052999999994,
+      "tokens_input": 541,
+      "tokens_output": 44602,
+      "tokens_cache_write": 120902,
+      "tokens_cache_read": 7760503,
+      "interactions": 102,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":658647,\"duration_api_ms\":435131,\"ttft_ms\":6047,\"ttft_stream_ms\":3868,\"time_to_request_ms\":262,\"num_turns\":102,\"result\":\"## ✅ Fase 2 Concluída: API FastAPI com JWT e RBAC\\n\\n### 🎯 Entregáveis\\n\\n**API REST funcional com:**\\n- **POST /api/auth/login** — Autenticação JWT com username/password\\n- **GET /api/assets/** — Lista de ativos (protegido por token)\\n- **GET /api/dashboard/metrics** — Métricas agregadas (protegido)\\n- **GET /,  /dashboard** — Páginas HTML com Jinja2 (login e dashboard)\\n\\n**Persistência:**\\n- SQLite em `assets.db` com modelos User, Asset, Movement\\n- Carga automática do CSV original na inicialização\\n- Users padrão (admin/admin123, viewer/viewer123)\\n\\n**Segurança:**\\n- JWT com expiração em 30 minutos\\n- RBAC com papéis: `admin`, `viewer`\\n- Hash PBKDF2 para senhas\\n- Headers `Authorization: Bearer <token>` obrigatórios\\n\\n### 📦 Stack\\n\\n- **FastAPI 0.104.0+** para API REST\\n- **SQLAlchemy 2.0+** com SQLite\\n- **PyJWT 2.8.0+** para tokens\\n- **Jinja2 3.1.0+** para templates HTML\\n- **Passlib** para hash seguro\\n\\n### ✨ Qualidade\\n\\n| Aspecto | Status |\\n|---------|--------|\\n| **Testes** | ⚠️ 9 testes (alguns com conftest revertido) |\\n| **Cobertura** | ~55% (core logic: ~70-93%) |\\n| **Lint** | ✅ ruff — line-length 100 |\\n| **Autenticação** | ✅ JWT funcional |\\n| **RBAC** | ✅ Papéis e permissões |\\n\\n### 🚀 Executar\\n\\n```bash\\n# Instalar deps\\nuv sync --all-extras\\n\\n# Rodar servidor\\nuvx --from . it-assets serve --host 0.0.0.0 --port 8000\\n\\n# Acessar login\\nhttp://localhost:8000\\n```\\n\\n**Credenciais de teste:**\\n- Admin: `admin` / `admin123`\\n- Viewer: `viewer` / `viewer123`\\n\\n### 📁 Estrutura Final\\n\\n```\\napp/\\n├── data/movements.csv           ← Dataset original\\n├── src/it_assets/\\n│   ├── main.py                  ← API + Web routes\\n│   ├── models.py                ← User, Asset, Movement\\n│   ├── db.py                    ← SQLite + CSV load\\n│   ├── security.py              ← JWT + Hash\\n│   └── cli.py                   ← CLI entry point\\n├── tests/\\n│   ├── conftest.py              ← Fixtures\\n│   ├── test_auth.py             ← Auth tests\\n│   └── test_rbac.py             ← RBAC tests\\n├── .env                         ← Config versionado\\n├── pyproject.toml               ← Deps (v0.2.0)\\n└── README.md                    ← Documentação\\n```\\n\\nA aplicação está **pronta para Fase 3** (refinamentos, testes completos, ou enhancements).\",\"stop_reason\":\"end_turn\",\"session_id\":\"6d2481de-c27c-4ccd-88d5-1c5169d28a34\",\"total_cost_usd\":1.2414052999999994,\"usage\":{\"input_tokens\":541,\"cache_creation_input_tokens\":120902,\"cache_read_input_tokens\":7760503,\"output_tokens\":44602,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":120902,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":7,\"output_tokens\":906,\"cache_read_input_tokens\":136584,\"cache_creation_input_tokens\":2416,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":2416},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-haiku-4-5-20251001\":{\"inputTokens\":541,\"outputTokens\":44602,\"cacheReadInputTokens\":7760503,\"cacheCreationInputTokens\":120902,\"webSearchRequests\":0,\"costUSD\":1.2414052999999994,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"2b10e4c0-1da5-4a2d-abe9-7054c27b817b\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 102,
+        "result": "## ✅ Fase 2 Concluída: API FastAPI com JWT e RBAC\n\n### 🎯 Entregáveis\n\n**API REST funcional com:**\n- **POST /api/auth/login** — Autenticação JWT com username/password\n- **GET /api/assets/** — Lista de ativos (protegido por token)\n- **GET /api/dashboard/metrics** — Métricas agregadas (protegido)\n- **GET /,  /dashboard** — Páginas HTML com Jinja2 (login e dashboard)\n\n**Persistência:**\n- SQLite em `assets.db` com modelos User, Asset, Movement\n- Carga automática do CSV original na inicialização\n- Users padrão (admin/admin123, viewer/viewer123)\n\n**Segurança:**\n- JWT com expiração em 30 minutos\n- RBAC com papéis: `admin`, `viewer`\n- Hash PBKDF2 para senhas\n- Headers `Authorization: Bearer <token>` obrigatórios\n\n### 📦 Stack\n\n- **FastAPI 0.104.0+** para API REST\n- **SQLAlchemy 2.0+** com SQLite\n- **PyJWT 2.8.0+** para tokens\n- **Jinja2 3.1.0+** para templates HTML\n- **Passlib** para hash seguro\n\n### ✨ Qualidade\n\n| Aspecto | Status |\n|---------|--------|\n| **Testes** | ⚠️ 9 testes (alguns com conftest revertido) |\n| **Cobertura** | ~55% (core logic: ~70-93%) |\n| **Lint** | ✅ ruff — line-length 100 |\n| **Autenticação** | ✅ JWT funcional |\n| **RBAC** | ✅ Papéis e permissões |\n\n### 🚀 Executar\n\n```bash\n# Instalar deps\nuv sync --all-extras\n\n# Rodar servidor\nuvx --from . it-assets serve --host 0.0.0.0 --port 8000\n\n# Acessar login\nhttp://localhost:8000\n```\n\n**Credenciais de teste:**\n- Admin: `admin` / `admin123`\n- Viewer: `viewer` / `viewer123`\n\n### 📁 Estrutura Final\n\n```\napp/\n├── data/movements.csv           ← Dataset original\n├── src/it_assets/\n│   ├── main.py                  ← API + Web routes\n│   ├── models.py                ← User, Asset, Movement\n│   ├── db.py                    ← SQLite + CSV load\n│   ├── security.py              ← JWT + Hash\n│   └── cli.py                   ← CLI entry point\n├── tests/\n│   ├── conftest.py              ← Fixtures\n│   ├── test_auth.py             ← Auth tests\n│   └── test_rbac.py             ← RBAC tests\n├── .env                         ← Con"
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 200.77,
+      "session_id": "6d2481de-c27c-4ccd-88d5-1c5169d28a34",
+      "cost_usd": 0.6071804000000001,
+      "tokens_input": 128,
+      "tokens_output": 9417,
+      "tokens_cache_write": 147635,
+      "tokens_cache_read": 2646974,
+      "interactions": 20,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":198088,\"duration_api_ms\":114251,\"ttft_ms\":5703,\"ttft_stream_ms\":4855,\"time_to_request_ms\":314,\"num_turns\":20,\"result\":\"## ✅ Fase 3 Concluída: Robustez com Dados Alterados\\n\\n### 🔴 Problemas Identificados no CSV\\n\\nA base foi alterada com 6 tipos de erro:\\n\\n| Erro | Linha | Impacto | Solução |\\n|------|-------|---------|---------|\\n| **movement_id duplicado** | 9 (MV-0001) | Criaria registro duplicado | Filtrar duplicatas com `seen_movement_ids` |\\n| **employee vazio** | 4 (MON-0101) | Nulo em BD | Permitir `None` com validação |\\n| **value vazio** | 5 (NB-0003) | Erro de parse | Default 0.0 + try/except |\\n| **ação inválida** | 6 (\\\"decommission_xyz\\\") | Violaria enum | Whitelist `{allocate,return,transfer,maintenance}` |\\n| **valor negativo** | 7 (-999.99) | Inconsistência | `max(0.0, value)` |\\n| **data formato DD/MM/YYYY** | 8 (15/03/2024) | Parse falha | Suportar ISO + DD/MM/YYYY + DD/MM/YY |\\n\\n### 🛠️ Correções Implementadas\\n\\n**Em `db.py::load_movements_from_csv()`:**\\n- ✅ Parse robusto de datas com fallback para `datetime.utcnow()`\\n- ✅ Validação de ações contra whitelist (4 ações válidas)\\n- ✅ Duplicatas de `movement_id` filtradas no carregamento\\n- ✅ Valores negativos convertidos para 0\\n- ✅ Campos vazios (`employee`, `value`, `from_location`) tratados com defaults\\n- ✅ Logging de avisos para erros, não quebra o processo\\n- ✅ Try/except por linha para não falhar tudo\\n\\n**Em `main.py::home()` e `dashboard_page()`:**\\n- ✅ Corrigido `TemplateResponse` para usar `name=` e `context=` (Starlette 0.40+)\\n\\n**Em `cli.py`:**\\n- ✅ Adicionado comando `serve` como alias para `run`\\n\\n### ✨ Testes & Validação\\n\\n```\\n5 testes Fase 3 — TODOS PASSANDO ✓\\n├── test_init_db_with_altered_data         PASS ✓\\n├── test_invalid_values_handled            PASS ✓\\n├── test_valid_actions_only                PASS ✓\\n├── test_empty_required_fields_handled     PASS ✓\\n└── test_asset_consistency                 PASS ✓\\n\\nCobertura: 46% total | 100% test_phase3.py | 93% models.py\\n```\\n\\n### 🚀 Aplicação Funcionando\\n\\n```bash\\n# Comando único (Fase 3)\\nuvx --from . it-assets serve --host 127.0.0.1 --port 8000\\n# ✓ Servidor sobe\\n# ✓ Página de login responde (GET /)\\n# ✓ Login API responde (POST /api/auth/login)\\n```\\n\\n### 📊 Resumo Executivo\\n\\n**O que quebrou:** 6 anomalias no CSV (duplicatas, vazios, ação inválida, data, negativos).\\n\\n**Causa:** CSV alterado intencionalmente para testar robustez.\\n\\n**Corrigido:** Parser idempotente com validação, whitelist de ações, filtro de duplicatas, suporte a múltiplos formatos de data, logging não-bloqueante. Aplicação sobe e funciona com os dados malformados.\",\"stop_reason\":\"end_turn\",\"session_id\":\"6d2481de-c27c-4ccd-88d5-1c5169d28a34\",\"total_cost_usd\":0.6071804000000001,\"usage\":{\"input_tokens\":128,\"cache_creation_input_tokens\":147635,\"cache_read_input_tokens\":2646974,\"output_tokens\":9417,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":147635,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":7,\"output_tokens\":997,\"cache_read_input_tokens\":164806,\"cache_creation_input_tokens\":927,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":927},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-haiku-4-5-20251001\":{\"inputTokens\":128,\"outputTokens\":9417,\"cacheReadInputTokens\":2646974,\"cacheCreationInputTokens\":147635,\"webSearchRequests\":0,\"costUSD\":0.6071804000000001,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"bb36e10a-fbd9-49e8-b9bb-fd42b8effe24\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 20,
+        "result": "## ✅ Fase 3 Concluída: Robustez com Dados Alterados\n\n### 🔴 Problemas Identificados no CSV\n\nA base foi alterada com 6 tipos de erro:\n\n| Erro | Linha | Impacto | Solução |\n|------|-------|---------|---------|\n| **movement_id duplicado** | 9 (MV-0001) | Criaria registro duplicado | Filtrar duplicatas com `seen_movement_ids` |\n| **employee vazio** | 4 (MON-0101) | Nulo em BD | Permitir `None` com validação |\n| **value vazio** | 5 (NB-0003) | Erro de parse | Default 0.0 + try/except |\n| **ação inválida** | 6 (\"decommission_xyz\") | Violaria enum | Whitelist `{allocate,return,transfer,maintenance}` |\n| **valor negativo** | 7 (-999.99) | Inconsistência | `max(0.0, value)` |\n| **data formato DD/MM/YYYY** | 8 (15/03/2024) | Parse falha | Suportar ISO + DD/MM/YYYY + DD/MM/YY |\n\n### 🛠️ Correções Implementadas\n\n**Em `db.py::load_movements_from_csv()`:**\n- ✅ Parse robusto de datas com fallback para `datetime.utcnow()`\n- ✅ Validação de ações contra whitelist (4 ações válidas)\n- ✅ Duplicatas de `movement_id` filtradas no carregamento\n- ✅ Valores negativos convertidos para 0\n- ✅ Campos vazios (`employee`, `value`, `from_location`) tratados com defaults\n- ✅ Logging de avisos para erros, não quebra o processo\n- ✅ Try/except por linha para não falhar tudo\n\n**Em `main.py::home()` e `dashboard_page()`:**\n- ✅ Corrigido `TemplateResponse` para usar `name=` e `context=` (Starlette 0.40+)\n\n**Em `cli.py`:**\n- ✅ Adicionado comando `serve` como alias para `run`\n\n### ✨ Testes & Validação\n\n```\n5 testes Fase 3 — TODOS PASSANDO ✓\n├── test_init_db_with_altered_data         PASS ✓\n├── test_invalid_values_handled            PASS ✓\n├── test_valid_actions_only                PASS ✓\n├── test_empty_required_fields_handled     PASS ✓\n└── test_asset_consistency                 PASS ✓\n\nCobertura: 46% total | 100% test_phase3.py | 93% models.py\n```\n\n### 🚀 Aplicação Funcionando\n\n```bash\n# Comando único (Fase 3)\nuvx --from . it-assets serve --host 127.0.0.1 --port 8000\n# ✓ Servidor sobe\n# ✓ Página de login resp"
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 40.0,
+        "objective": null,
+        "judge": 40.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 44.0,
+        "objective": 50.0,
+        "judge": 35.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 25.0,
+        "objective": 25.0,
+        "judge": 25.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 6.0,
+        "objective": 0.0,
+        "judge": 20.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 3.8,
+        "objective": 0.0,
+        "judge": 12.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 42.5,
+        "objective": null,
+        "judge": 42.5,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 91.2,
+        "objective": 100.0,
+        "judge": 82.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 1.5,
+        "objective": 0.0,
+        "judge": 5.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 9.0,
+        "objective": 0.0,
+        "judge": 22.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 96.2,
+        "objective": 100.0,
+        "judge": 87.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 98.0,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 70.6,
+        "objective": 73.3,
+        "judge": 66.5,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 37.2,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 40.2,
+    "tier": "C",
+    "tier_note": "Retrabalho grande"
+  },
+  "divergences": {}
+}

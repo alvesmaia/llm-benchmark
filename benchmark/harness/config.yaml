@@ -83,7 +83,7 @@ candidates:
     model_slug: haiku-4-5
     context: "200K"
     display: "Haiku 4.5"
-    thinking: "xhigh"
+    thinking: "high"
   - agent: copilot_cli
     model: claude-opus-4.6
     model_slug: copilot-opus

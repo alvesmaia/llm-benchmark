@@ -1,0 +1,322 @@
+{
+  "slug": "claude_code-haiku-4-5",
+  "agent": "claude_code",
+  "model": "claude-haiku-4-5-20251001",
+  "scenario": "it_assets",
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 40.0,
+        "objective": null,
+        "judge": 40.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 44.0,
+        "objective": 50.0,
+        "judge": 35.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 25.0,
+        "objective": 25.0,
+        "judge": 25.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 6.0,
+        "objective": 0.0,
+        "judge": 20.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 3.8,
+        "objective": 0.0,
+        "judge": 12.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 42.5,
+        "objective": null,
+        "judge": 42.5,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 91.2,
+        "objective": 100.0,
+        "judge": 82.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 1.5,
+        "objective": 0.0,
+        "judge": 5.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 9.0,
+        "objective": 0.0,
+        "judge": 22.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 96.2,
+        "objective": 100.0,
+        "judge": 87.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 98.0,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 70.6,
+        "objective": 73.3,
+        "judge": 66.5,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 37.2,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 40.2,
+    "tier": "C",
+    "tier_note": "Retrabalho grande"
+  },
+  "objective": {
+    "checks": [
+      {
+        "id": "dataset_load",
+        "dimension": "ingestao",
+        "note": 100,
+        "detail": "48 linhas (populado no boot)",
+        "data": {}
+      },
+      {
+        "id": "db_populated",
+        "dimension": "persistence",
+        "note": 100,
+        "detail": "SQLite populado no boot: 48 linhas",
+        "data": {}
+      },
+      {
+        "id": "pytest_coverage",
+        "dimension": "tests",
+        "note": 0,
+        "detail": "0 passed / 0 failed (rc=2); cobertura=None",
+        "data": {}
+      },
+      {
+        "id": "ruff_ok",
+        "dimension": "production",
+        "note": 20,
+        "detail": "0 achados de lint",
+        "data": {}
+      },
+      {
+        "id": "readme_quality",
+        "dimension": "production",
+        "note": 100,
+        "detail": "run=True, uso=True",
+        "data": {}
+      },
+      {
+        "id": "uvx_boot",
+        "dimension": "execucao_uvx",
+        "note": 100,
+        "detail": "app subiu via uvx em 7.3s",
+        "data": {}
+      },
+      {
+        "id": "web_login_form",
+        "dimension": "api_web",
+        "note": 0,
+        "detail": "form ausente",
+        "data": {}
+      },
+      {
+        "id": "auth_login",
+        "dimension": "auth_jwt",
+        "note": 0,
+        "detail": "login válido=falhou, inválido->404",
+        "data": {}
+      },
+      {
+        "id": "auth_required",
+        "dimension": "auth_jwt",
+        "note": 0,
+        "detail": "POST /api/movements sem token -> 404",
+        "data": {}
+      },
+      {
+        "id": "rbac_denied",
+        "dimension": "rbac",
+        "note": 0,
+        "detail": "viewer não autenticou (sem 2º papel?)",
+        "data": {}
+      },
+      {
+        "id": "api_dashboard",
+        "dimension": "api_web",
+        "note": 0,
+        "detail": "GET /api/dashboard não respondeu",
+        "data": {}
+      },
+      {
+        "id": "uvx_production",
+        "dimension": "production",
+        "note": 100,
+        "detail": "espelha boot via uvx (empacotamento uv/uvx)",
+        "data": {}
+      },
+      {
+        "id": "resiliencia",
+        "dimension": "resiliencia",
+        "note": 50,
+        "detail": "testes_ok=False, boot_ok=True (estado final pós-perturbação)",
+        "data": {}
+      }
+    ],
+    "objective_by_dimension": {
+      "ingestao": 100.0,
+      "persistence": 100.0,
+      "tests": 0.0,
+      "production": 73.3,
+      "execucao_uvx": 100.0,
+      "api_web": 0.0,
+      "auth_jwt": 0.0,
+      "rbac": 0.0,
+      "resiliencia": 50.0,
+      "e2e": 25.0
+    },
+    "flags": {
+      "no_boot": false,
+      "load_time_s": 7.28
+    },
+    "coverage_pct": null,
+    "e2e_detail": {
+      "note": 25.0,
+      "agent": "claude_code",
+      "model": "sonnet",
+      "works": false,
+      "steps": [
+        {
+          "nome": "Abrir página inicial e confirmar formulário de login",
+          "ok": false,
+          "detalhe": "GET http://127.0.0.1:58503/ retorna 'Internal Server Error' — nenhum formulário de login é renderizado. A UI web está quebrada (templates/HTML não carregam)."
+        },
+        {
+          "nome": "Login como admin e confirmar sucesso",
+          "ok": true,
+          "detalhe": "POST /api/auth/login com {username:'admin', password:'admin123'} retornou HTTP 200 e um JWT válido (access_token presente). A autenticação via API funciona, embora a página HTML '/' esteja inacessível."
+        },
+        {
+          "nome": "Navegar ao dashboard/listagem e confirmar que métricas/telas renderizam",
+          "ok": false,
+          "detalhe": "GET /dashboard retorna 'Internal Server Error' — a UI web não renderiza. Porém, as APIs subjacentes funcionam: GET /api/dashboard/metrics retornou HTTP 200 com {total_assets:18, total_movements:28, assets_in_use:11, assets_available:5, assets_in_maintenance:2, total_inventory_value:64380} e GET /api/assets/ retornou 18 ativos. Apenas a camada de UI está quebrada."
+        },
+        {
+          "nome": "Ação restrita com papel viewer — verificar bloqueio (403/acesso negado)",
+          "ok": false,
+          "detalhe": "Viewer fez login com sucesso (HTTP 200 + JWT). Tentativa de POST /api/assets/ com token de viewer retornou HTTP 405 'Method Not Allowed' — o endpoint de criação simplesmente não existe na API, não é um bloqueio RBAC (403). Adicionalmente, viewer consegue acessar GET /api/dashboard/metrics e GET /api/assets/ com o mesmo resultado que admin, sem nenhuma restrição por papel. O RBAC de escrita não pôde ser confirmado. Bônus: GET /api/assets/ sem token retorna HTTP 200 (deveria ser 401) com body [{detail:'Token não fornecido'},401]."
+        }
+      ],
+      "issues": [
+        "As páginas HTML '/' e '/dashboard' retornam 'Internal Server Error' — a interface web está completamente quebrada; nenhum usuário consegue acessar o sistema pelo browser.",
+        "Não existem endpoints de escrita (POST/PUT/DELETE para ativos) na API — impossível testar RBAC para operações de escrita; viewer recebe 405 (não existe) em vez de 403 (proibido).",
+        "Viewer tem acesso idêntico ao de admin para todos os endpoints GET existentes — sem diferenciação de papel nas leituras.",
+        "GET /api/assets/ sem token de autenticação retorna HTTP 200 em vez de 401 — falha na proteção de endpoint autenticado."
+      ],
+      "ok_steps": 1,
+      "total_steps": 4,
+      "base": "http://127.0.0.1:58503"
+    }
+  },
+  "judges": {
+    "claude_opus": {
+      "scores": {
+        "refactor": 28,
+        "resiliencia": 35,
+        "e2e": 25,
+        "auth_jwt": 10,
+        "rbac": 5,
+        "dashboard": 40,
+        "persistence": 80,
+        "tests": 5,
+        "api_web": 20,
+        "execucao_uvx": 90,
+        "ingestao": 90,
+        "production": 68
+      },
+      "rationale": {
+        "refactor": "Pivô para FastAPI/SQLite/Jinja2 existe, mas há duas implementações paralelas e desconexas (arquivos na raiz + routers em src/) que nem são montados em main.py, que reimplementa endpoints inline — sinal de recomeço desorganizado, não de camadas coesas.",
+        "resiliencia": "Objetivo aponta boot_ok=True mas testes_ok=False sobre a base perturbada, indicando recuperação apenas parcial.",
+        "e2e": "Veredito Playwright fixa a dimensão em 25: UI HTML retorna 500, só 1 de 4 passos funcionou.",
+        "auth_jwt": "Login pela rota esperada falhou (404) e o 'JWT' é apenas base64 sem assinatura nem verificação real, sem proteção efetiva por Bearer.",
+        "rbac": "Sem segundo papel funcional e sem qualquer diferenciação de permissões; viewer acessa tudo igual ao admin e não há 403.",
+        "dashboard": "O endpoint /api/dashboard/metrics retorna métricas coerentes, mas a checagem de /api/dashboard falhou e a página HTML quebra.",
+        "persistence": "SQLite populado no boot (48 linhas) com schema sensato e índices/uniqueness nos modelos.",
+        "tests": "pytest retornou rc=2 com 0 testes coletados e cobertura nula — suíte quebrada.",
+        "api_web": "Camada web completamente quebrada (templates ausentes → 500) e API parcial com endpoints inline que retornam tuplas mal formadas em vez de status corretos.",
+        "execucao_uvx": "App sobe via uvx em ~7.3s com console script configurado.",
+        "ingestao": "Dataset lido e parseado corretamente, populando 48 movimentações.",
+        "production": "README com comando único e ruff sem achados, mas a checagem de lint pontuou baixo e o empacotamento convive com lixo no repo (múltiplos .db, arquivos órfãos na raiz)."
+      },
+      "hallucinated_dependency": false,
+      "summary": "O projeto sobe via uvx e tem ingestão/persistência sólidas, mas a refatoração resultou em duas implementações paralelas desconexas — os routers bem-feitos em src/ nem são montados em main.py, que reimplementa endpoints inline com 'JWT' falso (base64) e retornos em tupla que quebram os códigos de status. A camada web Jinja2 está totalmente quebrada (templates ausentes → 500), não há RBAC real, e a suíte de testes não coleta. É um entregável de tier D: arquitetura fragmentada com auth, RBAC, web e testes inoperantes apesar das APIs de leitura parcialmente funcionais."
+    },
+    "claude_sonnet": {
+      "scores": {
+        "refactor": 52,
+        "resiliencia": 35,
+        "e2e": 25,
+        "auth_jwt": 30,
+        "rbac": 20,
+        "dashboard": 45,
+        "persistence": 85,
+        "tests": 5,
+        "api_web": 25,
+        "execucao_uvx": 85,
+        "ingestao": 100,
+        "production": 65
+      },
+      "rationale": {
+        "refactor": "A refatoração existe e há camadas reconhecíveis (models, crud, schemas, routers, security), mas o pivô é incompleto: há arquivos duplicados na raiz (assets.py, auth.py, dashboard.py) divergindo dos routers em src/, os routers do src/ não são incluídos no main.py (que implementa endpoints manualmente), e a lógica do dashboard Streamlit da Fase 1 não foi reaproveitada — foi descartada.",
+        "resiliencia": "O boot funciona após a perturbação (boot_ok=True), mas os testes falham completamente (rc=2, 0 passed), indicando que a suite de testes não está sequer executável sobre a base mutada, o que é uma falha séria de resiliência.",
+        "e2e": "O harness Playwright atribuiu nota 25 objetivamente: apenas 1 de 4 passos passou (login via API), a UI web retorna Internal Server Error por ausência de templates Jinja2, e o RBAC não pôde ser verificado.",
+        "auth_jwt": "O endpoint POST /api/auth/login funciona via API (confirmado pelo E2E), mas o harness reportou falha no check objetivo (note=0) possivelmente por diferença de rota (/api/auth/login vs /auth/login esperado), e a implementação usa base64 puro em vez de JWT real (python-jose/PyJWT), o que é uma falha de conformidade.",
+        "rbac": "Há dois papéis no modelo (admin/viewer) mas o RBAC não é aplicado nos endpoints: GET /api/assets/ retorna 200 sem token, POST /api/assets/ retorna 405, e o viewer acessa tudo igual ao admin — o bloqueio 403 exigido pelo contrato não existe.",
+        "dashboard": "As métricas do dashboard existem e são coerentes (GET /api/dashboard/metrics retornou dados válidos com 18 ativos, 28 movimentações e valor total), mas a página web /dashboard retorna Internal Server Error por falta de templates, então apenas a API funciona.",
+        "persistence": "SQLite populado com 48 linhas no boot, schema bem modelado com tabelas User/Asset/Movement, índices e relacionamentos corretos — a persistência é o ponto mais sólido do projeto.",
+        "tests": "Os testes existem (test_auth.py, test_db.py, test_phase3.py, test_rbac.py) mas falham com rc=2 (erro de coleção/import), resultando em 0 passed e cobertura nula — a suite está estruturalmente quebrada.",
+        "api_web": "Os endpoints de API funcionam parcialmente (login, list assets, metrics via API), mas a camada web Jinja2 está completamente quebrada (templates ausentes, / e /dashboard retornam Internal Server Error), e o formulário de login HTML não existe.",
+        "execucao_uvx": "A app sobe via uvx em 7.3s conforme verificado pelo harness (note=100), o console script it-assets serve está declarado no pyproject.toml, e o .env versionado está presente.",
+        "ingestao": "Ingestão perfeita: 48 linhas carregadas do CSV no boot conforme confirmado objetivamente (note=100).",
+        "production": "README presente com comando uvx, ruff com 0 achados, empacotamento uv/uvx funcional — mas há arquivos soltos na raiz (assets.py, auth.py, dashboard.py, __init__.py) que indicam bagunça estrutural, e o ruff_ok recebeu nota 20 do harness (possivelmente por configuração de cobertura)."
+      },
+      "hallucinated_dependency": false,
+      "summary": "O projeto entrega a infraestrutura básica (boot uvx, SQLite populado, ingestão do CSV) mas falha nas camadas de interface e segurança: os templates Jinja2 estão ausentes tornando toda a UI inacessível, o JWT é implementado com base64 puro em vez de um padrão real, o RBAC não é aplicado nos endpoints, e a suite de testes está quebrada com rc=2. A arquitetura tem forma correta (camadas visíveis) mas execução incompleta, resultando num produto que funciona parcialmente apenas via API direta — não como uma aplicação utilizável por um usuário real."
+    }
+  },
+  "divergences": {}
+}
