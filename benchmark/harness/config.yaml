@@ -118,3 +118,9 @@ candidates:
     context: "1M"
     display: "Sonnet 4.6"
     thinking: "xhigh"
+  - agent: opencode
+    model: github-copilot/claude-opus-4.7
+    model_slug: opus-4-7
+    context: "1M"
+    display: "Opus 4.7"
+    thinking: "medium"

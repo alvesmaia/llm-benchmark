@@ -74,6 +74,10 @@ class OpenCodeCliAdapter(Adapter):
 
     def _run(self, phase: str, cmd: list[str], prompt: str, workdir: Path, env: dict,
              prev_sid: str | None = None) -> PhaseResult:
+        # `--dir` fixa o diretório de trabalho do opencode. Sem ele, o opencode sobe a árvore até
+        # achar a raiz do projeto (o repo do benchmark) e constrói LÁ — contaminando a raiz. cwd
+        # sozinho não basta. (Regra 1 — isolamento do app gerado.)
+        cmd = cmd + ["--dir", str(workdir)]
         # prompt via stdin (Regra 2 — evita o limite de linha de comando do Windows)
         rc, out, err, dur = run_command(cmd, cwd=workdir, env=env, timeout=5400, stdin_text=prompt)
         sid, cost, usage = _parse_events(out)

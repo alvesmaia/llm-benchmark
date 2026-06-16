@@ -207,7 +207,8 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
 
     header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | " + \
         " | ".join(scenario.dim_labels[d] for d in scenario.dimensions) + \
-        " | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | Divergências |"
+        " | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | " + \
+        "Divergências |"
     # tail = 7 colunas: 3 tokens + interações + custo + cobertura + diverg
     sep = "|" + "---|" * (_META_HEAD + len(scenario.dimensions) + 7)
     lines += [header, sep]
