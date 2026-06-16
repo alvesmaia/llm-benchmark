@@ -45,13 +45,15 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 | 1 | claude_code | Opus 4.8 · 1M | medium | **94.2** | 97.2 | A | 28m 24s | 92 | 100 | 100 | 100 | 100 | 82 | 98 | 99 | 59 | 100 | 100 | 100 | 10 751 | 82 892 | 8 835 049 | 105 | 8.946 | 98 | — |
 | 2 | claude_code | Opus 4.7 · 1M | medium | **93.0** | 96.0 | A | 17m 9s | 88 | 100 | 100 | 100 | 100 | 75 | 98 | 99 | 59 | 100 | 100 | 100 | 100 | 58 741 | 7 166 880 | 88 | 7.065 | 94 | — |
 | 3 | copilot_cli | Opus 4.7 · 1M | medium | **92.8** | 95.8 | A | 17m 43s | 89 | 97 | 100 | 99 | 99 | 81 | 96 | 98 | 58 | 99 | 99 | 99 | — | — | — | — | — | 89 | — |
-| 4 | claude_code | Sonnet 4.6 | medium | **91.3** | 94.3 | A | 21m 6s | 86 | 97 | 100 | 98 | 98 | 80 | 90 | 96 | 58 | 98 | 97 | 96 | 83 | 65 261 | 6 292 597 | 85 | 4.356 | 90 | — |
-| 5 | claude_code | Haiku 4.5 | high | **37.2** | 40.2 | C | 19m 32s | 40 | 44 | 25 | 6 | 4 | 42 | 91 | 2 | 9 | 96 | 98 | 71 | 916 | 70 294 | 12 270 093 | 166 | 2.146 | — | — |
+| 4 | opencode | Opus 4.7 · 1M | medium | **92.7** | 95.7 | A | 37m 49s | 91 | 99 | 100 | 99 | 99 | 76 | 97 | 95 | 59 | 99 | 99 | 98 | 149 | 97 348 | 11 015 302 | 141 | 8.771 | 87 | — |
+| 5 | claude_code | Sonnet 4.6 | medium | **91.3** | 94.3 | A | 21m 6s | 86 | 97 | 100 | 98 | 98 | 80 | 90 | 96 | 58 | 98 | 97 | 96 | 83 | 65 261 | 6 292 597 | 85 | 4.356 | 90 | — |
+| 6 | claude_code | Haiku 4.5 | high | **37.2** | 40.2 | C | 19m 32s | 40 | 44 | 25 | 6 | 4 | 42 | 91 | 2 | 9 | 96 | 98 | 71 | 916 | 70 294 | 12 270 093 | 166 | 2.146 | — | — |
 
 ## Modificadores aplicados
 
 - **claude_code-claude-opus-4-8**: load_performance_bonus (+3)
 - **claude_code-claude-opus-4-7**: load_performance_bonus (+3)
 - **copilot_cli-claude-opus-4.7**: load_performance_bonus (+3)
+- **opencode-github-copilot/claude-opus-4.7**: load_performance_bonus (+3)
 - **claude_code-sonnet**: load_performance_bonus (+3)
 - **claude_code-claude-haiku-4-5-20251001**: load_performance_bonus (+3)

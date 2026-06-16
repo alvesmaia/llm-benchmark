@@ -1,0 +1,165 @@
+{
+  "slug": "opencode-opus-4-7",
+  "agent": "opencode",
+  "model": "github-copilot/claude-opus-4.7",
+  "scenario": "it_assets",
+  "started_utc": "2026-06-16T15:17:25.217607+00:00",
+  "finished_utc": "2026-06-16T16:09:59.468432+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 908.03,
+      "session_id": "ses_12efdbaf7ffeMOn0AGhWKKNDvW",
+      "cost_usd": 2.367332,
+      "tokens_input": 62,
+      "tokens_output": 34337,
+      "tokens_cache_write": 60347,
+      "tokens_cache_read": 2262857,
+      "interactions": 58,
+      "stdout_tail": "se},\"title\":\"0 todos\",\"time\":{\"start\":1781623933556,\"end\":1781623933560}},\"id\":\"prt_ed10fb94c001wX5QXZrDcDRD5O\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"messageID\":\"msg_ed10faa04001pfzgt8xjPiH3O7\"}}\n{\"type\":\"step_finish\",\"timestamp\":1781623934017,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed10fcc3d001ugk4gJdx87GGVu\",\"reason\":\"tool-calls\",\"snapshot\":\"deea78928a708ecf15174ed72c70f41c88f46890\",\"messageID\":\"msg_ed10faa04001pfzgt8xjPiH3O7\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"type\":\"step-finish\",\"tokens\":{\"total\":59870,\"input\":1,\"output\":438,\"reasoning\":0,\"cache\":{\"write\":136,\"read\":59295}},\"cost\":0.0414525}}\n{\"type\":\"step_start\",\"timestamp\":1781623939166,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed10fe05c001mQEadEQ3lnhRGF\",\"messageID\":\"msg_ed10fcdf3001lKWLkuxiYnAY7J\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"snapshot\":\"deea78928a708ecf15174ed72c70f41c88f46890\",\"type\":\"step-start\"}}\n{\"type\":\"text\",\"timestamp\":1781623952407,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed10fe15d001pDv4WQqA8GKJeg\",\"messageID\":\"msg_ed10fcdf3001lKWLkuxiYnAY7J\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"type\":\"text\",\"text\":\"All deliverables are complete. Here's the summary:\\n\\n## Phase 1 — Delivered\\n\\n### Project structure\\n```\\n.\\n├── data/movements.csv       # CSV copied from DATASET_PATH\\n├── src/it_assets/\\n│   ├── __init__.py          # Public API\\n│   ├── cli.py               # Click console script -> `it-assets`\\n│   ├── config.py            # python-dotenv loader (auto-finds .env)\\n│   ├── dashboard.py         # Streamlit UI\\n│   └── data.py              # Pure analytics (loaded as `it_assets.data`)\\n├── tests/                   # 40 tests, conftest + 3 modules\\n├── .env                     # Versioned with real values (DATASET_PATH, JWT_SECRET, ADMIN/VIEWER creds, etc.)\\n├── pyproject.toml           # Python 3.12, hatchling, ruff line-length=100, pytest --cov\\n├── README.md\\n└── .gitignore\\n```\\n\\n### Single-command run (Phase 1 contract)\\n```\\nuvx --from . it-assets serve\\n```\\nVerified: starts Streamlit on `127.0.0.1:8501`, responds with `HTTP 200`. Also accepts `--host` and `--port`. `uv run it-assets serve` and `it-assets info` / `it-assets import` also work.\\n\\n### Tests + coverage\\n```\\n40 passed in 0.91s\\nTOTAL coverage: 87% (data.py 97%, __init__ 100%, cli.py 80%, config.py 73%)\\n```\\n\\n### Lint\\n```\\nruff check . -> All checks passed!\\n```\\nConfigured with `line-length = 100`, plus rules `E F W I B UP N SIM`.\\n\\n### Dashboard features\\n- KPI cards: total movements, unique assets/employees/locations, in_use/available/in_repair counts, current allocated value (BRL).\\n- Charts: monthly movements bar, action donut, asset-type bar, destination-location bar.\\n- Tables: current asset state (latest movement per asset), available assets, top employees.\\n- Asset lifecycle explorer.\\n- Sidebar filters: type, action, status, location, date range.\\n- Data-quality fix: source CSV has rows where `asset_type` was overwritten with the action name; `_repair_asset_type` back-fills the canonical type.\\n\\n### Phase 2/3 readiness\\n- `.env` already contains `JWT_SECRET`, `ADMIN_USER`/`ADMIN_PASSWORD`, `VIEWER_USER`/`VIEWER_PASSWORD`, `DB_PATH`.\\n- `Settings` exposes all of those plus `project_root`, ready to be consumed by FastAPI/SQLite/JWT/RBAC.\\n- The `it-assets` console script is a Click group, so adding new subcommands (e.g., `serve` becomes API+Web, plus `migrate`, etc.) is a one-line change.\",\"time\":{\"start\":1781623939421,\"end\":1781623952404}}}\n{\"type\":\"step_finish\",\"timestamp\":1781623952826,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed11015b6001DVtDN4oGL461RW\",\"reason\":\"stop\",\"snapshot\":\"deea78928a708ecf15174ed72c70f41c88f46890\",\"messageID\":\"msg_ed10fcdf3001lKWLkuxiYnAY7J\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"type\":\"step-finish\",\"tokens\":{\"total\":61323,\"input\":1,\"output\":975,\"reasoning\":0,\"cache\":{\"write\":916,\"read\":59431}},\"cost\":0.0598205}}\n",
+      "stderr_tail": "",
+      "extra": {
+        "result": "gle-command run (Phase 1 contract)\\n```\\nuvx --from . it-assets serve\\n```\\nVerified: starts Streamlit on `127.0.0.1:8501`, responds with `HTTP 200`. Also accepts `--host` and `--port`. `uv run it-assets serve` and `it-assets info` / `it-assets import` also work.\\n\\n### Tests + coverage\\n```\\n40 passed in 0.91s\\nTOTAL coverage: 87% (data.py 97%, __init__ 100%, cli.py 80%, config.py 73%)\\n```\\n\\n### Lint\\n```\\nruff check . -> All checks passed!\\n```\\nConfigured with `line-length = 100`, plus rules `E F W I B UP N SIM`.\\n\\n### Dashboard features\\n- KPI cards: total movements, unique assets/employees/locations, in_use/available/in_repair counts, current allocated value (BRL).\\n- Charts: monthly movements bar, action donut, asset-type bar, destination-location bar.\\n- Tables: current asset state (latest movement per asset), available assets, top employees.\\n- Asset lifecycle explorer.\\n- Sidebar filters: type, action, status, location, date range.\\n- Data-quality fix: source CSV has rows where `asset_type` was overwritten with the action name; `_repair_asset_type` back-fills the canonical type.\\n\\n### Phase 2/3 readiness\\n- `.env` already contains `JWT_SECRET`, `ADMIN_USER`/`ADMIN_PASSWORD`, `VIEWER_USER`/`VIEWER_PASSWORD`, `DB_PATH`.\\n- `Settings` exposes all of those plus `project_root`, ready to be consumed by FastAPI/SQLite/JWT/RBAC.\\n- The `it-assets` console script is a Click group, so adding new subcommands (e.g., `serve` becomes API+Web, plus `migrate`, etc.) is a one-line change.\",\"time\":{\"start\":1781623939421,\"end\":1781623952404}}}\n{\"type\":\"step_finish\",\"timestamp\":1781623952826,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed11015b6001DVtDN4oGL461RW\",\"reason\":\"stop\",\"snapshot\":\"deea78928a708ecf15174ed72c70f41c88f46890\",\"messageID\":\"msg_ed10fcdf3001lKWLkuxiYnAY7J\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"type\":\"step-finish\",\"tokens\":{\"total\":61323,\"input\":1,\"output\":975,\"reasoning\":0,\"cache\":{\"write\":916,\"read\":59431}},\"cost\":0.0598205}}\n"
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 1356.42,
+      "session_id": "ses_12efdbaf7ffeMOn0AGhWKKNDvW",
+      "cost_usd": 6.403678,
+      "tokens_input": 87,
+      "tokens_output": 63011,
+      "tokens_cache_write": 83812,
+      "tokens_cache_read": 8608286,
+      "interactions": 83,
+      "stdout_tail": "2efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed124868b001scp0m3D3DZ0dH0\",\"messageID\":\"msg_ed12463d400135PdaN7CcjEMKR\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"snapshot\":\"46d16197c96bed581e815f409f626a358b273449\",\"type\":\"step-start\"}}\n{\"type\":\"text\",\"timestamp\":1781625309132,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed124877d001n6KW0iJ75ivjTq\",\"messageID\":\"msg_ed12463d400135PdaN7CcjEMKR\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"type\":\"text\",\"text\":\"## Phase 2 — Delivered\\n\\nThe Streamlit dashboard has been refactored into a complete **FastAPI + SQLite + Jinja2 + JWT + RBAC** application, **reusing** the analytics layer from Phase 1 (`it_assets.data`) and reorganized into clear layers.\\n\\n### Single-command run\\n\\n```\\nuvx --from . it-assets serve\\n# or with overrides:\\nuvx --from . it-assets serve --host 127.0.0.1 --port 8000\\n```\\n\\nThe lifespan hook auto-creates SQLite tables, seeds users from `.env`, and ingests the CSV from `DATASET_PATH` (idempotent).\\n\\n### Layered architecture\\n\\n```\\nsrc/it_assets/\\n├── cli.py                  # serve / import / info\\n├── config.py               # python-dotenv settings\\n├── data.py                 # REUSED: KPI / breakdown analytics\\n├── main.py                 # FastAPI factory + module-level `app`\\n├── schemas.py              # Pydantic models\\n├── security.py             # bcrypt + JWT\\n├── api/\\n│   ├── deps.py             # DB session, current_user, require_admin\\n│   └── routers/auth.py, assets.py, movements.py, dashboard.py\\n├── db/\\n│   ├── base.py             # SQLAlchemy 2.x engine/session/Base\\n│   └── models.py           # User, Asset, Movement\\n├── services/\\n│   ├── users.py, assets.py, movements.py, ingestion.py, dashboard.py\\n└── web/\\n    ├── routes.py           # /, /login, /dashboard, /assets, /movements\\n    └── templates/          # base.html, login.html, dashboard.html, ...\\n```\\n\\n### Contract checks (verified end-to-end via curl)\\n\\n- `POST /auth/login` `{username,password}` → **200** `{token,...}` for valid; **401** for invalid\\n- `GET /api/assets` without token → **401**\\n- `GET /api/assets` with viewer token → **200**\\n- `POST /api/assets` with viewer token → **403** (RBAC denial)\\n- `POST /api/assets` with admin token → **201** (CRUD persisted)\\n- `GET /` returns HTML with `<form>` containing `username` & `password` fields\\n- `GET /healthz` returns `{\\\"status\\\":\\\"ok\\\",\\\"version\\\":\\\"0.2.0\\\"}`\\n\\n### Quality\\n\\n```\\nruff check .            All checks passed!\\npytest                  86 passed in 26.92s\\ncoverage                89% total (data 97%, security 100%, schemas 100%, auth router 100%, dashboard 92-100%)\\n```\\n\\n### Test breakdown (86 tests, 8 modules)\\n\\n- `test_security.py` (7) — bcrypt + JWT encode/decode/expired\\n- `test_data.py` (31) — analytics functions\\n- `test_config.py` (6) — env parsing\\n- `test_ingestion.py` (5) — CSV → SQLite\\n- `test_cli.py` (6) — `it-assets info` / `import` (with and without `--no-copy`/`--no-load-db`)\\n- `test_api.py` (19) — login, JWT, RBAC denial (403), full admin CRUD lifecycle, persistence\\n- `test_web.py` (10) — login form, session cookie, redirects, page rendering\\n- `test_data.py` analytics integration\\n\\n### .env (versioned, real values)\\n\\n`JWT_SECRET`, `JWT_ALGORITHM`, `JWT_EXPIRES_MINUTES`, `ADMIN_USER`/`ADMIN_PASSWORD`, `VIEWER_USER`/`VIEWER_PASSWORD`, `API_HOST`/`API_PORT`, `DATASET_PATH`, `DB_PATH` — all populated with real defaults so the harness can run the app without supplying anything.\",\"time\":{\"start\":1781625292669,\"end\":1781625309128}}}\n{\"type\":\"step_finish\",\"timestamp\":1781625309419,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed124c8e7001uFlHBGMk6Z66a3\",\"reason\":\"stop\",\"snapshot\":\"46d16197c96bed581e815f409f626a358b273449\",\"messageID\":\"msg_ed12463d400135PdaN7CcjEMKR\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"type\":\"step-finish\",\"tokens\":{\"total\":145428,\"input\":1,\"output\":1268,\"reasoning\":0,\"cache\":{\"write\":1256,\"read\":142903}},\"cost\":0.1110065}}\n",
+      "stderr_tail": "",
+      "extra": {
+        "result": "rd}` → **200** `{token,...}` for valid; **401** for invalid\\n- `GET /api/assets` without token → **401**\\n- `GET /api/assets` with viewer token → **200**\\n- `POST /api/assets` with viewer token → **403** (RBAC denial)\\n- `POST /api/assets` with admin token → **201** (CRUD persisted)\\n- `GET /` returns HTML with `<form>` containing `username` & `password` fields\\n- `GET /healthz` returns `{\\\"status\\\":\\\"ok\\\",\\\"version\\\":\\\"0.2.0\\\"}`\\n\\n### Quality\\n\\n```\\nruff check .            All checks passed!\\npytest                  86 passed in 26.92s\\ncoverage                89% total (data 97%, security 100%, schemas 100%, auth router 100%, dashboard 92-100%)\\n```\\n\\n### Test breakdown (86 tests, 8 modules)\\n\\n- `test_security.py` (7) — bcrypt + JWT encode/decode/expired\\n- `test_data.py` (31) — analytics functions\\n- `test_config.py` (6) — env parsing\\n- `test_ingestion.py` (5) — CSV → SQLite\\n- `test_cli.py` (6) — `it-assets info` / `import` (with and without `--no-copy`/`--no-load-db`)\\n- `test_api.py` (19) — login, JWT, RBAC denial (403), full admin CRUD lifecycle, persistence\\n- `test_web.py` (10) — login form, session cookie, redirects, page rendering\\n- `test_data.py` analytics integration\\n\\n### .env (versioned, real values)\\n\\n`JWT_SECRET`, `JWT_ALGORITHM`, `JWT_EXPIRES_MINUTES`, `ADMIN_USER`/`ADMIN_PASSWORD`, `VIEWER_USER`/`VIEWER_PASSWORD`, `API_HOST`/`API_PORT`, `DATASET_PATH`, `DB_PATH` — all populated with real defaults so the harness can run the app without supplying anything.\",\"time\":{\"start\":1781625292669,\"end\":1781625309128}}}\n{\"type\":\"step_finish\",\"timestamp\":1781625309419,\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"part\":{\"id\":\"prt_ed124c8e7001uFlHBGMk6Z66a3\",\"reason\":\"stop\",\"snapshot\":\"46d16197c96bed581e815f409f626a358b273449\",\"messageID\":\"msg_ed12463d400135PdaN7CcjEMKR\",\"sessionID\":\"ses_12efdbaf7ffeMOn0AGhWKKNDvW\",\"type\":\"step-finish\",\"tokens\":{\"total\":145428,\"input\":1,\"output\":1268,\"reasoning\":0,\"cache\":{\"write\":1256,\"read\":142903}},\"cost\":0.1110065}}\n"
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": false,
+      "returncode": 1,
+      "duration_s": 4.47,
+      "session_id": "ses_12ed15693ffeeEoAFTxnopKZUK",
+      "cost_usd": null,
+      "tokens_input": null,
+      "tokens_output": null,
+      "tokens_cache_write": null,
+      "tokens_cache_read": null,
+      "interactions": null,
+      "stdout_tail": "{\"type\":\"error\",\"timestamp\":1781625959532,\"sessionID\":\"ses_12ed15693ffeeEoAFTxnopKZUK\",\"error\":{\"name\":\"APIError\",\"data\":{\"message\":\"Payment Required: {\\\"error\\\":{\\\"message\\\":\\\"You have exceeded your monthly quota\\\",\\\"code\\\":\\\"quota_exceeded\\\"}}\",\"statusCode\":402,\"isRetryable\":false,\"responseHeaders\":{\"content-length\":\"85\",\"content-security-policy\":\"default-src 'none'; sandbox\",\"content-type\":\"application/json\",\"date\":\"Tue, 16 Jun 2026 16:05:59 GMT\",\"retry-after\":\"Wed, 01 Jul 2026 00:00:00 UTC\",\"server\":\"github.com\",\"strict-transport-security\":\"max-age=31536000\",\"x-copilot-service-request-id\":\"6de6965d-9226-4c2c-85d7-30fb5932b1d1\",\"x-github-request-id\":\"BDDF:FC8AB:2C0B24:7D35B2:6A317466\",\"x-glb-log-append\":\"tenant=dhl service=copilot-api\",\"x-quota-snapshot-chat\":\"ent=-1&ov=0.0&ovPerm=false&rem=100.0&rst=2026-07-01T00%3A00%3A00Z&totRem=-1\",\"x-quota-snapshot-completions\":\"ent=-1&ov=0.0&ovPerm=false&rem=100.0&rst=2026-07-01T00%3A00%3A00Z&totRem=-1\",\"x-quota-snapshot-premium_interactions\":\"ent=3000&ov=1.8&ovPerm=false&rem=0.0&rst=2026-07-01T00%3A00%3A00Z&totRem=0.0\",\"x-request-id\":\"ccf73c7b-ccfd-9b0d-bb0c-293f309c1be8\"},\"responseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"You have exceeded your monthly quota\\\",\\\"code\\\":\\\"quota_exceeded\\\"}}\\n\",\"metadata\":{\"url\":\"https://copilot-api.dhl.ghe.com/v1/messages\"}}}}\n",
+      "stderr_tail": "",
+      "extra": {
+        "result": "{\"type\":\"error\",\"timestamp\":1781625959532,\"sessionID\":\"ses_12ed15693ffeeEoAFTxnopKZUK\",\"error\":{\"name\":\"APIError\",\"data\":{\"message\":\"Payment Required: {\\\"error\\\":{\\\"message\\\":\\\"You have exceeded your monthly quota\\\",\\\"code\\\":\\\"quota_exceeded\\\"}}\",\"statusCode\":402,\"isRetryable\":false,\"responseHeaders\":{\"content-length\":\"85\",\"content-security-policy\":\"default-src 'none'; sandbox\",\"content-type\":\"application/json\",\"date\":\"Tue, 16 Jun 2026 16:05:59 GMT\",\"retry-after\":\"Wed, 01 Jul 2026 00:00:00 UTC\",\"server\":\"github.com\",\"strict-transport-security\":\"max-age=31536000\",\"x-copilot-service-request-id\":\"6de6965d-9226-4c2c-85d7-30fb5932b1d1\",\"x-github-request-id\":\"BDDF:FC8AB:2C0B24:7D35B2:6A317466\",\"x-glb-log-append\":\"tenant=dhl service=copilot-api\",\"x-quota-snapshot-chat\":\"ent=-1&ov=0.0&ovPerm=false&rem=100.0&rst=2026-07-01T00%3A00%3A00Z&totRem=-1\",\"x-quota-snapshot-completions\":\"ent=-1&ov=0.0&ovPerm=false&rem=100.0&rst=2026-07-01T00%3A00%3A00Z&totRem=-1\",\"x-quota-snapshot-premium_interactions\":\"ent=3000&ov=1.8&ovPerm=false&rem=0.0&rst=2026-07-01T00%3A00%3A00Z&totRem=0.0\",\"x-request-id\":\"ccf73c7b-ccfd-9b0d-bb0c-293f309c1be8\"},\"responseBody\":\"{\\\"error\\\":{\\\"message\\\":\\\"You have exceeded your monthly quota\\\",\\\"code\\\":\\\"quota_exceeded\\\"}}\\n\",\"metadata\":{\"url\":\"https://copilot-api.dhl.ghe.com/v1/messages\"}}}}\n"
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 91.0,
+        "objective": null,
+        "judge": 91.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 98.6,
+        "objective": 100.0,
+        "judge": 96.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 99.2,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 99.2,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 76.0,
+        "objective": null,
+        "judge": 76.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 96.8,
+        "objective": 100.0,
+        "judge": 93.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 95.2,
+        "objective": 99.0,
+        "judge": 86.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 58.8,
+        "objective": 50.0,
+        "judge": 72.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 99.2,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 99.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 98.4,
+        "objective": 100.0,
+        "judge": 96.0,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 92.7,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 95.7,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "divergences": {}
+}
