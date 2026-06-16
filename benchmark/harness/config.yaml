@@ -62,7 +62,8 @@ candidates:
     model_slug: opus-4-8
     context: "1M"
     display: "Opus 4.8"
-    thinking: "xhigh"
+    thinking: "medium"
+    effort: "medium"
   - agent: claude_code
     model: claude-opus-4-7
     model_slug: opus-4-7
@@ -75,7 +76,8 @@ candidates:
     model_slug: sonnet
     context: "200K"
     display: "Sonnet 4.6"
-    thinking: "xhigh"
+    thinking: "medium"
+    effort: "medium"
   - agent: claude_code
     model: claude-haiku-4-5-20251001
     model_slug: haiku-4-5

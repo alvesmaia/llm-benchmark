@@ -187,9 +187,9 @@ uv run bench report
 uv run bench export <slug>
 
 # subir a app gerada por um candidato em um único comando (FastAPI/Web)
-uv run bench serve claude_code-opus-4-8
-# ...ou standalone, direto no projeto gerado:
-uvx --from <runs_dir>/it_assets/claude_code-opus-4-8/app it-assets serve
+uv run bench serve claude_code-sonnet
+# ...ou standalone, direto no projeto gerado (lê o .env versionado; sobe COM a base):
+cd <runs_dir>/claude_code-sonnet/app && uvx --from . it-assets serve --host 127.0.0.1 --port 8000
 ```
 
 ## Dataset

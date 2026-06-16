@@ -49,6 +49,13 @@ def run_candidate(cfg: Config, candidate: Candidate, scenario=None, *,
     run_dir = scenario.run_dir(cfg.runs_dir, slug)
     app_dir = run_dir / "app"
     logs_dir = run_dir / "logs"
+    # Re-run limpo: um build fresco NÃO pode reaproveitar o app/logs de um run anterior (senão o
+    # agente constrói por cima do resultado antigo — contaminação — e logs/cost ficam obsoletos).
+    # Em --skip-agent preservamos (re-avalia o app existente).
+    if not skip_agent and run_dir.exists():
+        shutil.rmtree(app_dir, ignore_errors=True)
+        for old in logs_dir.glob("*.json") if logs_dir.exists() else []:
+            old.unlink(missing_ok=True)
     logs_dir.mkdir(parents=True, exist_ok=True)
     app_dir.mkdir(parents=True, exist_ok=True)
 
