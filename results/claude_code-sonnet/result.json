@@ -1,0 +1,168 @@
+{
+  "slug": "claude_code-sonnet",
+  "agent": "claude_code",
+  "model": "sonnet",
+  "scenario": "it_assets",
+  "started_utc": "2026-06-16T03:01:44.429176+00:00",
+  "finished_utc": "2026-06-16T03:26:39.158145+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 354.33,
+      "session_id": "4d5b7772-b1f2-4081-aad3-84f9675224b7",
+      "cost_usd": 0.8944703999999999,
+      "tokens_input": 33,
+      "tokens_output": 16215,
+      "tokens_cache_write": 41384,
+      "tokens_cache_read": 1342808,
+      "interactions": 34,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":350202,\"duration_api_ms\":286224,\"ttft_ms\":22572,\"ttft_stream_ms\":5562,\"time_to_request_ms\":46,\"num_turns\":34,\"result\":\"Fase 1 concluída e commitada. Resumo do que foi entregue:\\n\\n**Estrutura do projeto:**\\n- `data/movements.csv` — base copiada do caminho externo (app autossuficiente)\\n- `src/it_assets/` — pacote com 5 módulos:\\n  - `config.py` — carrega `.env` com `python-dotenv`\\n  - `data_loader.py` — lê/normaliza o CSV (tipagem, labels PT-BR)\\n  - `metrics.py` — 10+ funções puras testáveis (sem Streamlit)\\n  - `dashboard.py` — app Streamlit com KPIs, gráficos Plotly e tabelas\\n  - `cli.py` — entry point `it-assets serve --host H --port P`\\n\\n**Qualidade:**\\n- 28 testes pytest, **100% de cobertura** (threshold 70%)\\n- Lint `ruff` passando (line-length 100)\\n- `.env` versionado com `DATASET_PATH=data/movements.csv`\\n\\n**Comando para rodar:**\\n```bash\\nuvx --from . it-assets serve --host localhost --port 8501\\n```\",\"stop_reason\":\"end_turn\",\"session_id\":\"4d5b7772-b1f2-4081-aad3-84f9675224b7\",\"total_cost_usd\":0.8944703999999999,\"usage\":{\"input_tokens\":33,\"cache_creation_input_tokens\":41384,\"cache_read_input_tokens\":1342808,\"output_tokens\":16215,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":41384,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":301,\"cache_read_input_tokens\":58335,\"cache_creation_input_tokens\":567,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":567},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-sonnet-4-6\":{\"inputTokens\":33,\"outputTokens\":16215,\"cacheReadInputTokens\":1342808,\"cacheCreationInputTokens\":41384,\"webSearchRequests\":0,\"costUSD\":0.8944703999999999,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"2599f4d2-54c4-4b00-afb3-626cdd0074bf\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 34,
+        "result": "Fase 1 concluída e commitada. Resumo do que foi entregue:\n\n**Estrutura do projeto:**\n- `data/movements.csv` — base copiada do caminho externo (app autossuficiente)\n- `src/it_assets/` — pacote com 5 módulos:\n  - `config.py` — carrega `.env` com `python-dotenv`\n  - `data_loader.py` — lê/normaliza o CSV (tipagem, labels PT-BR)\n  - `metrics.py` — 10+ funções puras testáveis (sem Streamlit)\n  - `dashboard.py` — app Streamlit com KPIs, gráficos Plotly e tabelas\n  - `cli.py` — entry point `it-assets serve --host H --port P`\n\n**Qualidade:**\n- 28 testes pytest, **100% de cobertura** (threshold 70%)\n- Lint `ruff` passando (line-length 100)\n- `.env` versionado com `DATASET_PATH=data/movements.csv`\n\n**Comando para rodar:**\n```bash\nuvx --from . it-assets serve --host localhost --port 8501\n```"
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 534.0,
+      "session_id": "4d5b7772-b1f2-4081-aad3-84f9675224b7",
+      "cost_usd": 1.8779090999999997,
+      "tokens_input": 34,
+      "tokens_output": 32398,
+      "tokens_cache_write": 92121,
+      "tokens_cache_read": 2797037,
+      "interactions": 35,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":530919,\"duration_api_ms\":464078,\"ttft_ms\":164918,\"ttft_stream_ms\":3556,\"time_to_request_ms\":197,\"num_turns\":35,\"result\":\"Fase 2 concluída. Resumo do que foi implementado:\\n\\n**Camadas adicionadas:**\\n- `db/` — SQLite com schema (`users` + `movements`), seed idempotente do CSV, queries\\n- `api/` — endpoints REST: `POST /auth/login`, `GET /api/assets`, `GET /api/movements`, `POST /api/movements`, `GET /api/metrics`\\n- `api/deps.py` — dependências FastAPI: `get_current_user` (401 sem token) e `require_admin` (403 para viewer)\\n- `web/` — rotas Jinja2: `GET /` (login.html com form `username`/`password`), dashboard, listagem de ativos\\n- `auth.py` — JWT (PyJWT) + bcrypt para senhas\\n- `app.py` — fábrica FastAPI com lifespan (init DB + seed no boot)\\n\\n**Contrato satisfeito:**\\n| Check | Status |\\n|-------|--------|\\n| `POST /auth/login` → `{token}` (200) ou 401 | ✓ |\\n| Rota protegida sem token → 401 | ✓ |\\n| Viewer tenta escrita → 403 | ✓ |\\n| SQLite populado do CSV | ✓ |\\n| `GET /` retorna HTML com `username`/`password` | ✓ |\\n| `it-assets serve --host H --port P` | ✓ |\\n| `.env` versionado com `JWT_SECRET` + credenciais | ✓ |\\n| 50 testes passando, cobertura 89% | ✓ |\\n| Lint ruff limpo | ✓ |\",\"stop_reason\":\"end_turn\",\"session_id\":\"4d5b7772-b1f2-4081-aad3-84f9675224b7\",\"total_cost_usd\":1.8779090999999997,\"usage\":{\"input_tokens\":34,\"cache_creation_input_tokens\":92121,\"cache_read_input_tokens\":2797037,\"output_tokens\":32398,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":92121,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":431,\"cache_read_input_tokens\":108836,\"cache_creation_input_tokens\":803,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":803},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-sonnet-4-6\":{\"inputTokens\":34,\"outputTokens\":32398,\"cacheReadInputTokens\":2797037,\"cacheCreationInputTokens\":92121,\"webSearchRequests\":0,\"costUSD\":1.8779090999999997,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"15b91c31-c428-48de-bb76-5f33335bcdcf\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 35,
+        "result": "Fase 2 concluída. Resumo do que foi implementado:\n\n**Camadas adicionadas:**\n- `db/` — SQLite com schema (`users` + `movements`), seed idempotente do CSV, queries\n- `api/` — endpoints REST: `POST /auth/login`, `GET /api/assets`, `GET /api/movements`, `POST /api/movements`, `GET /api/metrics`\n- `api/deps.py` — dependências FastAPI: `get_current_user` (401 sem token) e `require_admin` (403 para viewer)\n- `web/` — rotas Jinja2: `GET /` (login.html com form `username`/`password`), dashboard, listagem de ativos\n- `auth.py` — JWT (PyJWT) + bcrypt para senhas\n- `app.py` — fábrica FastAPI com lifespan (init DB + seed no boot)\n\n**Contrato satisfeito:**\n| Check | Status |\n|-------|--------|\n| `POST /auth/login` → `{token}` (200) ou 401 | ✓ |\n| Rota protegida sem token → 401 | ✓ |\n| Viewer tenta escrita → 403 | ✓ |\n| SQLite populado do CSV | ✓ |\n| `GET /` retorna HTML com `username`/`password` | ✓ |\n| `it-assets serve --host H --port P` | ✓ |\n| `.env` versionado com `JWT_SECRET` + credenciais | ✓ |\n| 50 testes passando, cobertura 89% | ✓ |\n| Lint ruff limpo | ✓ |"
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 377.38,
+      "session_id": "4d5b7772-b1f2-4081-aad3-84f9675224b7",
+      "cost_usd": 1.5834833999999998,
+      "tokens_input": 16,
+      "tokens_output": 16648,
+      "tokens_cache_write": 127709,
+      "tokens_cache_read": 1891538,
+      "interactions": 16,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":374360,\"duration_api_ms\":285928,\"ttft_ms\":10441,\"ttft_stream_ms\":9772,\"time_to_request_ms\":165,\"num_turns\":16,\"result\":\"---\\n\\n**O que quebrou, a causa e como foi corrigido:**\\n\\n| Problema | Causa | Correção |\\n|----------|-------|----------|\\n| `MV-0007` com data `\\\"15/03/2024\\\"` | `pd.to_datetime` no formato padrão não infere `DD/MM/YYYY` → `NaT` → inserida como string `\\\"NaT\\\"` no SQLite, que lexicograficamente (`'N' > '2'`) vira `MAX(date)` errado para `MON-0102` | `_parse_dates()`: tenta ISO primeiro, aplica `dayfirst=True` nas células que resultam `NaT`; linhas ainda `NaT` são descartadas |\\n| Valor `-999.99` em `MV-0006` | Valor negativo não faz sentido para bem patrimonial; distorce total de valor | `.clip(lower=0.0)` após `pd.to_numeric` |\\n| `movement_id` `MV-0001` duplicado | Dois registros diferentes com mesmo ID; `INSERT OR IGNORE` silenciosamente descartava o segundo, perdendo `NB-0004`'s alocação original | `drop_duplicates(subset=[\\\"movement_id\\\"], keep=\\\"first\\\")` no `data_loader` garante unicidade antes do seed |\\n| Status `\\\"in_repair\\\"` não mapeado | Não estava em `STATUS_LABELS`; `fillna` caia no valor bruto (ainda funcional, mas sem label PT-BR) | Adicionado `\\\"in_repair\\\": \\\"Em reparo\\\"` ao mapeamento |\\n| Campos `employee`/`location` vazios | Pandas lê `NaN` para células vazias; concatenação de strings falharia | `.fillna(\\\"\\\").str.strip()` normaliza para string vazia |\",\"stop_reason\":\"end_turn\",\"session_id\":\"4d5b7772-b1f2-4081-aad3-84f9675224b7\",\"total_cost_usd\":1.5834833999999998,\"usage\":{\"input_tokens\":16,\"cache_creation_input_tokens\":127709,\"cache_read_input_tokens\":1891538,\"output_tokens\":16648,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":127709,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":456,\"cache_read_input_tokens\":144718,\"cache_creation_input_tokens\":509,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":509},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-sonnet-4-6\":{\"inputTokens\":16,\"outputTokens\":16648,\"cacheReadInputTokens\":1891538,\"cacheCreationInputTokens\":127709,\"webSearchRequests\":0,\"costUSD\":1.5834833999999998,\"contextWindow\":200000,\"maxOutputTokens\":32000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"5b15c7be-e271-44e0-82f1-53e88cc5535e\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 16,
+        "result": "---\n\n**O que quebrou, a causa e como foi corrigido:**\n\n| Problema | Causa | Correção |\n|----------|-------|----------|\n| `MV-0007` com data `\"15/03/2024\"` | `pd.to_datetime` no formato padrão não infere `DD/MM/YYYY` → `NaT` → inserida como string `\"NaT\"` no SQLite, que lexicograficamente (`'N' > '2'`) vira `MAX(date)` errado para `MON-0102` | `_parse_dates()`: tenta ISO primeiro, aplica `dayfirst=True` nas células que resultam `NaT`; linhas ainda `NaT` são descartadas |\n| Valor `-999.99` em `MV-0006` | Valor negativo não faz sentido para bem patrimonial; distorce total de valor | `.clip(lower=0.0)` após `pd.to_numeric` |\n| `movement_id` `MV-0001` duplicado | Dois registros diferentes com mesmo ID; `INSERT OR IGNORE` silenciosamente descartava o segundo, perdendo `NB-0004`'s alocação original | `drop_duplicates(subset=[\"movement_id\"], keep=\"first\")` no `data_loader` garante unicidade antes do seed |\n| Status `\"in_repair\"` não mapeado | Não estava em `STATUS_LABELS`; `fillna` caia no valor bruto (ainda funcional, mas sem label PT-BR) | Adicionado `\"in_repair\": \"Em reparo\"` ao mapeamento |\n| Campos `employee`/`location` vazios | Pandas lê `NaN` para células vazias; concatenação de strings falharia | `.fillna(\"\").str.strip()` normaliza para string vazia |"
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 86.0,
+        "objective": null,
+        "judge": 86.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 96.8,
+        "objective": 100.0,
+        "judge": 92.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 98.2,
+        "objective": 100.0,
+        "judge": 94.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 98.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 80.0,
+        "objective": null,
+        "judge": 80.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 90.0,
+        "objective": 100.0,
+        "judge": 80.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 96.4,
+        "objective": 100.0,
+        "judge": 88.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 58.0,
+        "objective": 50.0,
+        "judge": 70.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 98.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 96.8,
+        "objective": 100.0,
+        "judge": 92.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 96.0,
+        "objective": 100.0,
+        "judge": 90.0,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 91.3,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 94.3,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "divergences": {}
+}

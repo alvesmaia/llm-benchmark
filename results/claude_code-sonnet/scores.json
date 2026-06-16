@@ -1,0 +1,288 @@
+{
+  "slug": "claude_code-sonnet",
+  "agent": "claude_code",
+  "model": "sonnet",
+  "scenario": "it_assets",
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 86.0,
+        "objective": null,
+        "judge": 86.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 96.8,
+        "objective": 100.0,
+        "judge": 92.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 98.2,
+        "objective": 100.0,
+        "judge": 94.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 98.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 80.0,
+        "objective": null,
+        "judge": 80.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 90.0,
+        "objective": 100.0,
+        "judge": 80.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 96.4,
+        "objective": 100.0,
+        "judge": 88.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 58.0,
+        "objective": 50.0,
+        "judge": 70.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 98.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 96.8,
+        "objective": 100.0,
+        "judge": 92.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 96.0,
+        "objective": 100.0,
+        "judge": 90.0,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 91.3,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 94.3,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "objective": {
+    "checks": [
+      {
+        "id": "dataset_load",
+        "dimension": "ingestao",
+        "note": 100,
+        "detail": "29 linhas carregadas",
+        "data": {}
+      },
+      {
+        "id": "db_populated",
+        "dimension": "persistence",
+        "note": 100,
+        "detail": "SQLite populado: 29 linhas",
+        "data": {}
+      },
+      {
+        "id": "pytest_coverage",
+        "dimension": "tests",
+        "note": 100.0,
+        "detail": "testes passam; cobertura=90.0% (nota proporcional)",
+        "data": {}
+      },
+      {
+        "id": "ruff_ok",
+        "dimension": "production",
+        "note": 100,
+        "detail": "sem erros de lint",
+        "data": {}
+      },
+      {
+        "id": "readme_quality",
+        "dimension": "production",
+        "note": 100,
+        "detail": "run=True, uso=True",
+        "data": {}
+      },
+      {
+        "id": "uvx_boot",
+        "dimension": "execucao_uvx",
+        "note": 100,
+        "detail": "app subiu via uvx em 1.9s",
+        "data": {}
+      },
+      {
+        "id": "web_login_form",
+        "dimension": "api_web",
+        "note": 100,
+        "detail": "form de login presente",
+        "data": {}
+      },
+      {
+        "id": "auth_login",
+        "dimension": "auth_jwt",
+        "note": 100,
+        "detail": "login válido=ok, inválido->401",
+        "data": {}
+      },
+      {
+        "id": "auth_required",
+        "dimension": "auth_jwt",
+        "note": 100,
+        "detail": "POST /api/movements sem token -> 401",
+        "data": {}
+      },
+      {
+        "id": "rbac_denied",
+        "dimension": "rbac",
+        "note": 100,
+        "detail": "viewer em /api/movements -> 403 (esperado 403)",
+        "data": {}
+      },
+      {
+        "id": "api_dashboard",
+        "dimension": "api_web",
+        "note": 0,
+        "detail": "GET /api/dashboard não respondeu",
+        "data": {}
+      },
+      {
+        "id": "uvx_production",
+        "dimension": "production",
+        "note": 100,
+        "detail": "espelha boot via uvx (empacotamento uv/uvx)",
+        "data": {}
+      },
+      {
+        "id": "resiliencia",
+        "dimension": "resiliencia",
+        "note": 100,
+        "detail": "testes_ok=True, boot_ok=True (estado final pós-perturbação)",
+        "data": {}
+      }
+    ],
+    "objective_by_dimension": {
+      "ingestao": 100.0,
+      "persistence": 100.0,
+      "tests": 100.0,
+      "production": 100.0,
+      "execucao_uvx": 100.0,
+      "api_web": 50.0,
+      "auth_jwt": 100.0,
+      "rbac": 100.0,
+      "resiliencia": 100.0,
+      "e2e": 100.0
+    },
+    "flags": {
+      "no_boot": false,
+      "load_time_s": 1.86
+    },
+    "coverage_pct": 90.0,
+    "e2e_detail": {
+      "note": 100.0,
+      "agent": "claude_code",
+      "model": "sonnet",
+      "works": true,
+      "steps": [
+        {
+          "nome": "1. Página inicial com formulário de login",
+          "ok": true,
+          "detalhe": "Ao navegar para http://127.0.0.1:60197/ (após logout), a página renderizou corretamente com título 'Login — Ativos de TI' e formulário contendo campos 'Usuário', 'Senha' e botão 'Entrar'."
+        },
+        {
+          "nome": "2. Login como admin",
+          "ok": true,
+          "detalhe": "Preenchendo usuário='admin' e senha='admin123' e clicando em 'Entrar', o sistema redirecionou para /dashboard exibindo 'admin admin' na barra de navegação, confirmando autenticação bem-sucedida."
+        },
+        {
+          "nome": "3. Dashboard e listagem de ativos renderizam",
+          "ok": true,
+          "detalhe": "O dashboard em /dashboard exibiu métricas (Movimentações, Ativos, Em Uso, Disponíveis, Em Reparo, Valor Total) e três tabelas (Por Tipo de Ativo, Por Tipo de Ação, Por Localização). A listagem em /assets renderizou tabela com colunas Tag, Tipo, Status, Localização, Colaborador, Valor. A página /movements renderizou tabela com colunas ID, Data, Ativo, Tipo, Ação, Colaborador, De, Para, Status."
+        },
+        {
+          "nome": "4. Ação restrita bloqueada para viewer",
+          "ok": true,
+          "detalhe": "Logado como viewer, tentativa de POST em /api/movements retornou HTTP 403 com body {\"detail\":\"Admin role required\"}. Na UI, os botões de criação/escrita ficaram ocultos para o papel viewer, confirmando RBAC funcionando tanto no frontend quanto no backend."
+        }
+      ],
+      "issues": [],
+      "ok_steps": 4,
+      "total_steps": 4,
+      "base": "http://127.0.0.1:60197"
+    }
+  },
+  "judges": {
+    "claude_opus": {
+      "scores": {
+        "refactor": 86,
+        "resiliencia": 92,
+        "e2e": 100,
+        "auth_jwt": 94,
+        "rbac": 95,
+        "dashboard": 80,
+        "persistence": 80,
+        "tests": 88,
+        "api_web": 70,
+        "execucao_uvx": 95,
+        "ingestao": 92,
+        "production": 90
+      },
+      "rationale": {
+        "refactor": "Virada de stack completa e bem organizada em camadas coesas (config/auth/db/api/web), reaproveitando metrics e data_loader do dashboard Streamlit original.",
+        "resiliencia": "Objetivo 100 (testes+boot ok pós-perturbação) e data_loader robusto contra datas alternativas, valores negativos/nulos e movement_ids duplicados.",
+        "e2e": "Veredito Playwright 100 com os 4 passos passando: login admin, dashboard/listagens renderizam e POST de viewer bloqueado com 403.",
+        "auth_jwt": "POST /auth/login retorna 200/401 e rota protegida exige Bearer (401 sem token), tudo confirmado objetivamente.",
+        "rbac": "Dois papéis (admin/viewer) com require_admin negando escrita ao viewer com 403, validado no backend e na UI.",
+        "dashboard": "Métricas coerentes renderizam na UI (E2E ok) e há Streamlit rico, mas o endpoint /api/dashboard não respondeu (existe apenas /api/metrics).",
+        "persistence": "SQLite populado com 29 linhas e schema sensato com UNIQUE em movement_id/username, porém sem índices explícitos adicionais.",
+        "tests": "Cobertura medida de 90% com suíte abrangente (auth, api, data_loader, metrics, config) e todos os testes passando.",
+        "api_web": "Endpoints REST e telas Jinja2 respondem HTML, mas a checagem objetiva ficou em 50 por /api/dashboard ausente.",
+        "execucao_uvx": "App sobe via uvx em 1.9s com console script it-assets serve lendo o .env versionado.",
+        "ingestao": "Parse correto de 29 linhas com normalização de texto, datas multi-formato e deduplicação.",
+        "production": "README com comando único, ruff sem erros e empacotamento uv/uvx funcional."
+      },
+      "hallucinated_dependency": false,
+      "summary": "Projeto sólido e coeso que completou a virada para FastAPI/SQLite/Jinja2/JWT/RBAC reaproveitando o código do dashboard, com auth, RBAC, resiliência e E2E todos verdes objetivamente. A única lacuna relevante é o endpoint /api/dashboard ausente (penalizando api_web), já que as métricas vivem em /api/metrics. Resultado claramente de Tier A, pronto para produção com patch mínimo."
+    },
+    "claude_sonnet": {
+      "skipped": "anti-viés (mesmo agente/família de modelo do avaliado)"
+    }
+  },
+  "divergences": {}
+}

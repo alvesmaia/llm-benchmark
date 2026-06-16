@@ -1,0 +1,168 @@
+{
+  "slug": "claude_code-opus-4-8",
+  "agent": "claude_code",
+  "model": "claude-opus-4-8",
+  "scenario": "it_assets",
+  "started_utc": "2026-06-16T02:29:50.649353+00:00",
+  "finished_utc": "2026-06-16T03:01:44.424176+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 398.59,
+      "session_id": "5eff57d2-6886-4ffe-89f3-aa1952164cfc",
+      "cost_usd": 1.749074,
+      "tokens_input": 6987,
+      "tokens_output": 20334,
+      "tokens_cache_write": 55877,
+      "tokens_cache_read": 1294038,
+      "interactions": 32,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":394613,\"duration_api_ms\":309692,\"ttft_ms\":3717,\"ttft_stream_ms\":1861,\"time_to_request_ms\":37,\"num_turns\":32,\"result\":\"Fase 1 concluída e commitada. Resumo do que foi entregue:\\n\\n## O que foi construído\\n\\nDashboard em **Python 3.12 + Streamlit** para gestão de movimentação de ativos de TI, gerenciado por **uv**, autossuficiente.\\n\\n**Estrutura:**\\n- `src/it_assets/data.py` — camada de lógica pura/testável: carga, limpeza e métricas\\n- `src/it_assets/dashboard.py` — view Streamlit (KPIs, gráficos, tabelas)\\n- `src/it_assets/cli.py` — console script `it-assets serve`\\n- `src/it_assets/config.py` — resolução de base + carga automática do `.env`\\n- `data/movements.csv` — CSV copiado da `DATASET_PATH` (e empacotado no wheel)\\n- `tests/` — 23 testes pytest\\n\\n## Decisão de modelagem relevante\\n\\nA base tinha **inconsistência real**: em várias linhas a coluna `asset_type` foi sobrescrita pela ação (`maintenance`/`return`/`transfer`). Como o prefixo do `asset_tag` (`NB`/`MON`/`PH`/`TB`) é confiável, **recanonizei o tipo a partir dele**. O **estado atual** de cada ativo é derivado da sua última movimentação (status/local/responsável correntes).\\n\\n## Métricas apresentadas\\nKPIs (total de ativos, movimentações, em uso, disponibilidade %, valor do parque), série temporal semanal, distribuição por status atual e por tipo, movimentações por local de destino, top colaboradores, estado atual por ativo e histórico bruto — todos com filtros laterais (tipo, ação, status, período).\\n\\n## Como rodar (comando único, documentado no README)\\n```bash\\nuvx --from . it-assets serve --host 0.0.0.0 --port 8501\\n```\\nCarrega automaticamente o `.env` versionado (com `JWT_SECRET` e credenciais semente já prontos para as Fases 2/3).\\n\\n## Qualidade verificada\\n- **23 testes pytest passam**; **cobertura 97%** (`--cov-fail-under=90`). O `dashboard.py` é validado por smoke test via `AppTest` do Streamlit, mas excluído da métrica por não ser instrumentável pelo coverage (roda no runner interno do Streamlit).\\n- **ruff** (line-length 100) — `All checks passed!`\\n- Subi o app via `uvx` em background e confirmei `/_stcore/health` → **200**; encerrei sem deixar a sessão travada.\\n\\nUm detalhe corrigido no caminho: o import relativo em `dashboard.py` quebraria também na execução real (o Streamlit executa o arquivo como script sem pacote pai) — troquei por import absoluto com bootstrap de `sys.path`.\",\"stop_reason\":\"end_turn\",\"session_id\":\"5eff57d2-6886-4ffe-89f3-aa1952164cfc\",\"total_cost_usd\":1.749074,\"usage\":{\"input_tokens\":6987,\"cache_creation_input_tokens\":55877,\"cache_read_input_tokens\":1294038,\"output_tokens\":20334,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":55877,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":131,\"output_tokens\":965,\"cache_read_input_tokens\":55507,\"cache_creation_input_tokens\":370,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":370},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-opus-4-8\":{\"inputTokens\":6987,\"outputTokens\":20334,\"cacheReadInputTokens\":1294038,\"cacheCreationInputTokens\":55877,\"webSearchRequests\":0,\"costUSD\":1.749074,\"contextWindow\":1000000,\"maxOutputTokens\":64000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"bb1bec6c-518a-4f75-b68a-d82d40b77b7a\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 32,
+        "result": "Fase 1 concluída e commitada. Resumo do que foi entregue:\n\n## O que foi construído\n\nDashboard em **Python 3.12 + Streamlit** para gestão de movimentação de ativos de TI, gerenciado por **uv**, autossuficiente.\n\n**Estrutura:**\n- `src/it_assets/data.py` — camada de lógica pura/testável: carga, limpeza e métricas\n- `src/it_assets/dashboard.py` — view Streamlit (KPIs, gráficos, tabelas)\n- `src/it_assets/cli.py` — console script `it-assets serve`\n- `src/it_assets/config.py` — resolução de base + carga automática do `.env`\n- `data/movements.csv` — CSV copiado da `DATASET_PATH` (e empacotado no wheel)\n- `tests/` — 23 testes pytest\n\n## Decisão de modelagem relevante\n\nA base tinha **inconsistência real**: em várias linhas a coluna `asset_type` foi sobrescrita pela ação (`maintenance`/`return`/`transfer`). Como o prefixo do `asset_tag` (`NB`/`MON`/`PH`/`TB`) é confiável, **recanonizei o tipo a partir dele**. O **estado atual** de cada ativo é derivado da sua última movimentação (status/local/responsável correntes).\n\n## Métricas apresentadas\nKPIs (total de ativos, movimentações, em uso, disponibilidade %, valor do parque), série temporal semanal, distribuição por status atual e por tipo, movimentações por local de destino, top colaboradores, estado atual por ativo e histórico bruto — todos com filtros laterais (tipo, ação, status, período).\n\n## Como rodar (comando único, documentado no README)\n```bash\nuvx --from . it-assets serve --host 0.0.0.0 --port 8501\n```\nCarrega automaticamente o `.env` versionado (com `JWT_SECRET` e credenciais semente já prontos para as Fases 2/3).\n\n## Qualidade verificada\n- **23 testes pytest passam**; **cobertura 97%** (`--cov-fail-under=90`). O `dashboard.py` é validado por smoke test via `AppTest` do Streamlit, mas excluído da métrica por não ser instrumentável pelo coverage (roda no runner interno do Streamlit).\n- **ruff** (line-length 100) — `All checks passed!`\n- Subi o app via `uvx` em background e confirmei `/_stcore/health` → **200**; encerre"
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 558.97,
+      "session_id": "5eff57d2-6886-4ffe-89f3-aa1952164cfc",
+      "cost_usd": 2.9089315000000004,
+      "tokens_input": 1406,
+      "tokens_output": 32605,
+      "tokens_cache_write": 76880,
+      "tokens_cache_read": 2635953,
+      "interactions": 34,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":555862,\"duration_api_ms\":496419,\"ttft_ms\":32257,\"ttft_stream_ms\":3466,\"time_to_request_ms\":180,\"num_turns\":34,\"result\":\"Fase 2 concluída e commitada. Resumo da refatoração:\\n\\n## Mudança de stack\\nDashboard Streamlit → **aplicação FastAPI + Jinja2 + SQLite + JWT + RBAC**, reaproveitando integralmente a camada de dados pura (`data.py`) da Fase 1 para limpeza e métricas.\\n\\n## Arquitetura em camadas\\n| Camada | Módulo | Responsabilidade |\\n|---|---|---|\\n| Configuração | `config.py` | `.env`, `Settings`, caminhos de base/SQLite, usuários semente |\\n| Dados (puro) | `data.py` | Limpeza + métricas **reaproveitadas** da Fase 1 |\\n| Persistência | `db.py`, `repository.py` | Schema SQLite e CRUD (users/assets/movements) |\\n| Ingestão | `ingest.py` | CSV → SQLite + seed, **idempotente** |\\n| Segurança | `security.py` | Hash PBKDF2 + JWT (PyJWT) |\\n| Serviço | `services.py` | Métricas do dashboard a partir do banco |\\n| API + Web | `webapp.py`, `templates/` | Rotas REST, páginas Jinja2, JWT, RBAC |\\n\\n## Contrato atendido (verificado end-to-end via `uvx`)\\n- **Persistência:** SQLite com `assets`/`movements`; gravar movimentação atualiza o estado atual do ativo. Populado no boot a partir de `DATASET_PATH`.\\n- **JWT:** `POST /auth/login` → 200 `{token}` / 401 — confirmado.\\n- **Rota protegida sem token → 401** — confirmado.\\n- **RBAC:** `admin` (escrita) e `viewer` (leitura). `POST /api/movements` com viewer → **403**; com admin → **201** — confirmado.\\n- **Web Jinja2:** `GET /` retorna HTML com formulário `username`/`password`; `/dashboard` e `/assets` autenticados por cookie.\\n- **Comando único:** `uvx --from . it-assets serve --host 0.0.0.0 --port 8000` (e `uv run it-assets ...`), com `.env` versionado (`JWT_SECRET` + credenciais semente) carregado automaticamente. Subcomando `import` idempotente.\\n\\n## Qualidade\\n- **55 testes pytest**, cobertura **97.5%** (`--cov-fail-under=90`) — cobrindo login JWT, 401 sem token, RBAC 403, persistência/carga e páginas.\\n- **ruff** (line-length 100) — `All checks passed!`\\n- Servidor validado em background e encerrado sem travar a sessão.\\n\\nDecisão de modelagem preservada: `asset_type` recanonizado pelo prefixo do `asset_tag` (a base traz a coluna corrompida em várias linhas), com o estado atual derivado da última movimentação.\",\"stop_reason\":\"end_turn\",\"session_id\":\"5eff57d2-6886-4ffe-89f3-aa1952164cfc\",\"total_cost_usd\":2.9089315000000004,\"usage\":{\"input_tokens\":1406,\"cache_creation_input_tokens\":76880,\"cache_read_input_tokens\":2635953,\"output_tokens\":32605,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":76880,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":2,\"output_tokens\":1002,\"cache_read_input_tokens\":95823,\"cache_creation_input_tokens\":504,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":504},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-opus-4-8\":{\"inputTokens\":1406,\"outputTokens\":32605,\"cacheReadInputTokens\":2635953,\"cacheCreationInputTokens\":76880,\"webSearchRequests\":0,\"costUSD\":2.9089315000000004,\"contextWindow\":1000000,\"maxOutputTokens\":64000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"83fe8b84-563b-4b6a-808f-94b078125cdf\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 34,
+        "result": "Fase 2 concluída e commitada. Resumo da refatoração:\n\n## Mudança de stack\nDashboard Streamlit → **aplicação FastAPI + Jinja2 + SQLite + JWT + RBAC**, reaproveitando integralmente a camada de dados pura (`data.py`) da Fase 1 para limpeza e métricas.\n\n## Arquitetura em camadas\n| Camada | Módulo | Responsabilidade |\n|---|---|---|\n| Configuração | `config.py` | `.env`, `Settings`, caminhos de base/SQLite, usuários semente |\n| Dados (puro) | `data.py` | Limpeza + métricas **reaproveitadas** da Fase 1 |\n| Persistência | `db.py`, `repository.py` | Schema SQLite e CRUD (users/assets/movements) |\n| Ingestão | `ingest.py` | CSV → SQLite + seed, **idempotente** |\n| Segurança | `security.py` | Hash PBKDF2 + JWT (PyJWT) |\n| Serviço | `services.py` | Métricas do dashboard a partir do banco |\n| API + Web | `webapp.py`, `templates/` | Rotas REST, páginas Jinja2, JWT, RBAC |\n\n## Contrato atendido (verificado end-to-end via `uvx`)\n- **Persistência:** SQLite com `assets`/`movements`; gravar movimentação atualiza o estado atual do ativo. Populado no boot a partir de `DATASET_PATH`.\n- **JWT:** `POST /auth/login` → 200 `{token}` / 401 — confirmado.\n- **Rota protegida sem token → 401** — confirmado.\n- **RBAC:** `admin` (escrita) e `viewer` (leitura). `POST /api/movements` com viewer → **403**; com admin → **201** — confirmado.\n- **Web Jinja2:** `GET /` retorna HTML com formulário `username`/`password`; `/dashboard` e `/assets` autenticados por cookie.\n- **Comando único:** `uvx --from . it-assets serve --host 0.0.0.0 --port 8000` (e `uv run it-assets ...`), com `.env` versionado (`JWT_SECRET` + credenciais semente) carregado automaticamente. Subcomando `import` idempotente.\n\n## Qualidade\n- **55 testes pytest**, cobertura **97.5%** (`--cov-fail-under=90`) — cobrindo login JWT, 401 sem token, RBAC 403, persistência/carga e páginas.\n- **ruff** (line-length 100) — `All checks passed!`\n- Servidor validado em background e encerrado sem travar a sessão.\n\nDecisão de modelagem preservada: `asset_ty"
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 746.52,
+      "session_id": "5eff57d2-6886-4ffe-89f3-aa1952164cfc",
+      "cost_usd": 4.2882570000000015,
+      "tokens_input": 2358,
+      "tokens_output": 29953,
+      "tokens_cache_write": 120157,
+      "tokens_cache_read": 4652144,
+      "interactions": 39,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":743430,\"duration_api_ms\":465344,\"ttft_ms\":3022,\"ttft_stream_ms\":2550,\"time_to_request_ms\":168,\"num_turns\":39,\"result\":\"Fase 3 concluída e commitada. Resumo do que quebrou, a causa e a correção:\\n\\n## O que quebrou\\nInicialmente os testes **passavam enganosamente**. A causa: `config.dataset_path()` priorizava a cópia **empacotada** (`src/it_assets/data/movements.csv`, com os dados antigos) sobre `data/`. Ao apontar para a base real alterada, surgiram as falhas:\\n\\n| Anomalia (linha) | Efeito no código |\\n|---|---|\\n| Data `15/03/2024` (DD/MM/AAAA) — MV-0007 | `pd.to_datetime` → `NaT` → `None` → **crash `IntegrityError: NOT NULL constraint failed: movements.date`** no boot |\\n| `movement_id` MV-0001 **duplicado** | `INSERT OR REPLACE` (PK) **descartava silenciosamente** uma linha (30→29) |\\n| Valor vazio — MV-0004 | `NaN` propagado sem tratamento |\\n| Valor **negativo** -999.99 — MV-0006 | corrompia `total_value`/valor do ativo |\\n| Ação fora do domínio `decommission_xyz` — MV-0005 | categoria inesperada |\\n| `employee` vazio — MV-0003 | já tratado (→ `None`) |\\n\\n## Como corrigi (robustez sem quebrar o que funcionava)\\n- **Datas mistas** (`data.py`): tenta ISO 8601 e, no que falhar, refaz com `dayfirst=True` (`15/03/2024` → `2024-03-15`); irrecuperáveis viram `NaT` sem lançar exceção.\\n- **Valores** (`data.py`): vazios/negativos/não-numéricos → `NaN` (inválidos), sem corromper agregações.\\n- **`movement_id` duplicado** (`db.py`): a tabela `movements` ganhou **chave surrogate** `id AUTOINCREMENT`; `movement_id` virou coluna indexada (não-PK) e `date` passou a aceitar `NULL`. Isso elimina o crash e a perda de linhas.\\n- **Ingestão** (`ingest.py`): recarga limpa `DELETE+INSERT` idempotente; `INSERT` simples.\\n- **Repositório**: `next_movement_id` pelo maior sufixo numérico; `record_movement` retorna a linha via `lastrowid`.\\n- **Prioridade da base** (`config.py`): `data/` na raiz agora vence a cópia empacotada (que ressincronizei); **versão 0.3.0** para invalidar o cache do `uvx` — descobri que o `uvx` servia um wheel em cache da Fase 2.\\n- **Ação fora do domínio**: preservada como está; nenhuma camada assume domínio fechado.\\n\\n## Verificação\\n- **65 testes passam**, cobertura **96.7%** (`--cov-fail-under=90`); incluí **`test_dirty_data.py`** com 10 testes de regressão (um por anomalia: id duplicado preservado, data DD/MM parseada, valor negativo invalidado, etc.).\\n- **ruff** limpo.\\n- Boot via comando único **`uvx`** validado contra a base mutada (com `DATASET_PATH` apontando para ela): `health` ok, **30 movimentações** (sem perda), `total_value` positivo, RBAC viewer→**403** / admin→**201**.\",\"stop_reason\":\"end_turn\",\"session_id\":\"5eff57d2-6886-4ffe-89f3-aa1952164cfc\",\"total_cost_usd\":4.2882570000000015,\"usage\":{\"input_tokens\":2358,\"cache_creation_input_tokens\":120157,\"cache_read_input_tokens\":4652144,\"output_tokens\":29953,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":120157,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":2,\"output_tokens\":1175,\"cache_read_input_tokens\":138828,\"cache_creation_input_tokens\":776,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":776},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-opus-4-8\":{\"inputTokens\":2358,\"outputTokens\":29953,\"cacheReadInputTokens\":4652144,\"cacheCreationInputTokens\":120157,\"webSearchRequests\":0,\"costUSD\":4.2882570000000015,\"contextWindow\":1000000,\"maxOutputTokens\":64000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"cfdc3743-cbea-4a90-ba04-28edab12ac9a\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 39,
+        "result": "Fase 3 concluída e commitada. Resumo do que quebrou, a causa e a correção:\n\n## O que quebrou\nInicialmente os testes **passavam enganosamente**. A causa: `config.dataset_path()` priorizava a cópia **empacotada** (`src/it_assets/data/movements.csv`, com os dados antigos) sobre `data/`. Ao apontar para a base real alterada, surgiram as falhas:\n\n| Anomalia (linha) | Efeito no código |\n|---|---|\n| Data `15/03/2024` (DD/MM/AAAA) — MV-0007 | `pd.to_datetime` → `NaT` → `None` → **crash `IntegrityError: NOT NULL constraint failed: movements.date`** no boot |\n| `movement_id` MV-0001 **duplicado** | `INSERT OR REPLACE` (PK) **descartava silenciosamente** uma linha (30→29) |\n| Valor vazio — MV-0004 | `NaN` propagado sem tratamento |\n| Valor **negativo** -999.99 — MV-0006 | corrompia `total_value`/valor do ativo |\n| Ação fora do domínio `decommission_xyz` — MV-0005 | categoria inesperada |\n| `employee` vazio — MV-0003 | já tratado (→ `None`) |\n\n## Como corrigi (robustez sem quebrar o que funcionava)\n- **Datas mistas** (`data.py`): tenta ISO 8601 e, no que falhar, refaz com `dayfirst=True` (`15/03/2024` → `2024-03-15`); irrecuperáveis viram `NaT` sem lançar exceção.\n- **Valores** (`data.py`): vazios/negativos/não-numéricos → `NaN` (inválidos), sem corromper agregações.\n- **`movement_id` duplicado** (`db.py`): a tabela `movements` ganhou **chave surrogate** `id AUTOINCREMENT`; `movement_id` virou coluna indexada (não-PK) e `date` passou a aceitar `NULL`. Isso elimina o crash e a perda de linhas.\n- **Ingestão** (`ingest.py`): recarga limpa `DELETE+INSERT` idempotente; `INSERT` simples.\n- **Repositório**: `next_movement_id` pelo maior sufixo numérico; `record_movement` retorna a linha via `lastrowid`.\n- **Prioridade da base** (`config.py`): `data/` na raiz agora vence a cópia empacotada (que ressincronizei); **versão 0.3.0** para invalidar o cache do `uvx` — descobri que o `uvx` servia um wheel em cache da Fase 2.\n- **Ação fora do domínio**: preservada como está; nenhuma camada assu"
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 92.0,
+        "objective": null,
+        "judge": 92.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 82.0,
+        "objective": null,
+        "judge": 82.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 97.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 99.4,
+        "objective": 100.0,
+        "judge": 98.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 58.8,
+        "objective": 50.0,
+        "judge": 72.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 94.2,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 97.2,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "divergences": {}
+}
