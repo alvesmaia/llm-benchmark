@@ -1,0 +1,165 @@
+{
+  "slug": "copilot_cli-copilot-opus-4-7",
+  "agent": "copilot_cli",
+  "model": "claude-opus-4.7",
+  "scenario": "it_assets",
+  "started_utc": "2026-06-16T10:50:57.582165+00:00",
+  "finished_utc": "2026-06-16T11:11:36.759513+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 274.31,
+      "session_id": null,
+      "cost_usd": null,
+      "tokens_input": null,
+      "tokens_output": null,
+      "tokens_cache_write": null,
+      "tokens_cache_read": null,
+      "interactions": null,
+      "stdout_tail": "unt 5\n  └ 7 lines...\n\n● Inspect CSV distinct values (shell)\n  │ $p=$env:DATASET_PATH; (Get-Content $p | Measure-Object -Line).Lines;\n  │ Get-Content $p | Select-Object -Skip 1 | ForEach-Object { ($_ -split\n  │ ',')[4] } | Sort-Object -Unique; Write-Host \"---statuses---\"; Get-Content\n  │ $p | Select-Object -Skip 1 | ForEach-Object { ($_ -split ',')[8] } |\n  │ Sort-Object -Unique; Write-Host \"---types---\"; Get-Content $p | …\n  └ 20 lines...\n\n● Check uv installation (shell)\n  │ uv --version; uvx --version\n  └ 3 lines...\n\n● Create dirs and copy CSV (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; New-Item\n  │ -ItemType Directory -Force data,src\\it_assets,tests | Out-Null; Copy-Item\n  │ $env:DATASET_PATH data\\movements.csv; Get-ChildItem data\n  └ 4 lines...\n\n● Create __init__.py +1\n  └ tests\\__init__.py\n\n● Create pyproject.toml +48\n\n● Create .gitignore +11\n\n● Create test_cli.py +20\n  └ tests\\test_cli.py\n\n● Create config.py +49\n  └ src\\it_assets\\config.py\n\n● Create .env +5\n\n● Create __init__.py +4\n  └ src\\it_assets\\__init__.py\n\n● Create test_data.py +145\n  └ tests\\test_data.py\n\n● Create cli.py +76\n  └ src\\it_assets\\cli.py\n\n● Create README.md +64\n\n● Create dashboard.py +131\n  └ src\\it_assets\\dashboard.py\n\n● Create data.py +155\n  └ src\\it_assets\\data.py\n\nNow let me sync deps and run tests + lint.\n\n● uv sync deps (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv sync\n  │ --extra dev 2>&1 | Select-Object -Last 30\n  └ 31 lines...\n\n● Run tests (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ pytest 2>&1 | Select-Object -Last 50\n  └ 14 lines...\n\n● Run ruff (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ ruff check . 2>&1\n  └ 74 lines...\n\n● Edit test_data.py +5 -5\n  └ tests\\test_data.py\n\n● Edit dashboard.py +8 -2\n  └ src\\it_assets\\dashboard.py\n\n● Edit test_data.py +11 -1\n  └ tests\\test_data.py\n\n● Edit pyproject.toml +1\n\n● Re-run ruff and tests (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ ruff check . 2>&1; Write-Host \"---\"; uv run pytest 2>&1 | Select-Object\n  │ -Last 20\n  └ 20 lines...\n\nLint passes; 15/15 tests pass with 88% coverage. Let me verify the `uvx` console script actually launches the dashboard.\n\n● Launch dashboard via uvx (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uvx\n  │ --from . it-assets serve --port 8765 2>&1\n  └ 1 line...\n\n● Probe dashboard URL (shell)\n  │ Start-Sleep -Seconds 25; try { $r = Invoke-WebRequest -Uri\n  │ \"http://127.0.0.1:8765/\" -UseBasicParsing -TimeoutSec 10; Write-Host\n  │ \"Status: $($r.StatusCode)\"; Write-Host\n  │ ($r.Content.Substring(0,[Math]::Min(300,$r.Content.Length))) } catch {\n  │ Write-Host \"ERROR: $_\" }\n  └ 6 lines...\n\nDashboard responds 200. Stopping it.\n\n● Stop shell\n  └ 1 line...\n\nPhase 1 complete. Summary:\n\n**Project structure**\n- `data/movements.csv` — bundled dataset (autossuficiente).\n- `.env` — versioned, auto-loaded via `python-dotenv`.\n- `pyproject.toml` — Python 3.12, declares console script `it-assets`.\n- `src/it_assets/` — `config.py` (env/paths), `data.py` (pandas aggregations), `dashboard.py` (Streamlit UI), `cli.py` (Click entry).\n- `tests/` — pytest suite covering loading, KPIs, all aggregations, filters, edge cases & CLI.\n- `README.md`, `.gitignore`.\n\n**One-command launch**\n```\nuvx --from . it-assets serve\n```\nVerified live: HTTP 200 from Streamlit at `127.0.0.1:8765`.\n\n**Quality**\n- `ruff check .` (line-length 100): **All checks passed**.\n- `pytest --cov`: **15/15 passing, 88% coverage** (data module 97%).\n\n**Dashboard features**\n- KPIs: total movements, unique assets, in-use / available / in-repair, total value (R$).\n- Movements over time (monthly line chart) and by action (bar).\n- Current asset status, current location distribution, asset-type mix.\n- Top employees by movement volume.\n- Sidebar filters (type, action, status, period) + detail table.\n\n",
+      "stderr_tail": "\n\nChanges    +734 -8\nAI Credits 86.5 (4m 30s)\nTokens     ↑ 534.0k (496.9k cached, 36.5k written) • ↓ 15.4k (168 reasoning)\n",
+      "extra": {
+        "result": " and tests (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ ruff check . 2>&1; Write-Host \"---\"; uv run pytest 2>&1 | Select-Object\n  │ -Last 20\n  └ 20 lines...\n\nLint passes; 15/15 tests pass with 88% coverage. Let me verify the `uvx` console script actually launches the dashboard.\n\n● Launch dashboard via uvx (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uvx\n  │ --from . it-assets serve --port 8765 2>&1\n  └ 1 line...\n\n● Probe dashboard URL (shell)\n  │ Start-Sleep -Seconds 25; try { $r = Invoke-WebRequest -Uri\n  │ \"http://127.0.0.1:8765/\" -UseBasicParsing -TimeoutSec 10; Write-Host\n  │ \"Status: $($r.StatusCode)\"; Write-Host\n  │ ($r.Content.Substring(0,[Math]::Min(300,$r.Content.Length))) } catch {\n  │ Write-Host \"ERROR: $_\" }\n  └ 6 lines...\n\nDashboard responds 200. Stopping it.\n\n● Stop shell\n  └ 1 line...\n\nPhase 1 complete. Summary:\n\n**Project structure**\n- `data/movements.csv` — bundled dataset (autossuficiente).\n- `.env` — versioned, auto-loaded via `python-dotenv`.\n- `pyproject.toml` — Python 3.12, declares console script `it-assets`.\n- `src/it_assets/` — `config.py` (env/paths), `data.py` (pandas aggregations), `dashboard.py` (Streamlit UI), `cli.py` (Click entry).\n- `tests/` — pytest suite covering loading, KPIs, all aggregations, filters, edge cases & CLI.\n- `README.md`, `.gitignore`.\n\n**One-command launch**\n```\nuvx --from . it-assets serve\n```\nVerified live: HTTP 200 from Streamlit at `127.0.0.1:8765`.\n\n**Quality**\n- `ruff check .` (line-length 100): **All checks passed**.\n- `pytest --cov`: **15/15 passing, 88% coverage** (data module 97%).\n\n**Dashboard features**\n- KPIs: total movements, unique assets, in-use / available / in-repair, total value (R$).\n- Movements over time (monthly line chart) and by action (bar).\n- Current asset status, current location distribution, asset-type mix.\n- Top employees by movement volume.\n- Sidebar filters (type, action, status, period) + detail table.\n\n"
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 466.98,
+      "session_id": null,
+      "cost_usd": null,
+      "tokens_input": null,
+      "tokens_output": null,
+      "tokens_cache_write": null,
+      "tokens_cache_read": null,
+      "interactions": null,
+      "stdout_tail": "w src\\it_assets\\cli.py\n  └ 1 line...\n\nNow tests. Replace existing tests with comprehensive new suite.\n\n● Remove old tests (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app;\n  │ Remove-Item tests\\test_data.py, tests\\test_cli.py, tests\\__pycache__\n  │ -Recurse -Force -ErrorAction SilentlyContinue; \"ok\"\n  └ 2 lines...\n\n● Create test_cli.py +21\n  └ tests\\test_cli.py\n\n● Create test_db_auth.py +108\n  └ tests\\test_db_auth.py\n\n● Create test_app.py +270\n  └ tests\\test_app.py\n\n● uv sync new deps (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv sync\n  │ --extra dev 2>&1 | Select-Object -Last 30\n  └ 31 lines...\n\n● Run pytest (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ pytest 2>&1 | Select-Object -Last 60\n  └ 34 lines...\n\nAll 32 tests pass with 90% coverage. Now lint, then verify the `uvx` server actually boots.\n\n● Run ruff (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ ruff check . 2>&1\n  └ 373 lines...\n\nB008 is a standard FastAPI pattern — the cleanest fix is to ignore it in the lint config plus apply --fix.\n\n● Edit pyproject.toml +2\n\n● Auto-fix lint (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ ruff check --fix . 2>&1 | Select-Object -Last 20\n  └ 7 lines...\n\n● Verify lint + tests (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ ruff check . 2>&1 | Select-Object -Last 5; Write-Host \"---\"; uv run pytest\n  │ 2>&1 | Select-Object -Last 18\n  └ 22 lines...\n\nLint clean, 32/32 tests pass at 90% coverage. Update README and verify uvx boot.\n\n● Create README.md.new +108\n\n● Replace README, clean stale db (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app;\n  │ Move-Item -Force README.md.new README.md; Remove-Item data\\it_assets.db\n  │ -ErrorAction SilentlyContinue; \"ok\"\n  └ 2 lines...\n\n● Boot server via uvx (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uvx\n  │ --from . it-assets serve --port 8765 2>&1\n  └ 1 line...\n\n● Smoke test server endpoints (shell)\n  │ Start-Sleep -Seconds 15\n  │ Write-Host \"--- GET /\"\n  │ $r = Invoke-WebRequest \"http://127.0.0.1:8765/\" -UseBasicParsing\n  │ -TimeoutSec 5\n  │ Write-Host \"Status: $($r.StatusCode)\"…\n  └ 42 lines...\n\nAll contract checks verified live: HTML login form, JWT login, protected route 401, RBAC 403 for viewer, admin token works.\n\n● Stop shell\n  └ 1 line...\n\nPhase 2 complete.\n\n**Refactor highlights**\n- Streamlit removed; FastAPI + Uvicorn + Jinja2 + SQLite + JWT + RBAC.\n- Layered structure: `config` → `auth` → `db` → `schemas` → `security` → `app` → `cli`.\n- `bootstrap()` runs on app startup: schema migration, user seeding, idempotent CSV import (movements + derived assets table).\n- Two roles seeded from `.env`: `admin` (full) and `viewer` (read-only).\n- Web: `/` and `/login` render Jinja2 login form; `/dashboard` and `/assets` show metrics & current state (cookie or Bearer auth).\n- API: `/auth/login`, `/api/me`, `/api/metrics`, `/api/assets` (GET all / POST admin / DELETE admin), `/api/movements` (GET all / POST admin), `/health`.\n\n**One command** (auto-loads `.env` with real values incl. `JWT_SECRET`, admin/viewer creds):\n```\nuvx --from . it-assets serve\n```\n\n**Quality**\n- `ruff check .` (line-length 100): **All checks passed**.\n- `pytest --cov`: **32/32 passing, 90% coverage** (auth 100%, schemas 100%, app 96%, db 93%, security 91%).\n- Tests cover: JWT login success/failure, missing/invalid token → 401, RBAC viewer→403 on writes, admin→201 + asset state rebuild, CSV import populating SQLite, login HTML form, cookie-auth web pages, logout, idempotent bootstrap.\n\n**Live smoke test against `uvx --from . it-assets serve`**\n- `GET /` → 200 with `<form>` ✅\n- `POST /auth/login` admin → 200 + token ✅\n- `GET /api/me` w/ Bearer → 200 ✅\n- `POST /api/assets` as viewer → **403** ✅\n- `GET /api/me` no token → **401** ✅\n\n",
+      "stderr_tail": "\n\nChanges    +2351 -8\nAI Credits 184 (12m 17s)\nTokens     ↑ 1.3m (1.2m cached, 84.9k written) • ↓ 28.6k (339 reasoning)\n",
+      "extra": {
+        "result": "\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uvx\n  │ --from . it-assets serve --port 8765 2>&1\n  └ 1 line...\n\n● Smoke test server endpoints (shell)\n  │ Start-Sleep -Seconds 15\n  │ Write-Host \"--- GET /\"\n  │ $r = Invoke-WebRequest \"http://127.0.0.1:8765/\" -UseBasicParsing\n  │ -TimeoutSec 5\n  │ Write-Host \"Status: $($r.StatusCode)\"…\n  └ 42 lines...\n\nAll contract checks verified live: HTML login form, JWT login, protected route 401, RBAC 403 for viewer, admin token works.\n\n● Stop shell\n  └ 1 line...\n\nPhase 2 complete.\n\n**Refactor highlights**\n- Streamlit removed; FastAPI + Uvicorn + Jinja2 + SQLite + JWT + RBAC.\n- Layered structure: `config` → `auth` → `db` → `schemas` → `security` → `app` → `cli`.\n- `bootstrap()` runs on app startup: schema migration, user seeding, idempotent CSV import (movements + derived assets table).\n- Two roles seeded from `.env`: `admin` (full) and `viewer` (read-only).\n- Web: `/` and `/login` render Jinja2 login form; `/dashboard` and `/assets` show metrics & current state (cookie or Bearer auth).\n- API: `/auth/login`, `/api/me`, `/api/metrics`, `/api/assets` (GET all / POST admin / DELETE admin), `/api/movements` (GET all / POST admin), `/health`.\n\n**One command** (auto-loads `.env` with real values incl. `JWT_SECRET`, admin/viewer creds):\n```\nuvx --from . it-assets serve\n```\n\n**Quality**\n- `ruff check .` (line-length 100): **All checks passed**.\n- `pytest --cov`: **32/32 passing, 90% coverage** (auth 100%, schemas 100%, app 96%, db 93%, security 91%).\n- Tests cover: JWT login success/failure, missing/invalid token → 401, RBAC viewer→403 on writes, admin→201 + asset state rebuild, CSV import populating SQLite, login HTML form, cookie-auth web pages, logout, idempotent bootstrap.\n\n**Live smoke test against `uvx --from . it-assets serve`**\n- `GET /` → 200 with `<form>` ✅\n- `POST /auth/login` admin → 200 + token ✅\n- `GET /api/me` w/ Bearer → 200 ✅\n- `POST /api/assets` as viewer → **403** ✅\n- `GET /api/me` no token → **401** ✅\n\n"
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 321.64,
+      "session_id": null,
+      "cost_usd": null,
+      "tokens_input": null,
+      "tokens_output": null,
+      "tokens_cache_write": null,
+      "tokens_cache_read": null,
+      "interactions": null,
+      "stdout_tail": "et-Content $a) (Get-Content $b)\n  │ | Select-Object -First 30\n  └ 4 lines...\n\n● Distinct values & quirks (shell)\n  │ $p=\"C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app\\data\\m\n  │ ovements.csv\"; (Get-Content $p).Count; Get-Content $p | Select-Object\n  │ -Skip 1 | ForEach-Object { ($_ -split ',')[4] } | Sort-Object -Unique;\n  │ Write-Host \"---statuses\"; Get-Content $p | Select-Object -Skip 1 |\n  │ ForEach-Object { ($_ -split ',')[8] } | Sort-Object -Unique; Write-Host …\n  └ 39 lines...\n\nDatasets are byte-identical right now. To match the task spec (the dataset *will* be perturbed), I'll harden the code against the listed quirks (empty/null, out-of-domain actions, negatives, unexpected dates, duplicate IDs) and add a regression test that ingests a perturbed CSV.\n\n● Create test_robustness.py +120\n  └ tests\\test_robustness.py\n\n● Run robustness tests (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ pytest tests/test_robustness.py 2>&1 | Select-Object -Last 80\n  └ 81 lines...\n\nThree real bugs found. Fixing:\n\n● Edit schemas.py +7 -1\n  └ src\\it_assets\\schemas.py\n\n● Edit db.py +14 -9\n  └ src\\it_assets\\db.py\n\n● Edit schemas.py +11 -1\n  └ src\\it_assets\\schemas.py\n\n● Edit db.py +32\n  └ src\\it_assets\\db.py\n\n● Edit db.py +4 -1\n  └ src\\it_assets\\db.py\n\n● Re-run all tests (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ pytest 2>&1 | Select-Object -Last 30\n  └ 31 lines...\n\nAll **36 tests pass** with **89% coverage**. Now lint and verify uvx boot.\n\n● Run ruff (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app; uv run\n  │ ruff check . 2>&1 | Select-Object -Last 5\n  └ 3 lines...\n\n● Boot via uvx (shell)\n  │ cd C:\\PROJETOS\\llm-benchmark-runs\\copilot_cli-copilot-opus-4-7\\app;\n  │ Remove-Item data\\it_assets.db -ErrorAction SilentlyContinue; uvx --from .\n  │ it-assets serve --port 8766 2>&1\n  └ 1 line...\n\n● Verify live endpoints (shell)\n  │ Start-Sleep -Seconds 12\n  │ $r = Invoke-WebRequest \"http://127.0.0.1:8766/\" -UseBasicParsing\n  │ -TimeoutSec 5\n  │ Write-Host \"GET / -> $($r.StatusCode)\"\n  │ $tok = (Invoke-WebRequest \"http://127.0.0.1:8766/auth/login\" -Method POST …\n  └ 16 lines...\n\n● Stop shell\n  └ 1 line...\n\nPhase 3 complete. Tests now: **36 passed, 89% coverage, ruff clean**, server boots via `uvx --from . it-assets serve`.\n\n**What broke, why, and the fixes**\n\nThe bundled CSV bytes happened to be unchanged in this run, but the existing tests only used inline fixtures so they couldn't surface ingestion bugs. I added a `tests/test_robustness.py` that ingests a perturbed CSV (empty fields, `not-a-date` and `2024/02/15` dates, negative/non-numeric value, unknown action/status, duplicate `movement_id`, empty `movement_id`, empty `asset_tag`). Three real bugs surfaced:\n\n1. **`AssetOut`/`MovementOut` inherited `min_length=1` from the input schemas.** Any persisted row with empty `asset_tag`/`asset_type` (legal in storage, possible from perturbed data) made `GET /api/assets` raise `ValidationError`. **Fix:** decoupled the output models — `AssetOut`/`MovementOut` are now standalone `BaseModel`s with permissive defaults.\n\n2. **`import_csv` accepted rows with empty `asset_tag`,** which then leaked into the `assets` table (NOT NULL but empty string still passes) and broke the dashboard. **Fix:** skip such rows on import; also added `WHERE asset_tag != ''` in `rebuild_assets`.\n\n3. **Date format drift.** Perturbed dates like `2024/02/15` and `not-a-date` were stored as-is, causing the asset-state rebuild (which sorts by `date || '|' || id`) to mis-rank rows. **Fix:** added `_normalize_date()` that converts `YYYY/MM/DD`, `DD/MM/YYYY`, and `YYYY-MM-DD` to ISO; unparseable values become `''` so they sort before valid dates and never win the \"latest\" join.\n\nBonus: the value parser now also catches `TypeError`, `import_csv` `.strip()`s every field, and duplicate `movement_id` is still de-duped via the existing UNIQUE constraint check.\n\n",
+      "stderr_tail": "\n\nChanges    +2539 -20\nAI Credits 133 (17m 39s)\nTokens     ↑ 1.1m (1.1m cached, 80.2k written) • ↓ 12.1k (710 reasoning)\n",
+      "extra": {
+        "result": "\n  │ $r = Invoke-WebRequest \"http://127.0.0.1:8766/\" -UseBasicParsing\n  │ -TimeoutSec 5\n  │ Write-Host \"GET / -> $($r.StatusCode)\"\n  │ $tok = (Invoke-WebRequest \"http://127.0.0.1:8766/auth/login\" -Method POST …\n  └ 16 lines...\n\n● Stop shell\n  └ 1 line...\n\nPhase 3 complete. Tests now: **36 passed, 89% coverage, ruff clean**, server boots via `uvx --from . it-assets serve`.\n\n**What broke, why, and the fixes**\n\nThe bundled CSV bytes happened to be unchanged in this run, but the existing tests only used inline fixtures so they couldn't surface ingestion bugs. I added a `tests/test_robustness.py` that ingests a perturbed CSV (empty fields, `not-a-date` and `2024/02/15` dates, negative/non-numeric value, unknown action/status, duplicate `movement_id`, empty `movement_id`, empty `asset_tag`). Three real bugs surfaced:\n\n1. **`AssetOut`/`MovementOut` inherited `min_length=1` from the input schemas.** Any persisted row with empty `asset_tag`/`asset_type` (legal in storage, possible from perturbed data) made `GET /api/assets` raise `ValidationError`. **Fix:** decoupled the output models — `AssetOut`/`MovementOut` are now standalone `BaseModel`s with permissive defaults.\n\n2. **`import_csv` accepted rows with empty `asset_tag`,** which then leaked into the `assets` table (NOT NULL but empty string still passes) and broke the dashboard. **Fix:** skip such rows on import; also added `WHERE asset_tag != ''` in `rebuild_assets`.\n\n3. **Date format drift.** Perturbed dates like `2024/02/15` and `not-a-date` were stored as-is, causing the asset-state rebuild (which sorts by `date || '|' || id`) to mis-rank rows. **Fix:** added `_normalize_date()` that converts `YYYY/MM/DD`, `DD/MM/YYYY`, and `YYYY-MM-DD` to ISO; unparseable values become `''` so they sort before valid dates and never win the \"latest\" join.\n\nBonus: the value parser now also catches `TypeError`, `import_csv` `.strip()`s every field, and duplicate `movement_id` is still de-duped via the existing UNIQUE constraint check.\n\n"
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 89.0,
+        "objective": null,
+        "judge": 89.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 97.4,
+        "objective": 100.0,
+        "judge": 93.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 99.2,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 99.2,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 81.0,
+        "objective": null,
+        "judge": 81.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 96.2,
+        "objective": 100.0,
+        "judge": 92.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 97.8,
+        "objective": 100.0,
+        "judge": 92.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 57.6,
+        "objective": 50.0,
+        "judge": 69.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 99.2,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 99.0,
+        "objective": 100.0,
+        "judge": 97.5,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 98.6,
+        "objective": 100.0,
+        "judge": 96.5,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 92.8,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 95.8,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "divergences": {}
+}
