@@ -27,7 +27,7 @@ META_COLUMNS = [
     ("Interações", "nº de turns/passos do agente somados nas 3 fases (— quando o CLI não reporta)"),
     ("Custo (US$)", "custo-equivalente estimado das fases (referência; o consumo conta no plano)"),
     ("Cobertura (%)", "cobertura de testes medida pelo harness (dimensão `tests`, alvo oculto)"),
-    ("Diverg.", "dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)"),
+    ("Divergências", "dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)"),
 ]
 _META_HEAD = 8   # # .. Tempo (antes das dimensões)
 
@@ -207,7 +207,7 @@ def build_leaderboard(cfg: Config, scenario=None) -> str:
 
     header = "| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | " + \
         " | ".join(scenario.dim_labels[d] for d in scenario.dimensions) + \
-        " | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | Diverg. |"
+        " | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | Divergências |"
     # tail = 7 colunas: 3 tokens + interações + custo + cobertura + diverg
     sep = "|" + "---|" * (_META_HEAD + len(scenario.dimensions) + 7)
     lines += [header, sep]

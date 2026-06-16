@@ -38,9 +38,9 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 - **Interações** — nº de turns/passos do agente somados nas 3 fases (— quando o CLI não reporta)
 - **Custo (US$)** — custo-equivalente estimado das fases (referência; o consumo conta no plano)
 - **Cobertura (%)** — cobertura de testes medida pelo harness (dimensão `tests`, alvo oculto)
-- **Diverg.** — dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)
+- **Divergências** — dimensões com divergência grande entre os juízes (sinalizadas p/ revisão)
 
-| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | Refatoração | Resiliência | E2E | Auth JWT | RBAC | Dashboard | Persistência | Testes | API/Web | Execução uvx | Ingestão | Produção | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | Diverg. |
+| # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | Refatoração | Resiliência | E2E | Auth JWT | RBAC | Dashboard | Persistência | Testes | API/Web | Execução uvx | Ingestão | Produção | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | Divergências |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | claude_code | Opus 4.8 · 1M | medium | **94.2** | 97.2 | A | 28m 24s | 92 | 100 | 100 | 100 | 100 | 82 | 98 | 99 | 59 | 100 | 100 | 100 | 10 751 | 82 892 | 8 835 049 | 105 | 8.946 | 98 | — |
 | 2 | copilot_cli | Opus 4.7 · 1M | medium | **92.8** | 95.8 | A | 17m 43s | 89 | 97 | 100 | 99 | 99 | 81 | 96 | 98 | 58 | 99 | 99 | 99 | — | — | — | — | — | 89 | — |
