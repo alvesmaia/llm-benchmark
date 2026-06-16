@@ -106,12 +106,14 @@ Dimensões avaliadas (nota 0–100 por dimensão · peso na rubrica):
 | # | Harness | Modelo | Thinking | Subtotal | Score | Tier | Tempo | Refatoração | Resiliência | E2E | Auth JWT | RBAC | Dashboard | Persistência | Testes | API/Web | Execução uvx | Ingestão | Produção | Tokens In | Tokens Out | Cache | Interações | Custo (US$) | Cobertura (%) | Divergências |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | 1 | claude_code | Opus 4.8 · 1M | medium | **94.2** | 97.2 | A | 28m 24s | 92 | 100 | 100 | 100 | 100 | 82 | 98 | 99 | 59 | 100 | 100 | 100 | 10 751 | 82 892 | 8 835 049 | 105 | 8.946 | 98 | — |
-| 2 | copilot_cli | Opus 4.7 · 1M | medium | **92.8** | 95.8 | A | 17m 43s | 89 | 97 | 100 | 99 | 99 | 81 | 96 | 98 | 58 | 99 | 99 | 99 | — | — | — | — | — | 89 | — |
-| 3 | claude_code | Sonnet 4.6 | medium | **91.3** | 94.3 | A | 21m 6s | 86 | 97 | 100 | 98 | 98 | 80 | 90 | 96 | 58 | 98 | 97 | 96 | 83 | 65 261 | 6 292 597 | 85 | 4.356 | 90 | — |
+| 2 | claude_code | Opus 4.7 · 1M | medium | **93.0** | 96.0 | A | 17m 9s | 88 | 100 | 100 | 100 | 100 | 75 | 98 | 99 | 59 | 100 | 100 | 100 | 100 | 58 741 | 7 166 880 | 88 | 7.065 | 94 | — |
+| 3 | copilot_cli | Opus 4.7 · 1M | medium | **92.8** | 95.8 | A | 17m 43s | 89 | 97 | 100 | 99 | 99 | 81 | 96 | 98 | 58 | 99 | 99 | 99 | — | — | — | — | — | 89 | — |
+| 4 | claude_code | Sonnet 4.6 | medium | **91.3** | 94.3 | A | 21m 6s | 86 | 97 | 100 | 98 | 98 | 80 | 90 | 96 | 58 | 98 | 97 | 96 | 83 | 65 261 | 6 292 597 | 85 | 4.356 | 90 | — |
 
 ## Modificadores aplicados
 
 - **claude_code-claude-opus-4-8**: load_performance_bonus (+3)
+- **claude_code-claude-opus-4-7**: load_performance_bonus (+3)
 - **copilot_cli-claude-opus-4.7**: load_performance_bonus (+3)
 - **claude_code-sonnet**: load_performance_bonus (+3)
 <!-- LEADERBOARD:END -->

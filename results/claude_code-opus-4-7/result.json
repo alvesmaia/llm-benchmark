@@ -1,0 +1,168 @@
+{
+  "slug": "claude_code-opus-4-7",
+  "agent": "claude_code",
+  "model": "claude-opus-4-7",
+  "scenario": "it_assets",
+  "started_utc": "2026-06-16T11:42:31.699990+00:00",
+  "finished_utc": "2026-06-16T12:02:25.945573+00:00",
+  "phases": {
+    "phase1": {
+      "phase": "build",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 270.89,
+      "session_id": "48d9849a-870f-4382-9def-610090da07ca",
+      "cost_usd": 1.2911404999999998,
+      "tokens_input": 28,
+      "tokens_output": 15129,
+      "tokens_cache_write": 33992,
+      "tokens_cache_read": 1145711,
+      "interactions": 24,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":267125,\"duration_api_ms\":212117,\"ttft_ms\":3620,\"ttft_stream_ms\":3619,\"time_to_request_ms\":31,\"num_turns\":24,\"result\":\"Servidor sobe via `uvx --from . it-assets serve` e responde 200. Tudo verificado:\\n\\n**Resumo da Fase 1**\\n\\n- `app/` autossuficiente: `data/movements.csv` copiado do `DATASET_PATH`.\\n- Stack: Python 3.12 + uv, Streamlit, pandas, altair, python-dotenv.\\n- `.env` versionado com `DATASET_PATH`, `DB_PATH`, `JWT_SECRET`, credenciais `admin`/`viewer`, host/port — carregado automaticamente.\\n- Console script `it-assets` com subcomandos `serve` (default) e `import` (no-op idempotente).\\n- Comando único: `uvx --from . it-assets serve` → testado, responde 200 em `127.0.0.1:8765`.\\n- Dashboard: KPIs (ativos únicos, em uso, disponíveis, em manutenção, valor do parque), movimentações por mês × ação (barras empilhadas), pizza de status, ativos por localização, top colaboradores, tabela de estado atual e histórico filtrável (período / tipo / ação).\\n- Testes pytest (17 ✓) com `pytest-cov` configurado no `pyproject.toml` → **92% cobertura** total (`data.py` 99%, `dashboard.py` 92%, `cli.py` 81%).\\n- `ruff` (line-length 100) → All checks passed.\\n- `README.md` documenta o comando exato.\",\"stop_reason\":\"end_turn\",\"session_id\":\"48d9849a-870f-4382-9def-610090da07ca\",\"total_cost_usd\":1.2911404999999998,\"usage\":{\"input_tokens\":28,\"cache_creation_input_tokens\":33992,\"cache_read_input_tokens\":1145711,\"output_tokens\":15129,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":33992,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":500,\"cache_read_input_tokens\":57534,\"cache_creation_input_tokens\":830,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":830},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-opus-4-7\":{\"inputTokens\":28,\"outputTokens\":15129,\"cacheReadInputTokens\":1145711,\"cacheCreationInputTokens\":33992,\"webSearchRequests\":0,\"costUSD\":1.2911404999999998,\"contextWindow\":1000000,\"maxOutputTokens\":64000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"f66ba59f-0635-4c0d-a3c7-9e3fe670edbf\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 24,
+        "result": "Servidor sobe via `uvx --from . it-assets serve` e responde 200. Tudo verificado:\n\n**Resumo da Fase 1**\n\n- `app/` autossuficiente: `data/movements.csv` copiado do `DATASET_PATH`.\n- Stack: Python 3.12 + uv, Streamlit, pandas, altair, python-dotenv.\n- `.env` versionado com `DATASET_PATH`, `DB_PATH`, `JWT_SECRET`, credenciais `admin`/`viewer`, host/port — carregado automaticamente.\n- Console script `it-assets` com subcomandos `serve` (default) e `import` (no-op idempotente).\n- Comando único: `uvx --from . it-assets serve` → testado, responde 200 em `127.0.0.1:8765`.\n- Dashboard: KPIs (ativos únicos, em uso, disponíveis, em manutenção, valor do parque), movimentações por mês × ação (barras empilhadas), pizza de status, ativos por localização, top colaboradores, tabela de estado atual e histórico filtrável (período / tipo / ação).\n- Testes pytest (17 ✓) com `pytest-cov` configurado no `pyproject.toml` → **92% cobertura** total (`data.py` 99%, `dashboard.py` 92%, `cli.py` 81%).\n- `ruff` (line-length 100) → All checks passed.\n- `README.md` documenta o comando exato."
+      }
+    },
+    "phase2": {
+      "phase": "phase2",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 513.27,
+      "session_id": "48d9849a-870f-4382-9def-610090da07ca",
+      "cost_usd": 3.596621,
+      "tokens_input": 52,
+      "tokens_output": 31222,
+      "tokens_cache_write": 79188,
+      "tokens_cache_read": 4047862,
+      "interactions": 48,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":510452,\"duration_api_ms\":414998,\"ttft_ms\":13791,\"ttft_stream_ms\":2466,\"time_to_request_ms\":132,\"num_turns\":48,\"result\":\"Smoke test ponta-a-ponta passou (exit 1 só do `Stop-Process`):\\n\\n- `GET /` → 200 HTML com `<form>` ✓\\n- `POST /auth/login` admin → 200 token ✓\\n- `GET /api/assets` com Bearer → 200, 18 ativos ✓\\n- `POST /api/movements` como viewer → **403** ✓\\n\\n**Resumo da Fase 2**\\n\\n- Refatorado de Streamlit para **FastAPI + Uvicorn + SQLite + Jinja2 + JWT + RBAC** mantendo o pacote `it_assets`.\\n- **SQLite** (`data/it_assets.sqlite3`): tabelas `users`, `assets`, `movements`; bootstrap idempotente que faz schema + seed de usuários + ingest do CSV em `DATASET_PATH`.\\n- **JWT** (PyJWT, HS256): `POST /auth/login` → `{token, role}`; `get_current_user` aceita Bearer ou cookie; tokens expiram em 60 min.\\n- **RBAC**: papéis `admin` e `viewer`; `require_role(\\\"admin\\\")` protege `POST /api/movements` (viewer → 403).\\n- **API REST**: `/api/assets`, `/api/assets/{tag}`, `/api/movements` (GET/POST), `/api/metrics`, `/auth/login`, `/auth/me`, `/health`.\\n- **Web (Jinja2)**: `/` e `/login` (formulário), `/dashboard` (KPIs), `/assets`, `/movements`, `/logout` — cookie httponly.\\n- **Console script** `it-assets` com `serve` (uvicorn) e `import` (carga manual idempotente). Default = serve.\\n- **`.env` versionado** com `DATASET_PATH`, `DB_PATH`, `JWT_SECRET`, credenciais semente e `APP_HOST`/`APP_PORT` — carregado automaticamente.\\n- Comando único: `uvx --from . it-assets serve` — testado, servidor sobe e atende.\\n- **Testes**: 24 passando (auth/JWT, RBAC, persistência, web Jinja, CLI) com **89% de cobertura** (`db` 94%, `auth` 92%, `app` 84%, `cli` 97%).\\n- **Ruff** (line-length 100) → All checks passed.\\n- README atualizado com comando único, papéis e endpoints.\",\"stop_reason\":\"end_turn\",\"session_id\":\"48d9849a-870f-4382-9def-610090da07ca\",\"total_cost_usd\":3.596621,\"usage\":{\"input_tokens\":52,\"cache_creation_input_tokens\":79188,\"cache_read_input_tokens\":4047862,\"output_tokens\":31222,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":79188,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":830,\"cache_read_input_tokens\":102356,\"cache_creation_input_tokens\":1204,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":1204},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-opus-4-7\":{\"inputTokens\":52,\"outputTokens\":31222,\"cacheReadInputTokens\":4047862,\"cacheCreationInputTokens\":79188,\"webSearchRequests\":0,\"costUSD\":3.596621,\"contextWindow\":1000000,\"maxOutputTokens\":64000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"59bf2247-cab9-4447-a64b-14cf8aa1b9ee\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 48,
+        "result": "Smoke test ponta-a-ponta passou (exit 1 só do `Stop-Process`):\n\n- `GET /` → 200 HTML com `<form>` ✓\n- `POST /auth/login` admin → 200 token ✓\n- `GET /api/assets` com Bearer → 200, 18 ativos ✓\n- `POST /api/movements` como viewer → **403** ✓\n\n**Resumo da Fase 2**\n\n- Refatorado de Streamlit para **FastAPI + Uvicorn + SQLite + Jinja2 + JWT + RBAC** mantendo o pacote `it_assets`.\n- **SQLite** (`data/it_assets.sqlite3`): tabelas `users`, `assets`, `movements`; bootstrap idempotente que faz schema + seed de usuários + ingest do CSV em `DATASET_PATH`.\n- **JWT** (PyJWT, HS256): `POST /auth/login` → `{token, role}`; `get_current_user` aceita Bearer ou cookie; tokens expiram em 60 min.\n- **RBAC**: papéis `admin` e `viewer`; `require_role(\"admin\")` protege `POST /api/movements` (viewer → 403).\n- **API REST**: `/api/assets`, `/api/assets/{tag}`, `/api/movements` (GET/POST), `/api/metrics`, `/auth/login`, `/auth/me`, `/health`.\n- **Web (Jinja2)**: `/` e `/login` (formulário), `/dashboard` (KPIs), `/assets`, `/movements`, `/logout` — cookie httponly.\n- **Console script** `it-assets` com `serve` (uvicorn) e `import` (carga manual idempotente). Default = serve.\n- **`.env` versionado** com `DATASET_PATH`, `DB_PATH`, `JWT_SECRET`, credenciais semente e `APP_HOST`/`APP_PORT` — carregado automaticamente.\n- Comando único: `uvx --from . it-assets serve` — testado, servidor sobe e atende.\n- **Testes**: 24 passando (auth/JWT, RBAC, persistência, web Jinja, CLI) com **89% de cobertura** (`db` 94%, `auth` 92%, `app` 84%, `cli` 97%).\n- **Ruff** (line-length 100) → All checks passed.\n- README atualizado com comando único, papéis e endpoints."
+      }
+    },
+    "phase3": {
+      "phase": "phase3",
+      "ok": true,
+      "returncode": 0,
+      "duration_s": 244.41,
+      "session_id": "48d9849a-870f-4382-9def-610090da07ca",
+      "cost_usd": 2.1776775,
+      "tokens_input": 20,
+      "tokens_output": 12390,
+      "tokens_cache_write": 98712,
+      "tokens_cache_read": 1761415,
+      "interactions": 16,
+      "stdout_tail": "{\"type\":\"result\",\"subtype\":\"success\",\"is_error\":false,\"api_error_status\":null,\"duration_ms\":241420,\"duration_api_ms\":192324,\"ttft_ms\":5740,\"ttft_stream_ms\":5739,\"time_to_request_ms\":162,\"num_turns\":16,\"result\":\"Lint limpo, **35 testes ✓, 90% cobertura**, servidor sobe normalmente.\\n\\n**O que quebrou, causa e correção**\\n\\nOs testes unitários (com fixture sintética limpa) seguiam passando — o problema só aparecia quando a aplicação ingeria o **CSV real do projeto**, que recebeu valores sujos:\\n\\n| Anomalia introduzida | Causa de risco | Correção |\\n|---|---|---|\\n| Data em formato BR `15/03/2024` (MV-0007) | Ordenação lexicográfica colocava `15/...` fora de lugar, corrompendo o \\\"estado atual\\\" do ativo | `normalize_date()` aceita ISO, `dd/mm/yyyy`, `dd-mm-yyyy`, `yyyy/mm/dd` → grava sempre ISO |\\n| `value` vazio (MV-0004) | `float(\\\"\\\")` lançava `ValueError`; tratado com fallback, mas exposto a quebras futuras | `normalize_value()` tolera vazio/garbage |\\n| `value` negativo `-999.99` (MV-0006) | Distorcia o KPI \\\"valor do parque\\\" | `normalize_value()` clamp para 0 quando negativo |\\n| `movement_id` duplicado `MV-0001` (linha 9) | `INSERT OR IGNORE` silenciava no DB, mas o contador \\\"Importadas N\\\" incrementava errado | Dedup em memória (`seen_ids`) + uso de `cursor.rowcount` para contar só inserções reais |\\n| Action fora de domínio `decommission_xyz` | Nenhuma validação; podia surpreender consumidores futuros | Conjuntos `KNOWN_ACTIONS`/`KNOWN_STATUS` documentam o domínio; ingest preserva o valor sem quebrar |\\n| `employee` vazio / `asset_tag` vazio | Linhas sem ativo não fazem sentido | Linhas sem `asset_tag` são puladas; sem `movement_id` ainda entram (não é PK obrigatória) |\\n\\nAdicionei `tests/test_ingest_robustness.py` cobrindo cada normalização e um smoke test que carrega o **CSV real do projeto** verificando que todas as datas pós-ingest estão em ISO e não há duplicatas de `movement_id`. A aplicação continua subindo por `uvx --from . it-assets serve`.\",\"stop_reason\":\"end_turn\",\"session_id\":\"48d9849a-870f-4382-9def-610090da07ca\",\"total_cost_usd\":2.1776775,\"usage\":{\"input_tokens\":20,\"cache_creation_input_tokens\":98712,\"cache_read_input_tokens\":1761415,\"output_tokens\":12390,\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":98712,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_available\",\"iterations\":[{\"input_tokens\":1,\"output_tokens\":820,\"cache_read_input_tokens\":122538,\"cache_creation_input_tokens\":546,\"cache_creation\":{\"ephemeral_5m_input_tokens\":0,\"ephemeral_1h_input_tokens\":546},\"type\":\"message\"}],\"speed\":\"standard\"},\"modelUsage\":{\"claude-opus-4-7\":{\"inputTokens\":20,\"outputTokens\":12390,\"cacheReadInputTokens\":1761415,\"cacheCreationInputTokens\":98712,\"webSearchRequests\":0,\"costUSD\":2.1776775,\"contextWindow\":1000000,\"maxOutputTokens\":64000}},\"permission_denials\":[],\"terminal_reason\":\"completed\",\"fast_mode_state\":\"off\",\"uuid\":\"03f3c0dd-3af4-4e23-9022-700f17afc61d\"}\n",
+      "stderr_tail": "",
+      "extra": {
+        "num_turns": 16,
+        "result": "Lint limpo, **35 testes ✓, 90% cobertura**, servidor sobe normalmente.\n\n**O que quebrou, causa e correção**\n\nOs testes unitários (com fixture sintética limpa) seguiam passando — o problema só aparecia quando a aplicação ingeria o **CSV real do projeto**, que recebeu valores sujos:\n\n| Anomalia introduzida | Causa de risco | Correção |\n|---|---|---|\n| Data em formato BR `15/03/2024` (MV-0007) | Ordenação lexicográfica colocava `15/...` fora de lugar, corrompendo o \"estado atual\" do ativo | `normalize_date()` aceita ISO, `dd/mm/yyyy`, `dd-mm-yyyy`, `yyyy/mm/dd` → grava sempre ISO |\n| `value` vazio (MV-0004) | `float(\"\")` lançava `ValueError`; tratado com fallback, mas exposto a quebras futuras | `normalize_value()` tolera vazio/garbage |\n| `value` negativo `-999.99` (MV-0006) | Distorcia o KPI \"valor do parque\" | `normalize_value()` clamp para 0 quando negativo |\n| `movement_id` duplicado `MV-0001` (linha 9) | `INSERT OR IGNORE` silenciava no DB, mas o contador \"Importadas N\" incrementava errado | Dedup em memória (`seen_ids`) + uso de `cursor.rowcount` para contar só inserções reais |\n| Action fora de domínio `decommission_xyz` | Nenhuma validação; podia surpreender consumidores futuros | Conjuntos `KNOWN_ACTIONS`/`KNOWN_STATUS` documentam o domínio; ingest preserva o valor sem quebrar |\n| `employee` vazio / `asset_tag` vazio | Linhas sem ativo não fazem sentido | Linhas sem `asset_tag` são puladas; sem `movement_id` ainda entram (não é PK obrigatória) |\n\nAdicionei `tests/test_ingest_robustness.py` cobrindo cada normalização e um smoke test que carrega o **CSV real do projeto** verificando que todas as datas pós-ingest estão em ISO e não há duplicatas de `movement_id`. A aplicação continua subindo por `uvx --from . it-assets serve`."
+      }
+    }
+  },
+  "score": {
+    "dimensions": {
+      "refactor": {
+        "note": 88.0,
+        "objective": null,
+        "judge": 88.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "resiliencia": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "e2e": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "só obj (sem juiz)",
+        "counted": true
+      },
+      "auth_jwt": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "rbac": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "dashboard": {
+        "note": 75.0,
+        "objective": null,
+        "judge": 75.0,
+        "source": "só juiz (sem obj)",
+        "counted": true
+      },
+      "persistence": {
+        "note": 97.5,
+        "objective": 100.0,
+        "judge": 95.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "tests": {
+        "note": 99.1,
+        "objective": 100.0,
+        "judge": 97.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "api_web": {
+        "note": 58.8,
+        "objective": 50.0,
+        "judge": 72.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "execucao_uvx": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "ingestao": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      },
+      "production": {
+        "note": 100.0,
+        "objective": 100.0,
+        "judge": 100.0,
+        "source": "obj+juiz",
+        "counted": true
+      }
+    },
+    "weighted_subtotal": 93.0,
+    "excluded_dimensions": [],
+    "scored_weight": 100,
+    "modifiers_applied": [
+      {
+        "id": "load_performance_bonus",
+        "value": 3
+      }
+    ],
+    "final_score": 96.0,
+    "tier": "A",
+    "tier_note": "Pronto para produção (patch < 30 min)"
+  },
+  "divergences": {}
+}
